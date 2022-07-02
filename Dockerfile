@@ -4,7 +4,6 @@ RUN apk add build-base chromium
 
 RUN mkdir /build
 ADD ./ /build/
-
 WORKDIR /build
 
 RUN go mod download
