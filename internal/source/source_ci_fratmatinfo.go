@@ -24,8 +24,7 @@ func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
 }
 
 /// NewsLatest
-///
-///
+//////////////
 func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "main")
 	if err != nil {
@@ -61,8 +60,7 @@ func (src *FratmatInfoSource) latestPost(document *Element) []*schema.NewsPost {
 }
 
 /// NewsCategory
-///
-///
+////////////////
 func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
@@ -102,8 +100,7 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 }
 
 /// PostArticle
-///
-///
+///////////////
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
 	response, err := rodGetRequest(link, "main")
 	if err != nil {
