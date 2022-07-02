@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"news/internal/store/newssource"
+	"news/internal/store/tvsource"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -30,6 +31,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		newssource.Table: newssource.ValidColumn,
+		tvsource.Table:   tvsource.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

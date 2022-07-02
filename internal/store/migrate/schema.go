@@ -30,9 +30,27 @@ var (
 		Columns:    NewsSourcesColumns,
 		PrimaryKey: []*schema.Column{NewsSourcesColumns[0]},
 	}
+	// TvSourcesColumns holds the columns for the "tv_sources" table.
+	TvSourcesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "logo", Type: field.TypeString},
+		{Name: "video", Type: field.TypeString},
+		{Name: "title", Type: field.TypeString},
+		{Name: "status", Type: field.TypeBool, Default: true},
+		{Name: "country", Type: field.TypeString, Default: "ci"},
+		{Name: "description", Type: field.TypeString},
+		{Name: "language", Type: field.TypeString, Default: "fr"},
+	}
+	// TvSourcesTable holds the schema information for the "tv_sources" table.
+	TvSourcesTable = &schema.Table{
+		Name:       "tv_sources",
+		Columns:    TvSourcesColumns,
+		PrimaryKey: []*schema.Column{TvSourcesColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		NewsSourcesTable,
+		TvSourcesTable,
 	}
 )
 

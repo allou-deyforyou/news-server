@@ -8,3 +8,6 @@ import (
 
 // NewsSource is the predicate function for newssource builders.
 type NewsSource func(*sql.Selector)
+
+// TvSource is the predicate function for tvsource builders.
+type TvSource func(*sql.Selector)

@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// NewsSource is the client for interacting with the NewsSource builders.
 	NewsSource *NewsSourceClient
+	// TvSource is the client for interacting with the TvSource builders.
+	TvSource *TvSourceClient
 
 	// lazily loaded.
 	client     *Client
@@ -150,6 +152,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.NewsSource = NewNewsSourceClient(tx.config)
+	tx.TvSource = NewTvSourceClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

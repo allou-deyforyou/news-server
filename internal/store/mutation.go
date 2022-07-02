@@ -9,6 +9,7 @@ import (
 	"news/internal/store/newssource"
 	"news/internal/store/predicate"
 	"news/internal/store/schema"
+	"news/internal/store/tvsource"
 	"sync"
 
 	"entgo.io/ent"
@@ -24,6 +25,7 @@ const (
 
 	// Node types.
 	TypeNewsSource = "NewsSource"
+	TypeTvSource   = "TvSource"
 )
 
 // NewsSourceMutation represents an operation that mutates the NewsSource nodes in the graph.
@@ -1027,4 +1029,639 @@ func (m *NewsSourceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *NewsSourceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown NewsSource edge %s", name)
+}
+
+// TvSourceMutation represents an operation that mutates the TvSource nodes in the graph.
+type TvSourceMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	logo          *string
+	video         *string
+	title         *string
+	status        *bool
+	country       *string
+	description   *string
+	language      *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*TvSource, error)
+	predicates    []predicate.TvSource
+}
+
+var _ ent.Mutation = (*TvSourceMutation)(nil)
+
+// tvsourceOption allows management of the mutation configuration using functional options.
+type tvsourceOption func(*TvSourceMutation)
+
+// newTvSourceMutation creates new mutation for the TvSource entity.
+func newTvSourceMutation(c config, op Op, opts ...tvsourceOption) *TvSourceMutation {
+	m := &TvSourceMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTvSource,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTvSourceID sets the ID field of the mutation.
+func withTvSourceID(id int) tvsourceOption {
+	return func(m *TvSourceMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TvSource
+		)
+		m.oldValue = func(ctx context.Context) (*TvSource, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TvSource.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTvSource sets the old TvSource of the mutation.
+func withTvSource(node *TvSource) tvsourceOption {
+	return func(m *TvSourceMutation) {
+		m.oldValue = func(context.Context) (*TvSource, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TvSourceMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TvSourceMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("store: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TvSourceMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TvSourceMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TvSource.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetLogo sets the "logo" field.
+func (m *TvSourceMutation) SetLogo(s string) {
+	m.logo = &s
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *TvSourceMutation) Logo() (r string, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldLogo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *TvSourceMutation) ResetLogo() {
+	m.logo = nil
+}
+
+// SetVideo sets the "video" field.
+func (m *TvSourceMutation) SetVideo(s string) {
+	m.video = &s
+}
+
+// Video returns the value of the "video" field in the mutation.
+func (m *TvSourceMutation) Video() (r string, exists bool) {
+	v := m.video
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVideo returns the old "video" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldVideo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVideo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVideo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVideo: %w", err)
+	}
+	return oldValue.Video, nil
+}
+
+// ResetVideo resets all changes to the "video" field.
+func (m *TvSourceMutation) ResetVideo() {
+	m.video = nil
+}
+
+// SetTitle sets the "title" field.
+func (m *TvSourceMutation) SetTitle(s string) {
+	m.title = &s
+}
+
+// Title returns the value of the "title" field in the mutation.
+func (m *TvSourceMutation) Title() (r string, exists bool) {
+	v := m.title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTitle returns the old "title" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldTitle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTitle: %w", err)
+	}
+	return oldValue.Title, nil
+}
+
+// ResetTitle resets all changes to the "title" field.
+func (m *TvSourceMutation) ResetTitle() {
+	m.title = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *TvSourceMutation) SetStatus(b bool) {
+	m.status = &b
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *TvSourceMutation) Status() (r bool, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldStatus(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *TvSourceMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetCountry sets the "country" field.
+func (m *TvSourceMutation) SetCountry(s string) {
+	m.country = &s
+}
+
+// Country returns the value of the "country" field in the mutation.
+func (m *TvSourceMutation) Country() (r string, exists bool) {
+	v := m.country
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCountry returns the old "country" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldCountry(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCountry is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCountry requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCountry: %w", err)
+	}
+	return oldValue.Country, nil
+}
+
+// ResetCountry resets all changes to the "country" field.
+func (m *TvSourceMutation) ResetCountry() {
+	m.country = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *TvSourceMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *TvSourceMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *TvSourceMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetLanguage sets the "language" field.
+func (m *TvSourceMutation) SetLanguage(s string) {
+	m.language = &s
+}
+
+// Language returns the value of the "language" field in the mutation.
+func (m *TvSourceMutation) Language() (r string, exists bool) {
+	v := m.language
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguage returns the old "language" field's value of the TvSource entity.
+// If the TvSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TvSourceMutation) OldLanguage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguage: %w", err)
+	}
+	return oldValue.Language, nil
+}
+
+// ResetLanguage resets all changes to the "language" field.
+func (m *TvSourceMutation) ResetLanguage() {
+	m.language = nil
+}
+
+// Where appends a list predicates to the TvSourceMutation builder.
+func (m *TvSourceMutation) Where(ps ...predicate.TvSource) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *TvSourceMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (TvSource).
+func (m *TvSourceMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TvSourceMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.logo != nil {
+		fields = append(fields, tvsource.FieldLogo)
+	}
+	if m.video != nil {
+		fields = append(fields, tvsource.FieldVideo)
+	}
+	if m.title != nil {
+		fields = append(fields, tvsource.FieldTitle)
+	}
+	if m.status != nil {
+		fields = append(fields, tvsource.FieldStatus)
+	}
+	if m.country != nil {
+		fields = append(fields, tvsource.FieldCountry)
+	}
+	if m.description != nil {
+		fields = append(fields, tvsource.FieldDescription)
+	}
+	if m.language != nil {
+		fields = append(fields, tvsource.FieldLanguage)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TvSourceMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case tvsource.FieldLogo:
+		return m.Logo()
+	case tvsource.FieldVideo:
+		return m.Video()
+	case tvsource.FieldTitle:
+		return m.Title()
+	case tvsource.FieldStatus:
+		return m.Status()
+	case tvsource.FieldCountry:
+		return m.Country()
+	case tvsource.FieldDescription:
+		return m.Description()
+	case tvsource.FieldLanguage:
+		return m.Language()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TvSourceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case tvsource.FieldLogo:
+		return m.OldLogo(ctx)
+	case tvsource.FieldVideo:
+		return m.OldVideo(ctx)
+	case tvsource.FieldTitle:
+		return m.OldTitle(ctx)
+	case tvsource.FieldStatus:
+		return m.OldStatus(ctx)
+	case tvsource.FieldCountry:
+		return m.OldCountry(ctx)
+	case tvsource.FieldDescription:
+		return m.OldDescription(ctx)
+	case tvsource.FieldLanguage:
+		return m.OldLanguage(ctx)
+	}
+	return nil, fmt.Errorf("unknown TvSource field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TvSourceMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case tvsource.FieldLogo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
+		return nil
+	case tvsource.FieldVideo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVideo(v)
+		return nil
+	case tvsource.FieldTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTitle(v)
+		return nil
+	case tvsource.FieldStatus:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case tvsource.FieldCountry:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCountry(v)
+		return nil
+	case tvsource.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case tvsource.FieldLanguage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguage(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TvSource field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TvSourceMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TvSourceMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TvSourceMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown TvSource numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TvSourceMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TvSourceMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TvSourceMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown TvSource nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TvSourceMutation) ResetField(name string) error {
+	switch name {
+	case tvsource.FieldLogo:
+		m.ResetLogo()
+		return nil
+	case tvsource.FieldVideo:
+		m.ResetVideo()
+		return nil
+	case tvsource.FieldTitle:
+		m.ResetTitle()
+		return nil
+	case tvsource.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case tvsource.FieldCountry:
+		m.ResetCountry()
+		return nil
+	case tvsource.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case tvsource.FieldLanguage:
+		m.ResetLanguage()
+		return nil
+	}
+	return fmt.Errorf("unknown TvSource field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TvSourceMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TvSourceMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TvSourceMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TvSourceMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TvSourceMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TvSourceMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TvSourceMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown TvSource unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TvSourceMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown TvSource edge %s", name)
 }

@@ -21,6 +21,19 @@ func (f NewsSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Val
 	return f(ctx, mv)
 }
 
+// The TvSourceFunc type is an adapter to allow the use of ordinary
+// function as TvSource mutator.
+type TvSourceFunc func(context.Context, *store.TvSourceMutation) (store.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TvSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
+	mv, ok := m.(*store.TvSourceMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.TvSourceMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, store.Mutation) bool
 

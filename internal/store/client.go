@@ -10,6 +10,7 @@ import (
 	"news/internal/store/migrate"
 
 	"news/internal/store/newssource"
+	"news/internal/store/tvsource"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -22,6 +23,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// NewsSource is the client for interacting with the NewsSource builders.
 	NewsSource *NewsSourceClient
+	// TvSource is the client for interacting with the TvSource builders.
+	TvSource *TvSourceClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,6 +39,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.NewsSource = NewNewsSourceClient(c.config)
+	c.TvSource = NewTvSourceClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -70,6 +74,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:        ctx,
 		config:     cfg,
 		NewsSource: NewNewsSourceClient(cfg),
+		TvSource:   NewTvSourceClient(cfg),
 	}, nil
 }
 
@@ -90,6 +95,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:        ctx,
 		config:     cfg,
 		NewsSource: NewNewsSourceClient(cfg),
+		TvSource:   NewTvSourceClient(cfg),
 	}, nil
 }
 
@@ -120,6 +126,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.NewsSource.Use(hooks...)
+	c.TvSource.Use(hooks...)
 }
 
 // NewsSourceClient is a client for the NewsSource schema.
@@ -210,4 +217,94 @@ func (c *NewsSourceClient) GetX(ctx context.Context, id int) *NewsSource {
 // Hooks returns the client hooks.
 func (c *NewsSourceClient) Hooks() []Hook {
 	return c.hooks.NewsSource
+}
+
+// TvSourceClient is a client for the TvSource schema.
+type TvSourceClient struct {
+	config
+}
+
+// NewTvSourceClient returns a client for the TvSource from the given config.
+func NewTvSourceClient(c config) *TvSourceClient {
+	return &TvSourceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tvsource.Hooks(f(g(h())))`.
+func (c *TvSourceClient) Use(hooks ...Hook) {
+	c.hooks.TvSource = append(c.hooks.TvSource, hooks...)
+}
+
+// Create returns a create builder for TvSource.
+func (c *TvSourceClient) Create() *TvSourceCreate {
+	mutation := newTvSourceMutation(c.config, OpCreate)
+	return &TvSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TvSource entities.
+func (c *TvSourceClient) CreateBulk(builders ...*TvSourceCreate) *TvSourceCreateBulk {
+	return &TvSourceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TvSource.
+func (c *TvSourceClient) Update() *TvSourceUpdate {
+	mutation := newTvSourceMutation(c.config, OpUpdate)
+	return &TvSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TvSourceClient) UpdateOne(ts *TvSource) *TvSourceUpdateOne {
+	mutation := newTvSourceMutation(c.config, OpUpdateOne, withTvSource(ts))
+	return &TvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TvSourceClient) UpdateOneID(id int) *TvSourceUpdateOne {
+	mutation := newTvSourceMutation(c.config, OpUpdateOne, withTvSourceID(id))
+	return &TvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TvSource.
+func (c *TvSourceClient) Delete() *TvSourceDelete {
+	mutation := newTvSourceMutation(c.config, OpDelete)
+	return &TvSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *TvSourceClient) DeleteOne(ts *TvSource) *TvSourceDeleteOne {
+	return c.DeleteOneID(ts.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *TvSourceClient) DeleteOneID(id int) *TvSourceDeleteOne {
+	builder := c.Delete().Where(tvsource.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TvSourceDeleteOne{builder}
+}
+
+// Query returns a query builder for TvSource.
+func (c *TvSourceClient) Query() *TvSourceQuery {
+	return &TvSourceQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a TvSource entity by its id.
+func (c *TvSourceClient) Get(ctx context.Context, id int) (*TvSource, error) {
+	return c.Query().Where(tvsource.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TvSourceClient) GetX(ctx context.Context, id int) *TvSource {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TvSourceClient) Hooks() []Hook {
+	return c.hooks.TvSource
 }
