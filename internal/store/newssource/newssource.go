@@ -23,6 +23,8 @@ const (
 	FieldCountry = "country"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldCategories holds the string denoting the categories field in the database.
@@ -44,6 +46,7 @@ var Columns = []string{
 	FieldLanguage,
 	FieldCountry,
 	FieldStatus,
+	FieldLogo,
 	FieldName,
 	FieldCategories,
 	FieldURL,
@@ -66,4 +69,6 @@ var (
 	DefaultCountry string
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus bool
+	// LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	LogoValidator func(string) error
 )

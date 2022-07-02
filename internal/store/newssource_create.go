@@ -108,6 +108,12 @@ func (nsc *NewsSourceCreate) SetNillableStatus(b *bool) *NewsSourceCreate {
 	return nsc
 }
 
+// SetLogo sets the "logo" field.
+func (nsc *NewsSourceCreate) SetLogo(s string) *NewsSourceCreate {
+	nsc.mutation.SetLogo(s)
+	return nsc
+}
+
 // SetName sets the "name" field.
 func (nsc *NewsSourceCreate) SetName(s string) *NewsSourceCreate {
 	nsc.mutation.SetName(s)
@@ -222,6 +228,14 @@ func (nsc *NewsSourceCreate) check() error {
 	if _, ok := nsc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`store: missing required field "NewsSource.status"`)}
 	}
+	if _, ok := nsc.mutation.Logo(); !ok {
+		return &ValidationError{Name: "logo", err: errors.New(`store: missing required field "NewsSource.logo"`)}
+	}
+	if v, ok := nsc.mutation.Logo(); ok {
+		if err := newssource.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`store: validator failed for field "NewsSource.logo": %w`, err)}
+		}
+	}
 	if _, ok := nsc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`store: missing required field "NewsSource.name"`)}
 	}
@@ -321,6 +335,14 @@ func (nsc *NewsSourceCreate) createSpec() (*NewsSource, *sqlgraph.CreateSpec) {
 			Column: newssource.FieldStatus,
 		})
 		_node.Status = value
+	}
+	if value, ok := nsc.mutation.Logo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: newssource.FieldLogo,
+		})
+		_node.Logo = value
 	}
 	if value, ok := nsc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

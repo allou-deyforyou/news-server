@@ -33,6 +33,8 @@ type NewsSource struct {
 	Country string `json:"country,omitempty"`
 	// Status holds the value of the "status" field.
 	Status bool `json:"status,omitempty"`
+	// Logo holds the value of the "logo" field.
+	Logo string `json:"logo,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Categories holds the value of the "categories" field.
@@ -52,7 +54,7 @@ func (*NewsSource) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case newssource.FieldID:
 			values[i] = new(sql.NullInt64)
-		case newssource.FieldLatestPostURL, newssource.FieldCategoryPostURL, newssource.FieldLanguage, newssource.FieldCountry, newssource.FieldName, newssource.FieldURL:
+		case newssource.FieldLatestPostURL, newssource.FieldCategoryPostURL, newssource.FieldLanguage, newssource.FieldCountry, newssource.FieldLogo, newssource.FieldName, newssource.FieldURL:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type NewsSource", columns[i])
@@ -131,6 +133,12 @@ func (ns *NewsSource) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				ns.Status = value.Bool
 			}
+		case newssource.FieldLogo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value.Valid {
+				ns.Logo = value.String
+			}
 		case newssource.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -199,6 +207,8 @@ func (ns *NewsSource) String() string {
 	builder.WriteString(ns.Country)
 	builder.WriteString(", status=")
 	builder.WriteString(fmt.Sprintf("%v", ns.Status))
+	builder.WriteString(", logo=")
+	builder.WriteString(ns.Logo)
 	builder.WriteString(", name=")
 	builder.WriteString(ns.Name)
 	builder.WriteString(", categories=")

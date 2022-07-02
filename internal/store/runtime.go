@@ -25,4 +25,8 @@ func init() {
 	newssourceDescStatus := newssourceFields[7].Descriptor()
 	// newssource.DefaultStatus holds the default value on creation for the status field.
 	newssource.DefaultStatus = newssourceDescStatus.Default.(bool)
+	// newssourceDescLogo is the schema descriptor for logo field.
+	newssourceDescLogo := newssourceFields[8].Descriptor()
+	// newssource.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	newssource.LogoValidator = newssourceDescLogo.Validators[0].(func(string) error)
 }

@@ -146,6 +146,12 @@ func (nsu *NewsSourceUpdate) SetNillableStatus(b *bool) *NewsSourceUpdate {
 	return nsu
 }
 
+// SetLogo sets the "logo" field.
+func (nsu *NewsSourceUpdate) SetLogo(s string) *NewsSourceUpdate {
+	nsu.mutation.SetLogo(s)
+	return nsu
+}
+
 // SetName sets the "name" field.
 func (nsu *NewsSourceUpdate) SetName(s string) *NewsSourceUpdate {
 	nsu.mutation.SetName(s)
@@ -176,12 +182,18 @@ func (nsu *NewsSourceUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(nsu.hooks) == 0 {
+		if err = nsu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = nsu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*NewsSourceMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = nsu.check(); err != nil {
+				return 0, err
 			}
 			nsu.mutation = mutation
 			affected, err = nsu.sqlSave(ctx)
@@ -221,6 +233,16 @@ func (nsu *NewsSourceUpdate) ExecX(ctx context.Context) {
 	if err := nsu.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (nsu *NewsSourceUpdate) check() error {
+	if v, ok := nsu.mutation.Logo(); ok {
+		if err := newssource.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`store: validator failed for field "NewsSource.logo": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (nsu *NewsSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -325,6 +347,13 @@ func (nsu *NewsSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: newssource.FieldStatus,
+		})
+	}
+	if value, ok := nsu.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: newssource.FieldLogo,
 		})
 	}
 	if value, ok := nsu.mutation.Name(); ok {
@@ -485,6 +514,12 @@ func (nsuo *NewsSourceUpdateOne) SetNillableStatus(b *bool) *NewsSourceUpdateOne
 	return nsuo
 }
 
+// SetLogo sets the "logo" field.
+func (nsuo *NewsSourceUpdateOne) SetLogo(s string) *NewsSourceUpdateOne {
+	nsuo.mutation.SetLogo(s)
+	return nsuo
+}
+
 // SetName sets the "name" field.
 func (nsuo *NewsSourceUpdateOne) SetName(s string) *NewsSourceUpdateOne {
 	nsuo.mutation.SetName(s)
@@ -522,12 +557,18 @@ func (nsuo *NewsSourceUpdateOne) Save(ctx context.Context) (*NewsSource, error) 
 		node *NewsSource
 	)
 	if len(nsuo.hooks) == 0 {
+		if err = nsuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = nsuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*NewsSourceMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = nsuo.check(); err != nil {
+				return nil, err
 			}
 			nsuo.mutation = mutation
 			node, err = nsuo.sqlSave(ctx)
@@ -567,6 +608,16 @@ func (nsuo *NewsSourceUpdateOne) ExecX(ctx context.Context) {
 	if err := nsuo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (nsuo *NewsSourceUpdateOne) check() error {
+	if v, ok := nsuo.mutation.Logo(); ok {
+		if err := newssource.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`store: validator failed for field "NewsSource.logo": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (nsuo *NewsSourceUpdateOne) sqlSave(ctx context.Context) (_node *NewsSource, err error) {
@@ -688,6 +739,13 @@ func (nsuo *NewsSourceUpdateOne) sqlSave(ctx context.Context) (_node *NewsSource
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: newssource.FieldStatus,
+		})
+	}
+	if value, ok := nsuo.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: newssource.FieldLogo,
 		})
 	}
 	if value, ok := nsuo.mutation.Name(); ok {

@@ -39,6 +39,7 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 		SetStatus(true).
 		SetName("Fratmat Info").
 		SetURL("https://www.fratmat.info").
+		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
 		SetCategories([]string{
 			fmt.Sprintf("%v:politique", schema.Politics),
 			fmt.Sprintf("%v:économie", schema.Economy),
@@ -75,6 +76,7 @@ func TestCreateAbidjanNetSource(t *testing.T) {
 		SetStatus(true).
 		SetName("Abidjan.Net").
 		SetURL("https://news.abidjan.net").
+		SetLogo("https://abidjan.net/public/img/favicon-32x32.png").
 		SetCategories([]string{
 			fmt.Sprintf("%v:politique", schema.Politics),
 			fmt.Sprintf("%v:economie", schema.Economy),
@@ -112,6 +114,7 @@ func TestCreateAfrikMagSource(t *testing.T) {
 		SetStatus(true).
 		SetName("AfrikMag").
 		SetURL("https://www.afrikmag.com").
+		SetLogo("https://www.afrikmag.com/favicon.ico").
 		SetCategories([]string{
 			fmt.Sprintf("%v:197", schema.Politics),
 			fmt.Sprintf("%v:8464", schema.Economy),

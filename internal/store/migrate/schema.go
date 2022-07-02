@@ -19,6 +19,7 @@ var (
 		{Name: "language", Type: field.TypeString, Default: "fr"},
 		{Name: "country", Type: field.TypeString, Default: "ci"},
 		{Name: "status", Type: field.TypeBool, Default: true},
+		{Name: "logo", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "categories", Type: field.TypeJSON},
 		{Name: "url", Type: field.TypeString},

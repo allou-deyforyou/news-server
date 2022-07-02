@@ -50,10 +50,11 @@ func (src *FratmatInfoSource) latestPost(document *Element) []*schema.NewsPost {
 			image = parseURL(src.URL, image)
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
-				Image:  image,
-				Title:  title,
-				Link:   link,
-				Date:   date,
+				Logo:   src.Logo,
+				Image: image,
+				Title: title,
+				Link:  link,
+				Date:  date,
 			})
 		})
 	return filmList
@@ -90,6 +91,7 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 			image = parseURL(src.URL, image)
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
+				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,

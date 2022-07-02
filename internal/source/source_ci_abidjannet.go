@@ -63,6 +63,7 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
+				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
@@ -120,10 +121,11 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 				filmList = append(filmList, &schema.NewsPost{
 					Source: src.Name,
-					Image:  image,
-					Title:  title,
-					Link:   link,
-					Date:   date,
+					Logo:   src.Logo,
+					Image: image,
+					Title: title,
+					Link:  link,
+					Date:  date,
 				})
 			}
 		})

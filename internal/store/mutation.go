@@ -40,6 +40,7 @@ type NewsSourceMutation struct {
 	language               *string
 	country                *string
 	status                 *bool
+	logo                   *string
 	name                   *string
 	categories             *[]string
 	url                    *string
@@ -500,6 +501,42 @@ func (m *NewsSourceMutation) ResetStatus() {
 	m.status = nil
 }
 
+// SetLogo sets the "logo" field.
+func (m *NewsSourceMutation) SetLogo(s string) {
+	m.logo = &s
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *NewsSourceMutation) Logo() (r string, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the NewsSource entity.
+// If the NewsSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NewsSourceMutation) OldLogo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *NewsSourceMutation) ResetLogo() {
+	m.logo = nil
+}
+
 // SetName sets the "name" field.
 func (m *NewsSourceMutation) SetName(s string) {
 	m.name = &s
@@ -627,7 +664,7 @@ func (m *NewsSourceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NewsSourceMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.latest_post_url != nil {
 		fields = append(fields, newssource.FieldLatestPostURL)
 	}
@@ -651,6 +688,9 @@ func (m *NewsSourceMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, newssource.FieldStatus)
+	}
+	if m.logo != nil {
+		fields = append(fields, newssource.FieldLogo)
 	}
 	if m.name != nil {
 		fields = append(fields, newssource.FieldName)
@@ -685,6 +725,8 @@ func (m *NewsSourceMutation) Field(name string) (ent.Value, bool) {
 		return m.Country()
 	case newssource.FieldStatus:
 		return m.Status()
+	case newssource.FieldLogo:
+		return m.Logo()
 	case newssource.FieldName:
 		return m.Name()
 	case newssource.FieldCategories:
@@ -716,6 +758,8 @@ func (m *NewsSourceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldCountry(ctx)
 	case newssource.FieldStatus:
 		return m.OldStatus(ctx)
+	case newssource.FieldLogo:
+		return m.OldLogo(ctx)
 	case newssource.FieldName:
 		return m.OldName(ctx)
 	case newssource.FieldCategories:
@@ -786,6 +830,13 @@ func (m *NewsSourceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case newssource.FieldLogo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
 		return nil
 	case newssource.FieldName:
 		v, ok := value.(string)
@@ -913,6 +964,9 @@ func (m *NewsSourceMutation) ResetField(name string) error {
 		return nil
 	case newssource.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case newssource.FieldLogo:
+		m.ResetLogo()
 		return nil
 	case newssource.FieldName:
 		m.ResetName()

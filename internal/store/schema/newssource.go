@@ -29,6 +29,7 @@ func (NewsSource) Fields() []ent.Field {
 		field.String("language").Default("fr"),
 		field.String("country").Default("ci"),
 		field.Bool("status").Default(true),
+		field.String("logo").NotEmpty(),
 		field.String("name").Unique(),
 		field.Strings("categories"),
 		field.String("url"),

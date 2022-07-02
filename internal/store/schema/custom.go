@@ -20,6 +20,7 @@ type NewsPost struct {
 	Image    string `json:"image,omitempty"`
 	Date     string `json:"date,omitempty"`
 	Link     string `json:"link,omitempty"`
+	Logo     string `json:"logo,omitempty"`
 }
 
 type NewsPostSelector struct {
