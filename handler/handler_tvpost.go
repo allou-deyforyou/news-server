@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 	"news/internal"
 	"news/internal/store/tvsource"
 )
@@ -12,7 +11,7 @@ import (
 func (h *Handler) TvPost(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
-		10*time.Second,
+		timeout,
 	)
 	defer cancel()
 

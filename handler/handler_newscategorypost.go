@@ -11,13 +11,12 @@ import (
 	"news/internal/store/schema"
 
 	"sync"
-	"time"
 )
 
 func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
-		10*time.Second,
+		timeout,
 	)
 	defer cancel()
 

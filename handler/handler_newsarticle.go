@@ -8,14 +8,12 @@ import (
 	"news/internal"
 	"news/internal/source"
 	"news/internal/store/newssource"
-
-	"time"
 )
 
 func (h *Handler) NewsArticle(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
-		10*time.Second,
+		timeout,
 	)
 	defer cancel()
 
