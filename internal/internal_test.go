@@ -134,7 +134,7 @@ func TestCreateAfrikMagSource(t *testing.T) {
 			Image: []string{"img", "data-src", ".big-thumb-left-box-inner", "data-lazy-bg"},
 			Date:  []string{".date"},
 			Link:  []string{".post-title a", "href"},
-			List:  []string{"#tie-block_3151 .posts-items .post-item"},
+			List:  []string{"#tie-block_3151 .posts-items .post-item", "#tie-block_3151"},
 		}).
 		SetCategoryPostURL("/wp-admin/admin-ajax.php").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
