@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"news/internal/store"
 	"news/internal/store/schema"
+	"path"
 	"strconv"
 	"strings"
 
@@ -58,6 +59,7 @@ func (src *AfrikMagSource) latestPost(document *Element) []*schema.NewsPost {
 			}
 
 			image = parseURL(src.URL, image)
+			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
 				Logo:   src.Logo,
@@ -120,6 +122,7 @@ func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
 			image = parseURL(src.URL, image)
+			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
 				Logo:   src.Logo,
