@@ -123,7 +123,7 @@ func parseTime(value string) (string, error) {
 		if date, er := time.Parse(layout, dateInEnglish(regexp.MustCompile(expression).FindString(strings.Join(strings.Fields(value), " ")))); er != nil {
 			err = er
 		} else {
-			return date.String(), nil
+			return date.Format(time.RFC3339), nil
 		}
 	}
 	return "", err

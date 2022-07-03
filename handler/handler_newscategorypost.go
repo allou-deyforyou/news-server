@@ -28,18 +28,18 @@ func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 	newsSources := h.NewsSource.Query().Where(newssource.Status(true)).AllX(ctx)
 	sources := source.ParseListNewsSource(newsSources)
 
-	newsPosts := make([]*schema.NewsPost, 0)
+	response := make([]*schema.NewsPost, 0)
 	group := new(sync.WaitGroup)
 	for _, s := range sources {
 		group.Add(1)
 		go func(source source.NewsSource) {
 			posts := source.CategoryPost(ctx, name, page)
-			newsPosts = append(newsPosts, posts...)
+			response = append(response, posts...)
 			group.Done()
 		}(s)
 	}
 	group.Wait()
 
-	response := internal.Shuffle(newsPosts)
+	// response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }

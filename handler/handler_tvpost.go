@@ -28,5 +28,7 @@ func (h *Handler) TvPost(w http.ResponseWriter, r *http.Request) {
 		tvQuery = tvQuery.Where(tvsource.Country(country))
 	}
 	response := tvQuery.Where(tvsource.Status(true)).AllX(ctx)
+
+	response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }
