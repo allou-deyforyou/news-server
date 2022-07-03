@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"news/internal/store"
@@ -34,10 +35,12 @@ func NewAfrikMagSource(source *store.NewsSource) *AfrikMagSource {
 func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "body")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.latestPost(NewElement(document.Selection))
@@ -88,6 +91,7 @@ func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, pa
 			"settings": []string{"{'uncropped_image':'jannah-image-post','category_meta':false,'post_meta':true,'excerpt':'true','excerpt_length':'20','read_more':'true','read_more_text':false,'media_overlay':false,'title_length':0,'is_full':false,'is_category':true}"},
 		}.Encode())
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	data := make(map[string]interface{}, 0)
@@ -99,6 +103,7 @@ func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, pa
 
 	document, err := goquery.NewDocumentFromReader(strings.NewReader((data["code"]).(string)))
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.categoryPost(NewElement(document.Selection))
@@ -134,10 +139,12 @@ func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
 func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
 	response, err := rodGetRequest(link, "body")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.newsArticle(NewElement(document.Selection))

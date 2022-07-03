@@ -31,10 +31,12 @@ func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
 func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "body")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.latestPost(NewElement(document.Selection))
@@ -96,14 +98,17 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "body")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.categoryPost(NewElement(document.Selection))
@@ -122,8 +127,6 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 
 			value := strings.Split(date, "-")
 			date = strings.TrimSpace(value[len(value)-1])
-
-			log.Println(date)
 
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
@@ -154,10 +157,12 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
 	response, err := rodGetRequest(link, "body")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.newsArticle(NewElement(document.Selection))

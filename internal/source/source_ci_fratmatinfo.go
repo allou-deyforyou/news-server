@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"news/internal/store"
 	"news/internal/store/schema"
@@ -28,10 +29,12 @@ func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
 func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "main")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.latestPost(NewElement(document.Selection))
@@ -68,14 +71,17 @@ func (src *FratmatInfoSource) latestPost(document *Element) []*schema.NewsPost {
 func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "main")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.categoryPost(NewElement(document.Selection))
@@ -112,10 +118,12 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
 	response, err := rodGetRequest(link, "main")
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.newsArticle(NewElement(document.Selection))
