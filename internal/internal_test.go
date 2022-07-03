@@ -95,10 +95,10 @@ func TestCreateAbidjanNetSource(t *testing.T) {
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{
 			Title: []string{".title"},
-			Image: []string{"img", "data-original", "src"},
+			Image: []string{"img", "data-original", "src", "picture"},
 			Date:  []string{".infos"},
 			Link:  []string{"href"},
-			List:  []string{".grid3 > a", ".section-mea a"},
+			List:  []string{".section-alaune > div > a", ".sub-content .section-mea:nth-child(1) > a"},
 		}).
 		SetCategoryPostURL("/articles/%v?page=%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
@@ -150,6 +150,11 @@ func TestCreateAfrikMagSource(t *testing.T) {
 		Save(context.Background())
 }
 
+func TestGetNewsSources(t *testing.T) {
+	entClient.NewsSource.Delete().Exec(context.Background())
+	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
+}
+
 /// TvSource
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +202,7 @@ func TestCreateNciTV(t *testing.T) {
 		SaveX(context.Background())
 }
 
-func TestGetSources(t *testing.T) {
-	entClient.NewsSource.Delete().Exec(context.Background())
-	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
+func TestGetTvSources(t *testing.T) {
+	entClient.TvSource.Delete().Exec(context.Background())
+	log.Println(entClient.TvSource.Query().AllX(context.Background()))
 }

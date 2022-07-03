@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"news/internal/store"
 	"news/internal/store/schema"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -50,6 +51,11 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		date := element.ChildText(selector.Date[0])
 		if len(image) == 0 {
 			image = element.ChildAttribute(selector.Image[0], selector.Image[2])
+			if len(image) == 0 {
+				style := element.ChildAttribute(selector.Image[3], "style")
+				exp := regexp.MustCompile(`(http(s|)://.*')`)
+				image = strings.Trim(exp.FindString(style), "'")
+			}
 		}
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
@@ -72,7 +78,7 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		}
 	}
 
-	elementCallBack(NewElement(document.Selection.Find(selector.List[0])))
+	elementCallBack(NewElement(document.Selection.Find(selector.List[1])))
 
 	document.ForEach(selector.List[0],
 		func(i int, element *Element) {
@@ -122,10 +128,10 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 				filmList = append(filmList, &schema.NewsPost{
 					Source: src.Name,
 					Logo:   src.Logo,
-					Image: image,
-					Title: title,
-					Link:  link,
-					Date:  date,
+					Image:  image,
+					Title:  title,
+					Link:   link,
+					Date:   date,
 				})
 			}
 		})
