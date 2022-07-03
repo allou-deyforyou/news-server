@@ -53,12 +53,13 @@ func (src *AfrikMagSource) latestPost(document *Element) []*schema.NewsPost {
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
-
 			if len(image) == 0 {
 				image = element.ChildAttribute(selector.Image[2], selector.Image[3])
 			}
 
 			image = parseURL(src.URL, image)
+			date, _ = parseTime(date)
+
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
@@ -121,15 +122,18 @@ func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
+
 			image = parseURL(src.URL, image)
+			date, _ = parseTime(date)
+
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
 				Logo:   src.Logo,
-				Image: image,
-				Title: title,
-				Link:  link,
-				Date:  date,
+				Image:  image,
+				Title:  title,
+				Link:   link,
+				Date:   date,
 			})
 		})
 	return filmList

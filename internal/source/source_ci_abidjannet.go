@@ -59,10 +59,11 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		}
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
+		date, _ = parseTime(date)
+
 		if strings.Contains(image, "defaut-cover-photo.svg") {
 			image = ""
 		}
-
 		value := strings.Split(date, "-")
 		date = strings.TrimSpace(value[len(value)-1])
 
@@ -116,8 +117,11 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			title := element.ChildText(selector.Title[0])
 			link := element.Attribute(selector.Link[0])
 			date := element.ChildText(selector.Date[0])
+
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
+			date, _ = parseTime(date)
+
 			if strings.Contains(image, "defaut-cover-photo.svg") {
 				image = ""
 			}
