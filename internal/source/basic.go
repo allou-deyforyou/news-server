@@ -32,6 +32,25 @@ func rodGetRequest(url string, wait string) (io.Reader, error) {
 	return strings.NewReader(page.MustElement(wait).MustHTML()), nil
 }
 
+func rodPostRequest(url string, data string) (io.Reader, error) {
+	page := browser.MustPage(url)
+	value := page.MustEval(`
+	(url, data) => {
+		let xhr = new XMLHttpRequest();
+		xhr.open('POST', url, false);
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		try {
+			xhr.send(data);
+			} catch (e) {
+			return e;
+		}
+		return xhr.response;
+	}
+	`, url, data).Str()
+	defer page.Close()
+	return strings.NewReader(value), nil
+}
+
 func parseURL(baseURL, rawURL string) string {
 	bu, _ := url.Parse(baseURL)
 	u, err := bu.Parse(rawURL)

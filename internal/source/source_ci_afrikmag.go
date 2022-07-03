@@ -78,29 +78,21 @@ func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, pa
 	if err != nil {
 		return nil
 	}
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost,
+	response, err := rodPostRequest(
 		fmt.Sprintf("%s%s", src.URL, *src.CategoryPostURL),
-		strings.NewReader(url.Values{
+		url.Values{
 			"query":    []string{fmt.Sprintf("{'cat':%v,'lazy_load_term_meta':true,'posts_per_page':16,'order':'DESC'}", category)},
 			"action":   []string{"tie_archives_load_more"},
 			"page":     []string{strconv.Itoa(page)},
 			"layout":   []string{"default"},
 			"settings": []string{"{'uncropped_image':'jannah-image-post','category_meta':false,'post_meta':true,'excerpt':'true','excerpt_length':'20','read_more':'true','read_more_text':false,'media_overlay':false,'title_length':0,'is_full':false,'is_category':true}"},
-		}.Encode()))
+		}.Encode())
 	if err != nil {
 		return nil
 	}
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	request.Header.Set("Referer", src.URL)
-	request.Header.Set("Origin", src.URL)
-	response, err := src.Do(request)
-	if err != nil {
-		return nil
-	}
-	defer response.Body.Close()
 	data := make(map[string]interface{}, 0)
 
-	b, _ := ioutil.ReadAll(response.Body)
+	b, _ := ioutil.ReadAll(response)
 	var value string
 	json.Unmarshal(b, &value)
 	json.Unmarshal([]byte(value), &data)
