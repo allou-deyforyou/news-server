@@ -118,6 +118,9 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			link := element.Attribute(selector.Link[0])
 			date := element.ChildText(selector.Date[0])
 
+			value := strings.Split(date, "-")
+			date = strings.TrimSpace(value[len(value)-1])
+
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
 			date, _ = parseTime(date)
@@ -125,8 +128,6 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			if strings.Contains(image, "defaut-cover-photo.svg") {
 				image = ""
 			}
-			value := strings.Split(date, "-")
-			date = strings.TrimSpace(value[len(value)-1])
 
 			if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 				filmList = append(filmList, &schema.NewsPost{

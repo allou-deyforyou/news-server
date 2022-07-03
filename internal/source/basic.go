@@ -73,30 +73,17 @@ func parseCategorySource(source *store.NewsSource, name string) (string, error) 
 var (
 	months = map[string]string{
 		"janvier":   "January",
-		"Janvier":   "January",
-		"février":   "February",
 		"fevrier":   "February",
-		"Février":   "February",
 		"mars":      "March",
-		"Mars":      "March",
 		"avril":     "April",
-		"Avril":     "April",
 		"mai":       "May",
-		"Mai":       "May",
 		"juin":      "June",
-		"Juin":      "June",
 		"juillet":   "July",
-		"Juillet":   "July",
-		"août":      "August",
-		"Août":      "August",
+		"aout":      "August",
 		"septembre": "September",
-		"Septembre": "September",
 		"octobre":   "October",
-		"Octobre":   "October",
 		"novembre":  "November",
-		"Novembre":  "November",
-		"décembre":  "December",
-		"Décembre":  "December",
+		"decembre":  "December",
 	}
 
 	// Regexp for date time
