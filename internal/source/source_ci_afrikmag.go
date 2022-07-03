@@ -33,7 +33,7 @@ func NewAfrikMagSource(source *store.NewsSource) *AfrikMagSource {
 ///
 ///
 func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "body")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), src.LatestPostSelector.List[1])
 	if err != nil {
 		log.Println(err)
 		return nil
