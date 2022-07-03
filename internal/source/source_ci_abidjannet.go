@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"news/internal/store"
 	"news/internal/store/schema"
@@ -57,6 +58,9 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 				image = strings.Trim(exp.FindString(style), "'")
 			}
 		}
+		value := strings.Split(date, "-")
+		date = strings.TrimSpace(value[len(value)-1])
+
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
 		date, _ = parseTime(date)
@@ -64,8 +68,6 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		if strings.Contains(image, "defaut-cover-photo.svg") {
 			image = ""
 		}
-		value := strings.Split(date, "-")
-		date = strings.TrimSpace(value[len(value)-1])
 
 		if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 			filmList = append(filmList, &schema.NewsPost{
@@ -120,6 +122,8 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 
 			value := strings.Split(date, "-")
 			date = strings.TrimSpace(value[len(value)-1])
+
+			log.Println(date)
 
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
