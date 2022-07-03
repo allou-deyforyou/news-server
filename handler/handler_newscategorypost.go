@@ -40,6 +40,6 @@ func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 	}
 	group.Wait()
 
-	// response = internal.Shuffle(response)
+	response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }

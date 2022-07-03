@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"news/internal"
 	"news/internal/source"
 	"news/internal/store/newssource"
 	"news/internal/store/schema"
@@ -35,6 +36,6 @@ func (h *Handler) NewsLatestPost(w http.ResponseWriter, r *http.Request) {
 	}
 	group.Wait()
 
-	// response = internal.Shuffle(response)
+	response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }
