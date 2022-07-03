@@ -117,6 +117,9 @@ func parseTime(value string) (string, error) {
 		if date, er := time.Parse(lay, dateInEnglish(regexp.MustCompile(exp).FindString(strings.Join(strings.Fields(value), " ")))); er != nil {
 			err = er
 		} else {
+			if date.Day() == 0 || date.Month() == 0 || date.Year() == 0 {
+				date = time.Now().Add(time.Duration(date.Unix()) * time.Second)
+			}
 			return date.String(), nil
 		}
 	}
