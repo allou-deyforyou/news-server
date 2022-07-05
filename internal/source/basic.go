@@ -18,25 +18,26 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func rodGetRequest(url string) (io.Reader, error) {
+var browser *rod.Browser
+
+func init() {
 	path, _ := launcher.LookPath()
 	u := launcher.New().Bin(path).NoSandbox(true).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
-	defer browser.Close()
+	browser = rod.New().ControlURL(u).MustConnect()
+}
 
+func rodGetRequest(url string) (io.Reader, error) {
 	page := browser.MustPage(url)
+	defer page.Close()
+
 	page.WaitLoad()
 	return strings.NewReader(page.MustHTML()), nil
 }
 
 func rodPostRequest(url string, data string) (io.Reader, error) {
-	path, _ := launcher.LookPath()
-	u := launcher.New().Bin(path).NoSandbox(true).MustLaunch()
-	browser := rod.New().ControlURL(u).MustConnect()
-	defer browser.Close()
-
-
 	page := browser.MustPage(url)
+	defer page.Close()
+
 	value := page.MustEval(`
 	(url, data) => {
 		let xhr = new XMLHttpRequest();
