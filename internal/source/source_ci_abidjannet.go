@@ -3,9 +3,11 @@ package source
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"news/internal/store"
 	"news/internal/store/schema"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -27,12 +29,14 @@ func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
 ///
 ///
 func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "body")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.latestPost(NewElement(document.Selection))
@@ -50,15 +54,22 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		date := element.ChildText(selector.Date[0])
 		if len(image) == 0 {
 			image = element.ChildAttribute(selector.Image[0], selector.Image[2])
+			if len(image) == 0 {
+				style := element.ChildAttribute(selector.Image[3], "style")
+				exp := regexp.MustCompile(`(http(s|)://.*')`)
+				image = strings.Trim(exp.FindString(style), "'")
+			}
 		}
+		value := strings.Split(date, "-")
+		date = strings.TrimSpace(value[len(value)-1])
+
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
+		date, _ = parseTime(date)
+
 		if strings.Contains(image, "defaut-cover-photo.svg") {
 			image = ""
 		}
-
-		value := strings.Split(date, "-")
-		date = strings.TrimSpace(value[len(value)-1])
 
 		if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 			filmList = append(filmList, &schema.NewsPost{
@@ -72,7 +83,7 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		}
 	}
 
-	elementCallBack(NewElement(document.Selection.Find(selector.List[0])))
+	elementCallBack(NewElement(document.Selection.Find(selector.List[1])))
 
 	document.ForEach(selector.List[0],
 		func(i int, element *Element) {
@@ -87,14 +98,17 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "body")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.categoryPost(NewElement(document.Selection))
@@ -110,22 +124,26 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			title := element.ChildText(selector.Title[0])
 			link := element.Attribute(selector.Link[0])
 			date := element.ChildText(selector.Date[0])
+
+			value := strings.Split(date, "-")
+			date = strings.TrimSpace(value[len(value)-1])
+
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
+			date, _ = parseTime(date)
+
 			if strings.Contains(image, "defaut-cover-photo.svg") {
 				image = ""
 			}
-			value := strings.Split(date, "-")
-			date = strings.TrimSpace(value[len(value)-1])
 
 			if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
 				filmList = append(filmList, &schema.NewsPost{
 					Source: src.Name,
 					Logo:   src.Logo,
-					Image: image,
-					Title: title,
-					Link:  link,
-					Date:  date,
+					Image:  image,
+					Title:  title,
+					Link:   link,
+					Date:   date,
 				})
 			}
 		})
@@ -137,12 +155,14 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 ///
 
 func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link, "body")
+	response, err := rodGetRequest(link)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.newsArticle(NewElement(document.Selection))
@@ -150,7 +170,7 @@ func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *sche
 
 func (src *AbidjanNetSource) newsArticle(document *Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
-	description := document.ChildContent(selector.Description[0])
+	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
 	return &schema.NewsArticle{
 		Description: description,

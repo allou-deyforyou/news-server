@@ -19,13 +19,17 @@ func init() {
 }
 
 func init() {
-	server.Handle("/tv/post", handler.ParseHandler(server.TvPost))
-
 	server.Handle("/news/category", handler.ParseHandler(server.NewsCategoryPost))
 	server.Handle("/news/latest", handler.ParseHandler(server.NewsLatestPost))
 	server.Handle("/news/article", handler.ParseHandler(server.NewsArticle))
+
+	server.Handle("/tv/post", handler.ParseHandler(server.TvPost))
 }
 
 func main() {
-	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), server))
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "3000"
+	}
+	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", port), server))
 }

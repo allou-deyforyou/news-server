@@ -7,6 +7,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/go-rod/rod v0.107.3
 	github.com/mattn/go-sqlite3 v1.14.10
+	golang.org/x/text v0.3.7
 )
 
 require (
@@ -25,5 +26,4 @@ require (
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	golang.org/x/mod v0.5.1 // indirect
 	golang.org/x/net v0.0.0-20210916014120-12bc252f5db8 // indirect
-	golang.org/x/text v0.3.7 // indirect
 )

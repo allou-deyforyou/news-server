@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"time"
 	"news/internal"
 	"news/internal/store/tvsource"
 )
@@ -12,7 +11,7 @@ import (
 func (h *Handler) TvPost(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
-		10*time.Second,
+		timeout,
 	)
 	defer cancel()
 
@@ -28,5 +27,7 @@ func (h *Handler) TvPost(w http.ResponseWriter, r *http.Request) {
 		tvQuery = tvQuery.Where(tvsource.Country(country))
 	}
 	response := tvQuery.Where(tvsource.Status(true)).AllX(ctx)
+
+	response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }

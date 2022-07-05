@@ -18,20 +18,38 @@ func (element *Element) Text() string {
 	return element.Selection.Text()
 }
 
-func (element *Element) Content() string {
-	content, _ := element.Selection.Html()
-	return content
+func (element *Element) InnerHtml() string {
+	content, _ := element.Selection.RemoveClass().Html()
+	return strings.Join(strings.Fields(content), " ")
 }
 
-func (element *Element) ChildContent(selector string) string {
-	html, _ := element.Selection.Find(selector).Html()
-	return html
+func (element *Element) OuterHtml() string {
+	content, _ := goquery.OuterHtml(element.Selection.RemoveClass())
+	return strings.Join(strings.Fields(content), " ")
 }
 
-func (element *Element) ChildContents(selector string) (values []string) {
+func (element *Element) ChildInnerHtml(selector string) string {
+	content, _ := element.Selection.Find(selector).RemoveClass().Html()
+	return strings.Join(strings.Fields(content), " ")
+}
+
+func (element *Element) ChildOuterHtml(selector string) string {
+	content, _ := element.Selection.Find(selector).RemoveClass().Html()
+	return strings.Join(strings.Fields(content), " ")
+}
+
+func (element *Element) ChildrenInnerHtmls(selector string) (values []string) {
 	element.Selection.Find(selector).Each(func(_ int, selection *goquery.Selection) {
-		content, _ := selection.Html()
-		values = append(values, strings.TrimSpace(content))
+		content, _ := selection.RemoveClass().Html()
+		values = append(values, strings.Join(strings.Fields(content), " "))
+	})
+	return values
+}
+
+func (element *Element) ChildrenOuterHtmls(selector string) (values []string) {
+	element.Selection.Find(selector).Each(func(_ int, selection *goquery.Selection) {
+		content, _ := goquery.OuterHtml(selection.RemoveClass())
+		values = append(values, strings.Join(strings.Fields(content), " "))
 	})
 	return values
 }

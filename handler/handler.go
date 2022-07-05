@@ -2,9 +2,12 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"news/internal/store"
 )
+
+const timeout =  time.Minute;
 
 type Handler struct {
 	*store.Client

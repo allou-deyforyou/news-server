@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"news/internal/store"
 	"news/internal/store/schema"
@@ -26,12 +27,14 @@ func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
 /// NewsLatest
 //////////////
 func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "main")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.latestPost(NewElement(document.Selection))
@@ -47,14 +50,17 @@ func (src *FratmatInfoSource) latestPost(document *Element) []*schema.NewsPost {
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
+
 			image = parseURL(src.URL, image)
+			date, _ = parseTime(date)
+
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
 				Logo:   src.Logo,
-				Image: image,
-				Title: title,
-				Link:  link,
-				Date:  date,
+				Image:  image,
+				Title:  title,
+				Link:   link,
+				Date:   date,
 			})
 		})
 	return filmList
@@ -65,14 +71,17 @@ func (src *FratmatInfoSource) latestPost(document *Element) []*schema.NewsPost {
 func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "main")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.categoryPost(NewElement(document.Selection))
@@ -88,7 +97,10 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
+
 			image = parseURL(src.URL, image)
+			date, _ = parseTime(date)
+
 			filmList = append(filmList, &schema.NewsPost{
 				Source: src.Name,
 				Logo:   src.Logo,
@@ -104,12 +116,14 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 /// PostArticle
 ///////////////
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link, "main")
+	response, err := rodGetRequest(link)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	document, err := goquery.NewDocumentFromReader(response)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 	return src.newsArticle(NewElement(document.Selection))
@@ -117,7 +131,7 @@ func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *sch
 
 func (src *FratmatInfoSource) newsArticle(document *Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
-	description := document.ChildContent(selector.Description[0])
+	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
 	return &schema.NewsArticle{
 		Description: description,

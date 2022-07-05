@@ -31,6 +31,10 @@ func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) 
 		return NewAbidjanNetSource(source), nil
 	case "AfrikMag":
 		return NewAfrikMagSource(source), nil
+	case "France 24":
+		return NewFrance24Source(source), nil
+	case "RFI":
+		return NewFrance24Source(source), nil
 	default:
 		return nil, errors.New("no-found")
 	}

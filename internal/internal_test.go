@@ -39,6 +39,8 @@ func init() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+// Cote d'ivoire
+
 func TestCreateFratmatInfoSource(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
@@ -95,10 +97,10 @@ func TestCreateAbidjanNetSource(t *testing.T) {
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{
 			Title: []string{".title"},
-			Image: []string{"img", "data-original", "src"},
+			Image: []string{"img", "data-original", "src", "picture"},
 			Date:  []string{".infos"},
 			Link:  []string{"href"},
-			List:  []string{".grid3 > a", ".section-mea a"},
+			List:  []string{".section-alaune > div > a", ".sub-content .section-mea:nth-child(1) > a"},
 		}).
 		SetCategoryPostURL("/articles/%v?page=%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
@@ -134,7 +136,7 @@ func TestCreateAfrikMagSource(t *testing.T) {
 			Image: []string{"img", "data-src", ".big-thumb-left-box-inner", "data-lazy-bg"},
 			Date:  []string{".date"},
 			Link:  []string{".post-title a", "href"},
-			List:  []string{"#tie-block_3151 .posts-items .post-item"},
+			List:  []string{"#tie-block_3151 .posts-items .post-item", "#tie-block_3151"},
 		}).
 		SetCategoryPostURL("/wp-admin/admin-ajax.php").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
@@ -148,6 +150,84 @@ func TestCreateAfrikMagSource(t *testing.T) {
 			Description: []string{"article .entry-content > p"},
 		}).
 		Save(context.Background())
+}
+
+// International
+
+func TestCreateFrance24Source(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("France 24").
+		SetURL("https://www.france24.com").
+		SetLogo("https://www.france24.com/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:éco-tech", schema.Economy),
+			fmt.Sprintf("%v:sports", schema.Sport),
+			fmt.Sprintf("%v:culture", schema.Culture),
+		}).
+		SetLatestPostURL("/fr/afrique").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+		}).
+		Save(context.Background())
+}
+
+func TestCreateRfiSource(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("RFI").
+		SetURL("https://www.rfi.fr").
+		SetLogo("https://www.rfi.fr/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:afrique-foot", schema.Sport),
+			fmt.Sprintf("%v:culture-médias", schema.Culture),
+			fmt.Sprintf("%v:économie", schema.Economy),
+
+		}).
+		SetLatestPostURL("/fr/afrique").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+		}).
+		Save(context.Background())
+}
+
+func TestGetNewsSources(t *testing.T) {
+	entClient.NewsSource.Delete().Exec(context.Background())
+	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
 }
 
 /// TvSource
@@ -197,7 +277,7 @@ func TestCreateNciTV(t *testing.T) {
 		SaveX(context.Background())
 }
 
-func TestGetSources(t *testing.T) {
-	entClient.NewsSource.Delete().Exec(context.Background())
-	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
+func TestGetTvSources(t *testing.T) {
+	entClient.TvSource.Delete().Exec(context.Background())
+	log.Println(entClient.TvSource.Query().AllX(context.Background()))
 }
