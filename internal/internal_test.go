@@ -189,6 +189,42 @@ func TestCreateFrance24Source(t *testing.T) {
 		Save(context.Background())
 }
 
+func TestCreateRfiSource(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("RFI").
+		SetURL("https://www.rfi.fr").
+		SetLogo("https://www.rfi.fr/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:afrique-foot", schema.Sport),
+			fmt.Sprintf("%v:culture-médias", schema.Culture),
+			fmt.Sprintf("%v:économie", schema.Economy),
+
+		}).
+		SetLatestPostURL("/fr/afrique").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+		}).
+		Save(context.Background())
+}
+
 func TestGetNewsSources(t *testing.T) {
 	entClient.NewsSource.Delete().Exec(context.Background())
 	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
