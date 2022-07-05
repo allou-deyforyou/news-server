@@ -55,7 +55,7 @@ func (src *France24Source) latestPost(document *Element) []*schema.NewsPost {
 		image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
 		date := strings.Split(path.Base(link), "-")[0]
-		date = fmt.Sprintf("%v %v %v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
@@ -76,6 +76,9 @@ func (src *France24Source) latestPost(document *Element) []*schema.NewsPost {
 /// NewsCategory
 ////////////////
 func (src *France24Source) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
+	if(page != 1) {
+		return nil
+	}
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
@@ -107,7 +110,7 @@ func (src *France24Source) categoryPost(document *Element) []*schema.NewsPost {
 		image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
 		date := strings.Split(path.Base(link), "-")[0]
-		date = fmt.Sprintf("%v %v %v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
 		image = parseURL(src.URL, image)
 		link = parseURL(src.URL, link)
