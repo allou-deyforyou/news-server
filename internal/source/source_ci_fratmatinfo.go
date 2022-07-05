@@ -27,7 +27,7 @@ func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
 /// NewsLatest
 //////////////
 func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "main")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -74,7 +74,7 @@ func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string,
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "main")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -116,7 +116,7 @@ func (src *FratmatInfoSource) categoryPost(document *Element) []*schema.NewsPost
 /// PostArticle
 ///////////////
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link, "main")
+	response, err := rodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -131,7 +131,7 @@ func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *sch
 
 func (src *FratmatInfoSource) newsArticle(document *Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
-	description := document.ChildContent(selector.Description[0])
+	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
 	return &schema.NewsArticle{
 		Description: description,

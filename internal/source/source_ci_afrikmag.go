@@ -33,7 +33,7 @@ func NewAfrikMagSource(source *store.NewsSource) *AfrikMagSource {
 ///
 ///
 func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), src.LatestPostSelector.List[1])
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -137,7 +137,7 @@ func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
 }
 
 func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link, "body")
+	response, err := rodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -152,7 +152,7 @@ func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema
 
 func (src *AfrikMagSource) newsArticle(document *Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
-	description := strings.Join(document.ChildContents(selector.Description[0]), "<br>")
+	description := strings.Join(document.ChildrenOuterHtmls(selector.Description[0]), "<br>")
 	description = strings.Join(strings.Fields(description), " ")
 	return &schema.NewsArticle{
 		Description: description,

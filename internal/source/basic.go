@@ -26,10 +26,11 @@ func init() {
 	browser = rod.New().ControlURL(u).MustConnect()
 }
 
-func rodGetRequest(url string, wait string) (io.Reader, error) {
+func rodGetRequest(url string) (io.Reader, error) {
 	page := browser.MustPage(url)
+	page.WaitLoad()
 	defer page.Close()
-	return strings.NewReader(page.MustElement(wait).MustHTML()), nil
+	return strings.NewReader(page.MustHTML()), nil
 }
 
 func rodPostRequest(url string, data string) (io.Reader, error) {
@@ -94,6 +95,7 @@ var (
 		`hier a \d{1,2}`:              "hier a 02",
 		`\d{1,2} jour`:                "1 jour",
 		`\d{1,2} mois`:                "1 mois",
+		`\d{4} \d{1,2} \d{1,2}`:       "2006 1 2",
 		`\d{4}-\d{1,2}-\d{1,2}`:       "2006-1-2",            // get date in format 2006/01/02
 		`\d{1,2}/\d{1,2}/\d{4}`:       "2/1/2006",            // get date in format 02/01/2006
 		`\d{1,2} \w* \d{4}`:           "2 January 2006",      // get date in format 02 January 2006

@@ -39,6 +39,8 @@ func init() {
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+// Cote d'ivoire
+
 func TestCreateFratmatInfoSource(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
@@ -146,6 +148,43 @@ func TestCreateAfrikMagSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{"article .entry-content > p"},
+		}).
+		Save(context.Background())
+}
+
+// International
+
+func TestCreateFrance24Source(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("France 24").
+		SetURL("https://www.france24.com").
+		SetLogo("https://www.france24.com/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:éco-tech", schema.Economy),
+			fmt.Sprintf("%v:sports", schema.Sport),
+			fmt.Sprintf("%v:culture", schema.Culture),
+		}).
+		SetLatestPostURL("/fr/afrique").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article__title"},
+			Image: []string{"source", "srcset"},
+			Link:  []string{"a", "href"},
+			List: []string{
+				".t-content > .t-content__section-pb > div .o-layout-list__item",
+			},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
 		}).
 		Save(context.Background())
 }

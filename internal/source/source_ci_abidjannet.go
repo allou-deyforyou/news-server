@@ -29,7 +29,7 @@ func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
 ///
 ///
 func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), "body")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -101,7 +101,7 @@ func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, 
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), "body")
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -155,7 +155,7 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 ///
 
 func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link, "body")
+	response, err := rodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -170,7 +170,7 @@ func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *sche
 
 func (src *AbidjanNetSource) newsArticle(document *Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
-	description := document.ChildContent(selector.Description[0])
+	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
 	return &schema.NewsArticle{
 		Description: description,

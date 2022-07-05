@@ -27,5 +27,9 @@ func init() {
 }
 
 func main() {
-	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), server))
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "3000"
+	}
+	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", port), server))
 }
