@@ -161,8 +161,9 @@ func TestCreateFrance24Source(t *testing.T) {
 		SetURL("https://www.france24.com").
 		SetLogo("https://www.france24.com/favicon.ico").
 		SetCategories([]string{
-			fmt.Sprintf("%v:éco-tech", schema.Economy),
-			fmt.Sprintf("%v:sports", schema.Sport),
+			fmt.Sprintf("%v:economie", schema.Economy),
+			fmt.Sprintf("%v:science-technologie", schema.Technology),
+			fmt.Sprintf("%v:sport", schema.Sport),
 			fmt.Sprintf("%v:culture", schema.Culture),
 		}).
 		SetLatestPostURL("/fr/afrique").
@@ -174,7 +175,7 @@ func TestCreateFrance24Source(t *testing.T) {
 				".t-content > .t-content__section-pb > div .o-layout-list__item",
 			},
 		}).
-		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostURL("/%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
 			Title: []string{".article__title"},
 			Image: []string{"source", "srcset"},

@@ -8,6 +8,7 @@ const (
 	Society       Category = "society"
 	Sport         Category = "sport"
 	Culture       Category = "culture"
+	Technology    Category = "technology"
 	Health        Category = "health"
 	International Category = "international"
 	Music         Category = "music"
