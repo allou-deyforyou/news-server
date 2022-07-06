@@ -199,7 +199,6 @@ func TestCreateRfiSource(t *testing.T) {
 			fmt.Sprintf("%v:afrique-foot", schema.Sport),
 			fmt.Sprintf("%v:culture-médias", schema.Culture),
 			fmt.Sprintf("%v:économie", schema.Economy),
-
 		}).
 		SetLatestPostURL("/fr/afrique").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -221,6 +220,39 @@ func TestCreateRfiSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+		}).
+		Save(context.Background())
+}
+
+func TestCreateAfricaNewsSource(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("Africa News").
+		SetURL("https://fr.africanews.com").
+		SetLogo("https://fr.africanews.com/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:afrique-foot", schema.Sport),
+			fmt.Sprintf("%v:culture-médias", schema.Culture),
+			fmt.Sprintf("%v:économie", schema.Economy),
+		}).
+		SetLatestPostURL("/infos").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".teaser__title"},
+			Image: []string{"img", "src"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".main-content article"},
+		}).
+		SetCategoryPostURL("/fr/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".teaser__title"},
+			Image: []string{"img", "src"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".main-content article"},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".article-content__text p"},
 		}).
 		Save(context.Background())
 }

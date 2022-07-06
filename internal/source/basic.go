@@ -22,7 +22,7 @@ var browser *rod.Browser
 
 func init() {
 	path, _ := launcher.LookPath()
-	u := launcher.New().Leakless(false).Bin(path).NoSandbox(true).MustLaunch()
+	u := launcher.New().Leakless(false).NoSandbox(true).Bin(path).MustLaunch()
 	browser = rod.New().ControlURL(u).MustConnect()
 }
 
