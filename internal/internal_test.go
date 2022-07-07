@@ -152,6 +152,38 @@ func TestCreateAfrikMagSource(t *testing.T) {
 		Save(context.Background())
 }
 
+func TestCreateYecloSource(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("Yeclo").
+		SetURL("https://www.ivoiresoir.net").
+		SetLogo("https://www.ivoiresoir.net/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:economie", schema.Economy),
+			fmt.Sprintf("%v:culture", schema.Culture),
+		}).
+		SetLatestPostURL("/").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".td-module-title"},
+			Image: []string{".td-image-wrap span", "data-img-url"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".wpb_wrapper .td_block_wrap .td_module_flex"},
+		}).
+		SetCategoryPostURL("/%v/page/%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".td-module-title"},
+			Image: []string{".td-image-wrap span", "data-img-url"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".wpb_wrapper .td_block_wrap .td_module_flex"},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".td-post-content > p, .td-post-content > figure, .td-post-content > h2"},
+		}).
+		Save(context.Background())
+}
+
 // International
 
 func TestCreateFrance24Source(t *testing.T) {
@@ -258,7 +290,42 @@ func TestCreateAfricaNewsSource(t *testing.T) {
 		Save(context.Background())
 }
 
+func TestCreateBBCSource(t *testing.T) {
+	entClient.NewsSource.Create().
+		SetStatus(true).
+		SetName("BBC").
+		SetURL("https://www.bbc.com").
+		SetLogo("https://ichef.bbci.co.uk/favicon.ico").
+		SetCategories([]string{
+			fmt.Sprintf("%v:cnq687nr9v1t", schema.Economy),
+			fmt.Sprintf("%v:cnq687nn703t", schema.Technology),
+			fmt.Sprintf("%v:c06gq9jxz3rt", schema.Health),
+			fmt.Sprintf("%v:cnq687nrrw8t", schema.Culture),
+		}).
+		SetLatestPostURL("/afrique").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{"h3"},
+			Image: []string{"picture source:nth-child(1)", "srcset"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{"main section:nth-child(1) li"},
+		}).
+		SetCategoryPostURL("/afrique/topics/%v?page=%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{"h3"},
+			Image: []string{"picture source:nth-child(1)", "srcset"},
+			Date:  []string{"time", "datetime"},
+			Link:  []string{"a", "href"},
+			List:  []string{"main section:nth-child(1) li"},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{"main .ek1plzs1, main .bbc-19j92fr"},
+		}).
+		Save(context.Background())
+}
+
 func TestGetNewsSources(t *testing.T) {
+
 	entClient.NewsSource.Delete().Exec(context.Background())
 	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
 }

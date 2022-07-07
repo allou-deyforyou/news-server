@@ -2,9 +2,10 @@
 
 Site à scraper:
 
-- FRANCE 24 Afrique (https://www.france24.com/fr/afrique)
-- Jeune Afrique (https://www.jeuneafrique.com)
-- RFI Afrique (https://www.rfi.fr/fr/afrique)
-- BBC Afrique (https://www.bbc.com/afrique)
+- FRANCE 24 Afrique (https://www.france24.com/fr/afrique) valide
+- RFI Afrique (https://www.rfi.fr/fr/afrique) valide
+- BBC Afrique (https://www.bbc.com/afrique) valide
+- Africa News (https://fr.africanews.com) valide
+
 - Ivoire Soir (https://www.ivoiresoir.net)
-- Africa News (https://fr.africanews.com)
+- Jeune Afrique (https://www.jeuneafrique.com)

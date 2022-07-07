@@ -25,6 +25,7 @@ func ParseListNewsSource(sources []*store.NewsSource) (result []NewsSource) {
 
 func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) {
 	switch name {
+	// Low Quality Image
 	case "Fratmat Info":
 		return NewFratmatInfoSource(source), nil
 	case "Abidjan.Net":
@@ -32,13 +33,17 @@ func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) 
 	case "AfrikMag":
 		return NewAfrikMagSource(source), nil
 
-	// New
+	// High Quality Image
 	case "Africa News":
 		return NewAfricaNewsSource(source), nil
 	case "France 24":
 		return NewFrance24Source(source), nil
 	case "RFI":
 		return NewRfiSource(source), nil
+	case "BBC":
+		return NewBBCSource(source), nil
+	case "Yeclo":
+		return NewYecloSource(source), nil
 	default:
 		return nil, errors.New("no-found")
 	}
