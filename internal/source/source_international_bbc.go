@@ -28,7 +28,7 @@ func NewBBCSource(source *store.NewsSource) *BBCSource {
 ///
 ///
 func (src *BBCSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), true)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -84,7 +84,7 @@ func (src *BBCSource) CategoryPost(ctx context.Context, category string, page in
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), true)
 	if err != nil {
 		log.Println(err)
 		return nil

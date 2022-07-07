@@ -26,11 +26,16 @@ func init() {
 	browser = rod.New().ControlURL(u).MustConnect()
 }
 
-func rodGetRequest(url string) (io.Reader, error) {
+func rodGetRequest(url string, load ...bool) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
-	page.Timeout(2 * time.Second).MustWaitLoad()
+	if load != nil {
+		page.Timeout(500*time.Millisecond).WaitLoad()
+	} else {
+		page.MustElement("body")
+	}
+
 	return strings.NewReader(page.MustHTML()), nil
 }
 

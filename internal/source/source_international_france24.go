@@ -50,25 +50,26 @@ func (src *France24Source) latestPost(document *Element) []*schema.NewsPost {
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		title := element.ChildText(selector.Title[0])
+		if len(image) != 0 {
+			rawImage := strings.Split(image, ",")
+			image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-		rawImage := strings.Split(image, ",")
-		image = strings.Fields(rawImage[len(rawImage)-1])[0]
+			date := strings.Split(path.Base(link), "-")[0]
+			date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-		date := strings.Split(path.Base(link), "-")[0]
-		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+			image = parseURL(src.URL, image)
+			link = parseURL(src.URL, link)
+			date, _ = parseTime(date)
 
-		image = parseURL(src.URL, image)
-		link = parseURL(src.URL, link)
-		date, _ = parseTime(date)
-
-		result = append(result, &schema.NewsPost{
-			Source: src.Name,
-			Logo:   src.Logo,
-			Image:  image,
-			Title:  title,
-			Link:   link,
-			Date:   date,
-		})
+			result = append(result, &schema.NewsPost{
+				Source: src.Name,
+				Logo:   src.Logo,
+				Image:  image,
+				Title:  title,
+				Link:   link,
+				Date:   date,
+			})
+		}
 	})
 	return result
 }
@@ -76,7 +77,7 @@ func (src *France24Source) latestPost(document *Element) []*schema.NewsPost {
 /// NewsCategory
 ////////////////
 func (src *France24Source) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	if(page != 1) {
+	if page != 1 {
 		return nil
 	}
 	category, err := parseCategorySource(src.NewsSource, category)
@@ -105,25 +106,27 @@ func (src *France24Source) categoryPost(document *Element) []*schema.NewsPost {
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		title := element.ChildText(selector.Title[0])
+		if len(image) != 0 {
 
-		rawImage := strings.Split(image, ",")
-		image = strings.Fields(rawImage[len(rawImage)-1])[0]
+			rawImage := strings.Split(image, ",")
+			image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-		date := strings.Split(path.Base(link), "-")[0]
-		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+			date := strings.Split(path.Base(link), "-")[0]
+			date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-		image = parseURL(src.URL, image)
-		link = parseURL(src.URL, link)
-		date, _ = parseTime(date)
+			image = parseURL(src.URL, image)
+			link = parseURL(src.URL, link)
+			date, _ = parseTime(date)
 
-		result = append(result, &schema.NewsPost{
-			Source: src.Name,
-			Logo:   src.Logo,
-			Image:  image,
-			Title:  title,
-			Link:   link,
-			Date:   date,
-		})
+			result = append(result, &schema.NewsPost{
+				Source: src.Name,
+				Logo:   src.Logo,
+				Image:  image,
+				Title:  title,
+				Link:   link,
+				Date:   date,
+			})
+		}
 	})
 	return result
 }
