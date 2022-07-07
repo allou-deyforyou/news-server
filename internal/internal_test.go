@@ -168,7 +168,7 @@ func TestCreateYecloSource(t *testing.T) {
 			Image: []string{".td-image-wrap span", "data-img-url"},
 			Date:  []string{"time", "datetime"},
 			Link:  []string{"a", "href"},
-			List:  []string{".wpb_wrapper .td_block_wrap .td_module_flex"},
+			List:  []string{"#tdi_74 .td_module_flex"},
 		}).
 		SetCategoryPostURL("/%v/page/%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
@@ -176,7 +176,7 @@ func TestCreateYecloSource(t *testing.T) {
 			Image: []string{".td-image-wrap span", "data-img-url"},
 			Date:  []string{"time", "datetime"},
 			Link:  []string{"a", "href"},
-			List:  []string{".wpb_wrapper .td_block_wrap .td_module_flex"},
+			List:  []string{"#tdi_74 .td_module_flex"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{".td-post-content > p, .td-post-content > figure, .td-post-content > h2"},
@@ -190,6 +190,7 @@ func TestCreateFrance24Source(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
 		SetName("France 24").
+		SetCountry("world").
 		SetURL("https://www.france24.com").
 		SetLogo("https://www.france24.com/favicon.ico").
 		SetCategories([]string{
@@ -225,6 +226,7 @@ func TestCreateRfiSource(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
 		SetName("RFI").
+		SetCountry("world").
 		SetURL("https://www.rfi.fr").
 		SetLogo("https://www.rfi.fr/favicon.ico").
 		SetCategories([]string{
@@ -260,6 +262,7 @@ func TestCreateAfricaNewsSource(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
 		SetName("Africa News").
+		SetCountry("world").
 		SetURL("https://fr.africanews.com").
 		SetLogo("https://fr.africanews.com/favicon.ico").
 		SetCategories([]string{
@@ -294,6 +297,7 @@ func TestCreateBBCSource(t *testing.T) {
 	entClient.NewsSource.Create().
 		SetStatus(true).
 		SetName("BBC").
+		SetCountry("world").
 		SetURL("https://www.bbc.com").
 		SetLogo("https://ichef.bbci.co.uk/favicon.ico").
 		SetCategories([]string{
