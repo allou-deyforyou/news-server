@@ -37,3 +37,16 @@ func Shuffle[T any](data []T) []T {
 	}
 	return result
 }
+
+func Remove[T any](data []T, f func(T, T) bool) []T {
+	for i := 0; i < len(data); i++ {
+		for j := len(data) - 1; j > i; j-- {
+			item := data[i]
+			last := data[j]
+			if f(item, last) {
+				data = append(data[:j], data[j+1:]...)
+			}
+		}
+	}
+	return data
+}

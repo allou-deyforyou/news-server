@@ -39,6 +39,9 @@ func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 	}
 	group.Wait()
 
+	response = internal.Remove(response, func(a, b *schema.NewsPost) bool {
+		return a.Link == b.Link
+	})
 	response = internal.Shuffle(response)
 	json.NewEncoder(w).Encode(response)
 }

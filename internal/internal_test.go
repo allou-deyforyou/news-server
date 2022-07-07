@@ -6,6 +6,7 @@ import (
 	"log"
 	"testing"
 
+	"news/internal"
 	"news/internal/store"
 	"news/internal/store/migrate"
 	"news/internal/store/schema"
@@ -14,6 +15,16 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+func TestSimple(t *testing.T) {
+	data := []string{"1", "1", "1", "4", "1"}
+
+	data = internal.Remove(data, func(a, b string) bool {
+		return a == b
+	})
+
+	log.Println(data)
+}
 
 var entClient *store.Client
 
