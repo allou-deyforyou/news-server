@@ -31,6 +31,7 @@ func rodGetRequest(url string, load ...bool) (io.Reader, error) {
 	defer page.Close()
 
 	page.Timeout(30 * time.Millisecond).WaitLoad()
+	page.WaitRepaint()
 
 	return strings.NewReader(page.MustHTML()), nil
 }
