@@ -176,7 +176,7 @@ func TestCreateYecloSource(t *testing.T) {
 			Image: []string{".td-image-wrap span", "data-img-url"},
 			Date:  []string{"time", "datetime"},
 			Link:  []string{"a", "href"},
-			List:  []string{"#tdi_74 .td_module_flex"},
+			List:  []string{"#tdi_64 .tdb_module_loop"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{".td-post-content > p, .td-post-content > figure, .td-post-content > h2"},
@@ -320,7 +320,7 @@ func TestCreateBBCSource(t *testing.T) {
 			Image: []string{"picture source:nth-child(1)", "srcset"},
 			Date:  []string{"time", "datetime"},
 			Link:  []string{"a", "href"},
-			List:  []string{"main section:nth-child(1) li"},
+			List:  []string{"main li"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{"main .ek1plzs1, main .bbc-19j92fr"},
@@ -329,9 +329,8 @@ func TestCreateBBCSource(t *testing.T) {
 }
 
 func TestGetNewsSources(t *testing.T) {
-
 	entClient.NewsSource.Delete().Exec(context.Background())
-	log.Println(entClient.NewsSource.Query().AllX(context.Background()))
+	// log.Println(entClient.NewsSource.Query().AllX(context.Background()))
 }
 
 /// TvSource
@@ -383,5 +382,5 @@ func TestCreateNciTV(t *testing.T) {
 
 func TestGetTvSources(t *testing.T) {
 	entClient.TvSource.Delete().Exec(context.Background())
-	log.Println(entClient.TvSource.Query().AllX(context.Background()))
+	// log.Println(entClient.TvSource.Query().AllX(context.Background()))
 }

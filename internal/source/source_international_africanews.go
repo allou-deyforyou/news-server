@@ -85,7 +85,7 @@ func (src *AfricaNewsSource) CategoryPost(ctx context.Context, category string, 
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -115,8 +115,7 @@ func (src *AfricaNewsSource) categoryPost(document *Element) []*schema.NewsPost 
 
 			image = parseURL(src.URL, image)
 			link = parseURL(src.URL, link)
-			date, err := parseTime(date)
-			log.Println(err)
+			date, _ := parseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,

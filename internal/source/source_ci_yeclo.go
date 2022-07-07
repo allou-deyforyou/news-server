@@ -76,9 +76,6 @@ func (src *YecloSource) latestPost(document *Element) []*schema.NewsPost {
 /// NewsCategory
 ////////////////
 func (src *YecloSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	if page != 1 {
-		return nil
-	}
 	category, err := parseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)

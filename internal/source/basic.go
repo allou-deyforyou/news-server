@@ -131,5 +131,5 @@ func parseTime(value string) (string, error) {
 			return date.Format(time.RFC3339), nil
 		}
 	}
-	return "", err
+	return value, err
 }
