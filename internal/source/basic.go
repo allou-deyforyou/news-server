@@ -30,7 +30,7 @@ func rodGetRequest(url string) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
-	page.WaitLoad()
+	page.Timeout(2 * time.Second).MustWaitLoad()
 	return strings.NewReader(page.MustHTML()), nil
 }
 
