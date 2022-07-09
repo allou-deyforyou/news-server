@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"errors"
+	"news/internal/source/trash"
 	"news/internal/store"
 	"news/internal/store/schema"
 )
@@ -25,24 +26,24 @@ func ParseListNewsSource(sources []*store.NewsSource) (result []NewsSource) {
 
 func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) {
 	switch name {
-	// Low Quality Image
-	case "Fratmat Info":
-		return NewFratmatInfoSource(source), nil
-	case "Abidjan.Net":
-		return NewAbidjanNetSource(source), nil
-	case "AfrikMag":
-		return NewAfrikMagSource(source), nil
+	// Trash Low Quality Image
+	case trash.FratmatInfoName:
+		return trash.NewFratmatInfoSource(source), nil
+	case trash.AbidjanNetName:
+		return trash.NewAbidjanNetSource(source), nil
+	case trash.AfrikMagName:
+		return trash.NewAfrikMagSource(source), nil
 
 	// High Quality Image
-	case "Africa News":
+	case AfricaNewsName:
 		return NewAfricaNewsSource(source), nil
-	case "France 24":
+	case France24Name:
 		return NewFrance24Source(source), nil
-	case "RFI":
-		return NewRfiSource(source), nil
-	case "BBC":
+	case RFIName:
+		return NewRFISource(source), nil
+	case BBCName:
 		return NewBBCSource(source), nil
-	case "Yeclo":
+	case YecloName:
 		return NewYecloSource(source), nil
 	default:
 		return nil, errors.New("no-found")

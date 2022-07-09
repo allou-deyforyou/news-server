@@ -1,4 +1,4 @@
-package source
+package trash
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"news/internal/source/sutil"
 	"news/internal/store"
 	"news/internal/store/schema"
 	"path"
@@ -16,6 +17,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+const AfrikMagName = "AfrikMag"
+
 
 type AfrikMagSource struct {
 	*store.NewsSource
@@ -33,7 +37,7 @@ func NewAfrikMagSource(source *store.NewsSource) *AfrikMagSource {
 ///
 ///
 func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -43,14 +47,14 @@ func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 		log.Println(err)
 		return nil
 	}
-	return src.latestPost(NewElement(document.Selection))
+	return src.latestPost(sutil.NewElement(document.Selection))
 }
 
-func (src *AfrikMagSource) latestPost(document *Element) []*schema.NewsPost {
+func (src *AfrikMagSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	filmList := make([]*schema.NewsPost, 0)
 	document.ForEach(selector.List[0],
-		func(i int, element *Element) {
+		func(i int, element *sutil.Element) {
 			// category := element.ChildText(selector.Category[0])
 			image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -60,8 +64,8 @@ func (src *AfrikMagSource) latestPost(document *Element) []*schema.NewsPost {
 				image = element.ChildAttribute(selector.Image[2], selector.Image[3])
 			}
 
-			image = parseURL(src.URL, image)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			date, _ = sutil.ParseTime(date)
 
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
@@ -77,11 +81,11 @@ func (src *AfrikMagSource) latestPost(document *Element) []*schema.NewsPost {
 }
 
 func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := parseCategorySource(src.NewsSource, category)
+	category, err := sutil.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		return nil
 	}
-	response, err := rodPostRequest(
+	response, err := sutil.RodPostRequest(
 		fmt.Sprintf("%s%s", src.URL, *src.CategoryPostURL),
 		url.Values{
 			"query":    []string{fmt.Sprintf("{'cat':%v,'lazy_load_term_meta':true,'posts_per_page':16,'order':'DESC'}", category)},
@@ -106,22 +110,22 @@ func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, pa
 		log.Println(err)
 		return nil
 	}
-	return src.categoryPost(NewElement(document.Selection))
+	return src.categoryPost(sutil.NewElement(document.Selection))
 }
 
-func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
+func (src *AfrikMagSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.CategoryPostSelector
 	filmList := make([]*schema.NewsPost, 0)
 	document.ForEach(selector.List[0],
-		func(i int, element *Element) {
+		func(i int, element *sutil.Element) {
 			// category := element.ChildText(selector.Category[0])
 			image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 			link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 			title := element.ChildText(selector.Title[0])
 			date := element.ChildText(selector.Date[0])
 
-			image = parseURL(src.URL, image)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			date, _ = sutil.ParseTime(date)
 
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
 			filmList = append(filmList, &schema.NewsPost{
@@ -137,7 +141,7 @@ func (src *AfrikMagSource) categoryPost(document *Element) []*schema.NewsPost {
 }
 
 func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link)
+	response, err := sutil.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -147,10 +151,10 @@ func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema
 		log.Println(err)
 		return nil
 	}
-	return src.newsArticle(NewElement(document.Selection))
+	return src.newsArticle(sutil.NewElement(document.Selection))
 }
 
-func (src *AfrikMagSource) newsArticle(document *Element) *schema.NewsArticle {
+func (src *AfrikMagSource) newsArticle(document *sutil.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
 	description := strings.Join(document.ChildrenOuterHtmls(selector.Description[0]), "<br>")
 	description = strings.Join(strings.Fields(description), " ")

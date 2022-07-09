@@ -1,4 +1,4 @@
-package source
+package sutil
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ func init() {
 	browser = rod.New().ControlURL(u).MustConnect()
 }
 
-func rodGetRequest(url string, load ...bool) (io.Reader, error) {
+func RodGetRequest(url string, load ...bool) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
@@ -36,7 +36,7 @@ func rodGetRequest(url string, load ...bool) (io.Reader, error) {
 	return strings.NewReader(page.MustHTML()), nil
 }
 
-func rodPostRequest(url string, data string) (io.Reader, error) {
+func RodPostRequest(url string, data string) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
@@ -56,7 +56,7 @@ func rodPostRequest(url string, data string) (io.Reader, error) {
 	return strings.NewReader(value), nil
 }
 
-func parseURL(baseURL, rawURL string) string {
+func ParseURL(baseURL, rawURL string) string {
 	bu, _ := url.Parse(baseURL)
 	u, err := bu.Parse(rawURL)
 	if err != nil {
@@ -66,7 +66,7 @@ func parseURL(baseURL, rawURL string) string {
 	return u.String()
 }
 
-func parseCategorySource(source *store.NewsSource, name string) (string, error) {
+func ParseCategorySource(source *store.NewsSource, name string) (string, error) {
 	for _, category := range source.Categories {
 		if strings.HasPrefix(category, name) {
 			return strings.TrimPrefix(category, name+":"), nil
@@ -119,7 +119,7 @@ func dateInEnglish(date string) string {
 }
 
 //parseTime parse time from string to golang time
-func parseTime(value string) (string, error) {
+func ParseTime(value string) (string, error) {
 	value, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.Predicate(unicode.IsMark))), value)
 	if err != nil {
 		return "", err

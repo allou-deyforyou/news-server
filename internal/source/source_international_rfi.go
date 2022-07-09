@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"news/internal/source/sutil"
 	"news/internal/store"
 	"news/internal/store/schema"
 	"path"
@@ -13,13 +14,15 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type RfiSource struct {
+const RFIName = "RFI"
+
+type RFISource struct {
 	*store.NewsSource
 	*http.Client
 }
 
-func NewRfiSource(source *store.NewsSource) *RfiSource {
-	return &RfiSource{
+func NewRFISource(source *store.NewsSource) *RFISource {
+	return &RFISource{
 		Client:     http.DefaultClient,
 		NewsSource: source,
 	}
@@ -28,8 +31,8 @@ func NewRfiSource(source *store.NewsSource) *RfiSource {
 /// LatestPost
 ///
 ///
-func (src *RfiSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+func (src *RFISource) LatestPost(ctx context.Context) []*schema.NewsPost {
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -39,13 +42,13 @@ func (src *RfiSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 		log.Println(err)
 		return nil
 	}
-	return src.latestPost(NewElement(document.Selection))
+	return src.latestPost(sutil.NewElement(document.Selection))
 }
 
-func (src *RfiSource) latestPost(document *Element) []*schema.NewsPost {
+func (src *RFISource) latestPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *Element) {
+	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -58,9 +61,9 @@ func (src *RfiSource) latestPost(document *Element) []*schema.NewsPost {
 			date := strings.Split(path.Base(link), "-")[0]
 			date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-			image = parseURL(src.URL, image)
-			link = parseURL(src.URL, link)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			link = sutil.ParseURL(src.URL, link)
+			date, _ = sutil.ParseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,
@@ -77,16 +80,16 @@ func (src *RfiSource) latestPost(document *Element) []*schema.NewsPost {
 
 /// NewsCategory
 ////////////////
-func (src *RfiSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
+func (src *RFISource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	if page != 1 {
 		return nil
 	}
-	category, err := parseCategorySource(src.NewsSource, category)
+	category, err := sutil.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -96,13 +99,13 @@ func (src *RfiSource) CategoryPost(ctx context.Context, category string, page in
 		log.Println(err)
 		return nil
 	}
-	return src.categoryPost(NewElement(document.Selection))
+	return src.categoryPost(sutil.NewElement(document.Selection))
 }
 
-func (src *RfiSource) categoryPost(document *Element) []*schema.NewsPost {
+func (src *RFISource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.CategoryPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *Element) {
+	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -114,9 +117,9 @@ func (src *RfiSource) categoryPost(document *Element) []*schema.NewsPost {
 		date := strings.Split(path.Base(link), "-")[0]
 		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-		image = parseURL(src.URL, image)
-		link = parseURL(src.URL, link)
-		date, _ = parseTime(date)
+		image = sutil.ParseURL(src.URL, image)
+		link = sutil.ParseURL(src.URL, link)
+		date, _ = sutil.ParseTime(date)
 
 		result = append(result, &schema.NewsPost{
 			Source: src.Name,
@@ -132,8 +135,8 @@ func (src *RfiSource) categoryPost(document *Element) []*schema.NewsPost {
 
 /// PostArticle
 ///////////////
-func (src *RfiSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link)
+func (src *RFISource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
+	response, err := sutil.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -143,10 +146,10 @@ func (src *RfiSource) NewsArticle(ctx context.Context, link string) *schema.News
 		log.Println(err)
 		return nil
 	}
-	return src.newsArticle(NewElement(document.Selection))
+	return src.newsArticle(sutil.NewElement(document.Selection))
 }
 
-func (src *RfiSource) newsArticle(document *Element) *schema.NewsArticle {
+func (src *RFISource) newsArticle(document *sutil.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
 	contents := document.ChildrenOuterHtmls(selector.Description[0])
 	description := strings.Join(contents, "")

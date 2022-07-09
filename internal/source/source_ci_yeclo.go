@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"news/internal/source/sutil"
 	"news/internal/store"
 	"news/internal/store/schema"
 	"path"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+const YecloName = "Yeclo"
 
 type YecloSource struct {
 	*store.NewsSource
@@ -29,7 +32,7 @@ func NewYecloSource(source *store.NewsSource) *YecloSource {
 ///
 ///
 func (src *YecloSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -39,13 +42,13 @@ func (src *YecloSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 		log.Println(err)
 		return nil
 	}
-	return src.latestPost(NewElement(document.Selection))
+	return src.latestPost(sutil.NewElement(document.Selection))
 }
 
-func (src *YecloSource) latestPost(document *Element) []*schema.NewsPost {
+func (src *YecloSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *Element) {
+	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -56,9 +59,9 @@ func (src *YecloSource) latestPost(document *Element) []*schema.NewsPost {
 			rawPath := strings.Split(image, "-")
 			image = strings.ReplaceAll(image, fmt.Sprintf("-%v", rawPath[len(rawPath)-1]), path.Ext(image))
 
-			image = parseURL(src.URL, image)
-			link = parseURL(src.URL, link)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			link = sutil.ParseURL(src.URL, link)
+			date, _ = sutil.ParseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,
@@ -76,12 +79,12 @@ func (src *YecloSource) latestPost(document *Element) []*schema.NewsPost {
 /// NewsCategory
 ////////////////
 func (src *YecloSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := parseCategorySource(src.NewsSource, category)
+	category, err := sutil.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -91,13 +94,13 @@ func (src *YecloSource) CategoryPost(ctx context.Context, category string, page 
 		log.Println(err)
 		return nil
 	}
-	return src.categoryPost(NewElement(document.Selection))
+	return src.categoryPost(sutil.NewElement(document.Selection))
 }
 
-func (src *YecloSource) categoryPost(document *Element) []*schema.NewsPost {
+func (src *YecloSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.CategoryPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *Element) {
+	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -107,9 +110,9 @@ func (src *YecloSource) categoryPost(document *Element) []*schema.NewsPost {
 		if len(image) != 0 {
 			image = strings.ReplaceAll(image, fmt.Sprintf("-696x464%v", path.Ext(image)), path.Ext(image))
 
-			image = parseURL(src.URL, image)
-			link = parseURL(src.URL, link)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			link = sutil.ParseURL(src.URL, link)
+			date, _ = sutil.ParseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,
@@ -127,7 +130,7 @@ func (src *YecloSource) categoryPost(document *Element) []*schema.NewsPost {
 /// PostArticle
 ///////////////
 func (src *YecloSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link)
+	response, err := sutil.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -137,10 +140,10 @@ func (src *YecloSource) NewsArticle(ctx context.Context, link string) *schema.Ne
 		log.Println(err)
 		return nil
 	}
-	return src.newsArticle(NewElement(document.Selection))
+	return src.newsArticle(sutil.NewElement(document.Selection))
 }
 
-func (src *YecloSource) newsArticle(document *Element) *schema.NewsArticle {
+func (src *YecloSource) newsArticle(document *sutil.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
 	contents := document.ChildrenOuterHtmls(selector.Description[0])
 	description := strings.Join(contents, "")

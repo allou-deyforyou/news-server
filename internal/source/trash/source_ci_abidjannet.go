@@ -1,10 +1,11 @@
-package source
+package trash
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"net/http"
+	"news/internal/source/sutil"
 	"news/internal/store"
 	"news/internal/store/schema"
 	"regexp"
@@ -12,6 +13,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+const AbidjanNetName = "Abidjan.Net"
 
 type AbidjanNetSource struct {
 	*store.NewsSource
@@ -29,7 +32,7 @@ func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
 ///
 ///
 func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -39,14 +42,14 @@ func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost 
 		log.Println(err)
 		return nil
 	}
-	return src.latestPost(NewElement(document.Selection))
+	return src.latestPost(sutil.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
+func (src *AbidjanNetSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	filmList := make([]*schema.NewsPost, 0)
 
-	elementCallBack := func(element *Element) {
+	elementCallBack := func(element *sutil.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		title := element.ChildText(selector.Title[0])
@@ -63,9 +66,9 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		value := strings.Split(date, "-")
 		date = strings.TrimSpace(value[len(value)-1])
 
-		image = parseURL(src.URL, image)
-		link = parseURL(src.URL, link)
-		date, _ = parseTime(date)
+		image = sutil.ParseURL(src.URL, image)
+		link = sutil.ParseURL(src.URL, link)
+		date, _ = sutil.ParseTime(date)
 
 		if strings.Contains(image, "defaut-cover-photo.svg") {
 			image = ""
@@ -83,10 +86,10 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 		}
 	}
 
-	elementCallBack(NewElement(document.Selection.Find(selector.List[1])))
+	elementCallBack(sutil.NewElement(document.Selection.Find(selector.List[1])))
 
 	document.ForEach(selector.List[0],
-		func(i int, element *Element) {
+		func(i int, element *sutil.Element) {
 			elementCallBack(element)
 		})
 	return filmList
@@ -96,12 +99,12 @@ func (src *AbidjanNetSource) latestPost(document *Element) []*schema.NewsPost {
 ///
 ///
 func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := parseCategorySource(src.NewsSource, category)
+	category, err := sutil.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	response, err := rodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -111,14 +114,14 @@ func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, 
 		log.Println(err)
 		return nil
 	}
-	return src.categoryPost(NewElement(document.Selection))
+	return src.categoryPost(sutil.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost {
+func (src *AbidjanNetSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	filmList := make([]*schema.NewsPost, 0)
 	document.ForEach(selector.List[0],
-		func(i int, element *Element) {
+		func(i int, element *sutil.Element) {
 			// category := element.ChildText(selector.Category[0])
 			image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 			title := element.ChildText(selector.Title[0])
@@ -128,9 +131,9 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 			value := strings.Split(date, "-")
 			date = strings.TrimSpace(value[len(value)-1])
 
-			image = parseURL(src.URL, image)
-			link = parseURL(src.URL, link)
-			date, _ = parseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			link = sutil.ParseURL(src.URL, link)
+			date, _ = sutil.ParseTime(date)
 
 			if strings.Contains(image, "defaut-cover-photo.svg") {
 				image = ""
@@ -155,7 +158,7 @@ func (src *AbidjanNetSource) categoryPost(document *Element) []*schema.NewsPost 
 ///
 
 func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := rodGetRequest(link)
+	response, err := sutil.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -165,10 +168,10 @@ func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *sche
 		log.Println(err)
 		return nil
 	}
-	return src.newsArticle(NewElement(document.Selection))
+	return src.newsArticle(sutil.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) newsArticle(document *Element) *schema.NewsArticle {
+func (src *AbidjanNetSource) newsArticle(document *sutil.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
 	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
