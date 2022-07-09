@@ -337,7 +337,7 @@ func TestCreateBBCSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{
-				"main > div:not(:nth-child(-n+4)) p, main > div:not(:nth-child(-n+4)) picture, main > div:not(:nth-child(-n+4)) h2",
+				"main > div:not(:nth-child(-n+4)) > p, main > div:not(:nth-child(-n+4)) > picture, main > div:not(:nth-child(-n+4)) > h2, main > div:not(:nth-child(-n+4)) > ul",
 				"main noscript",
 			},
 		}).
@@ -345,7 +345,7 @@ func TestCreateBBCSource(t *testing.T) {
 }
 
 func TestGetNewsSources(t *testing.T) {
-	
+
 	entClient.NewsSource.Delete().Exec(context.Background())
 	// log.Println(entClient.NewsSource.Query().AllX(context.Background()))
 }
