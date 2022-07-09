@@ -54,26 +54,30 @@ func (src *RFISource) latestPost(document *sutil.Element) []*schema.NewsPost {
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		title := element.ChildText(selector.Title[0])
 
-		if len(title) != 0 {
-			rawImage := strings.Split(image, ",")
-			image = strings.Fields(rawImage[len(rawImage)-1])[0]
+		link = sutil.ParseURL(src.URL, link)
+		log.Println(link)
+		if strings.HasPrefix(link, src.URL) {
+			if len(title) != 0 {
+				rawImage := strings.Split(image, ",")
+				image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-			date := strings.Split(path.Base(link), "-")[0]
-			date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+				date := strings.Split(path.Base(link), "-")[0]
+				date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-			image = sutil.ParseURL(src.URL, image)
-			link = sutil.ParseURL(src.URL, link)
-			date, _ = sutil.ParseTime(date)
+				image = sutil.ParseURL(src.URL, image)
+				date, _ = sutil.ParseTime(date)
 
-			result = append(result, &schema.NewsPost{
-				Source: src.Name,
-				Logo:   src.Logo,
-				Image:  image,
-				Title:  title,
-				Link:   link,
-				Date:   date,
-			})
+				result = append(result, &schema.NewsPost{
+					Source: src.Name,
+					Logo:   src.Logo,
+					Image:  image,
+					Title:  title,
+					Link:   link,
+					Date:   date,
+				})
+			}
 		}
+
 	})
 	return result
 }
@@ -111,24 +115,26 @@ func (src *RFISource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		title := element.ChildText(selector.Title[0])
 
-		rawImage := strings.Split(image, ",")
-		image = strings.Fields(rawImage[len(rawImage)-1])[0]
+		if strings.HasPrefix(link, src.URL) {
+			rawImage := strings.Split(image, ",")
+			image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-		date := strings.Split(path.Base(link), "-")[0]
-		date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
+			date := strings.Split(path.Base(link), "-")[0]
+			date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
-		image = sutil.ParseURL(src.URL, image)
-		link = sutil.ParseURL(src.URL, link)
-		date, _ = sutil.ParseTime(date)
+			image = sutil.ParseURL(src.URL, image)
+			link = sutil.ParseURL(src.URL, link)
+			date, _ = sutil.ParseTime(date)
 
-		result = append(result, &schema.NewsPost{
-			Source: src.Name,
-			Logo:   src.Logo,
-			Image:  image,
-			Title:  title,
-			Link:   link,
-			Date:   date,
-		})
+			result = append(result, &schema.NewsPost{
+				Source: src.Name,
+				Logo:   src.Logo,
+				Image:  image,
+				Title:  title,
+				Link:   link,
+				Date:   date,
+			})
+		}
 	})
 	return result
 }

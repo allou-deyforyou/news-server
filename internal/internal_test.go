@@ -190,7 +190,9 @@ func TestCreateYecloSource(t *testing.T) {
 			List:  []string{"#tdi_64 .tdb_module_loop"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{".td-post-content > p, .td-post-content > figure, .td-post-content > h2"},
+			Description: []string{
+				".td-post-content .tdb-block-inner > p, .td-post-content .tdb-block-inner > figure, .td-post-content .tdb-block-inner > h2",
+			},
 		}).
 		Save(context.Background())
 }
