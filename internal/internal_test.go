@@ -230,7 +230,7 @@ func TestCreateFrance24Source(t *testing.T) {
 			},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+			Description: []string{".t-content__chapo, .t-content__body > p, .t-content__body > h1 .t-content__body > h2"},
 		}).
 		Save(context.Background())
 }
@@ -266,7 +266,7 @@ func TestCreateRfiSource(t *testing.T) {
 			},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{".t-content__chapo, .t-content__body p, .t-content__body h1"},
+			Description: []string{".t-content__chapo, .t-content__body > p, .t-content__body > h1 .t-content__body > h2"},
 		}).
 		Save(context.Background())
 }
@@ -337,7 +337,7 @@ func TestCreateBBCSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{
-				"main > div:not(:nth-child(-n+4)) > p, main > div:not(:nth-child(-n+4)) > picture, main > div:not(:nth-child(-n+4)) > h2, main > div:not(:nth-child(-n+4)) > ul",
+				"main > div:not(:nth-child(-n+4)) > p, main > div:not(:nth-child(-n+4)) > img, main > div:not(:nth-child(-n+4)) > h2, main > div:not(:nth-child(-n+4)) > ul",
 				"main noscript",
 			},
 		}).
