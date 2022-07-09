@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"news/internal/source/sutil"
@@ -14,7 +15,6 @@ import (
 )
 
 const BBCName = "BBC"
-
 
 type BBCSource struct {
 	*store.NewsSource
@@ -148,6 +148,10 @@ func (src *BBCSource) NewsArticle(ctx context.Context, link string) *schema.News
 
 func (src *BBCSource) newsArticle(document *sutil.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
+	document.Selection.Find(selector.Description[1]).Each(func(i int, s *goquery.Selection) {
+		data, _ := s.Html()
+		s.ReplaceWithHtml(html.UnescapeString(data))
+	})
 	contents := document.ChildrenOuterHtmls(selector.Description[0])
 	description := strings.Join(contents, "")
 	return &schema.NewsArticle{

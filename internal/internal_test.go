@@ -336,12 +336,16 @@ func TestCreateBBCSource(t *testing.T) {
 			List:  []string{"main li"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{"main .ek1plzs1, main .bbc-19j92fr"},
+			Description: []string{
+				"main > div:not(:nth-child(-n+4)) p, main > div:not(:nth-child(-n+4)) picture, main > div:not(:nth-child(-n+4)) h2",
+				"main noscript",
+			},
 		}).
 		Save(context.Background())
 }
 
 func TestGetNewsSources(t *testing.T) {
+	
 	entClient.NewsSource.Delete().Exec(context.Background())
 	// log.Println(entClient.NewsSource.Query().AllX(context.Background()))
 }
