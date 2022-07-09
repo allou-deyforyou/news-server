@@ -35,6 +35,7 @@ func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 		go func(source source.NewsSource) {
 			defer func() {
 				if r := recover(); r != nil {
+					group.Done()
 					log.Println("Recovered in f", r)
 				}
 			}()
