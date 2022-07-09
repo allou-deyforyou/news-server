@@ -191,7 +191,7 @@ func TestCreateYecloSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{
-				".td-post-content .tdb-block-inner > p, .td-post-content .tdb-block-inner > figure, .td-post-content .tdb-block-inner > h2",
+				".td-post-content .tdb-block-inner > p, .td-post-content .tdb-block-inner > figure img, .td-post-content .tdb-block-inner > h2, .td-post-content .tdb-block-inner > ol",
 			},
 		}).
 		Save(context.Background())
@@ -337,7 +337,7 @@ func TestCreateBBCSource(t *testing.T) {
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{
-				"main > div:not(:nth-child(-n+4)) > p, main > div:not(:nth-child(-n+4)) > img, main > div:not(:nth-child(-n+4)) > h2, main > div:not(:nth-child(-n+4)) > ul",
+				"main > div:not(:nth-child(-n+4)) > p, main > div:not(:nth-child(-n+4)) > figure img, main > div:not(:nth-child(-n+4)) > h2, main > div:not(:nth-child(-n+4)) > ul",
 				"main noscript",
 			},
 		}).
