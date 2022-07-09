@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"news/internal"
@@ -32,6 +33,11 @@ func (h *Handler) NewsCategoryPost(w http.ResponseWriter, r *http.Request) {
 	for _, s := range sources {
 		group.Add(1)
 		go func(source source.NewsSource) {
+			defer func() {
+				if r := recover(); r != nil {
+					log.Println("Recovered in f", r)
+				}
+			}()
 			posts := source.CategoryPost(ctx, name, page)
 			response = append(response, posts...)
 			group.Done()
