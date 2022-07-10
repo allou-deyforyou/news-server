@@ -32,7 +32,7 @@ func NewFrance24Source(source *store.NewsSource) *France24Source {
 ///
 ///
 func (src *France24Source) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -88,7 +88,7 @@ func (src *France24Source) CategoryPost(ctx context.Context, category string, pa
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -137,7 +137,7 @@ func (src *France24Source) categoryPost(document *sutil.Element) []*schema.NewsP
 /// PostArticle
 ///////////////
 func (src *France24Source) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

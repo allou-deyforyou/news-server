@@ -30,7 +30,7 @@ func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
 /// NewsLatest
 //////////////
 func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -77,7 +77,7 @@ func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string,
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -119,7 +119,7 @@ func (src *FratmatInfoSource) categoryPost(document *sutil.Element) []*schema.Ne
 /// PostArticle
 ///////////////
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

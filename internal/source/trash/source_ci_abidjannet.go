@@ -32,7 +32,7 @@ func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
 ///
 ///
 func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -104,7 +104,7 @@ func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, 
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -158,7 +158,7 @@ func (src *AbidjanNetSource) categoryPost(document *sutil.Element) []*schema.New
 ///
 
 func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

@@ -32,7 +32,7 @@ func NewRFISource(source *store.NewsSource) *RFISource {
 ///
 ///
 func (src *RFISource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -93,7 +93,7 @@ func (src *RFISource) CategoryPost(ctx context.Context, category string, page in
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -142,7 +142,7 @@ func (src *RFISource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 /// PostArticle
 ///////////////
 func (src *RFISource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

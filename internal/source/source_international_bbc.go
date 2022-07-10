@@ -32,7 +32,7 @@ func NewBBCSource(source *store.NewsSource) *BBCSource {
 ///
 ///
 func (src *BBCSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), true)
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), true)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -85,7 +85,7 @@ func (src *BBCSource) CategoryPost(ctx context.Context, category string, page in
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), true)
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), true)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -133,7 +133,7 @@ func (src *BBCSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 /// PostArticle
 ///////////////
 func (src *BBCSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

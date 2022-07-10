@@ -37,7 +37,7 @@ func NewAfrikMagSource(source *store.NewsSource) *AfrikMagSource {
 ///
 ///
 func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -141,7 +141,7 @@ func (src *AfrikMagSource) categoryPost(document *sutil.Element) []*schema.NewsP
 }
 
 func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil

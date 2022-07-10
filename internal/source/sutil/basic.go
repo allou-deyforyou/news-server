@@ -26,7 +26,7 @@ func init() {
 	browser = rod.New().ControlURL(u).MustConnect()
 }
 
-func RodGetRequest(url string, load ...bool) (io.Reader, error) {
+func RodNavigate(url string, load ...bool) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
@@ -36,10 +36,32 @@ func RodGetRequest(url string, load ...bool) (io.Reader, error) {
 	return strings.NewReader(page.MustHTML()), nil
 }
 
+func RodGetRequest(url string) (io.Reader, error) {
+	page := browser.MustPage(url)
+	defer page.Close()
+
+	page.Timeout(1 * time.Millisecond).WaitLoad()
+	value := page.MustEval(`
+	(url) => {
+		let xhr = new XMLHttpRequest();
+		xhr.open('GET', url, false);
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		try {
+			xhr.send();
+			} catch (e) {
+			return e;
+		}
+		return xhr.response;
+	}
+	`, url).Str()
+	return strings.NewReader(value), nil
+}
+
 func RodPostRequest(url string, data string) (io.Reader, error) {
 	page := browser.MustPage(url)
 	defer page.Close()
 
+	page.Timeout(1 * time.Millisecond).WaitLoad()
 	value := page.MustEval(`
 	(url, data) => {
 		let xhr = new XMLHttpRequest();

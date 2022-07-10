@@ -32,7 +32,7 @@ func NewYecloSource(source *store.NewsSource) *YecloSource {
 ///
 ///
 func (src *YecloSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -76,7 +76,7 @@ func (src *YecloSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 	return result
 }
 
-/// NewsCategory
+/// CategoryPost
 ////////////////
 func (src *YecloSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
 	category, err := sutil.ParseCategorySource(src.NewsSource, category)
@@ -84,7 +84,7 @@ func (src *YecloSource) CategoryPost(ctx context.Context, category string, page 
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
+	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -130,7 +130,7 @@ func (src *YecloSource) categoryPost(document *sutil.Element) []*schema.NewsPost
 /// PostArticle
 ///////////////
 func (src *YecloSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := sutil.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil
