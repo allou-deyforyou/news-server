@@ -35,16 +35,16 @@ func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) 
 		return trash.NewAfrikMagSource(source), nil
 
 	// High Quality Image
-	// case AfricaNewsName:
-	// 	return NewAfricaNewsSource(source), nil
-	// case France24Name:
-	// 	return NewFrance24Source(source), nil
-	// case RFIName:
-	// 	return NewRFISource(source), nil
-	// case BBCName:
-	// 	return NewBBCSource(source), nil
-	// case YecloName:
-	// 	return NewYecloSource(source), nil
+	case AfricaNewsName:
+		return NewAfricaNewsSource(source), nil
+	case France24Name:
+		return NewFrance24Source(source), nil
+	case RFIName:
+		return NewRFISource(source), nil
+	case BBCName:
+		return NewBBCSource(source), nil
+	case YecloName:
+		return NewYecloSource(source), nil
 	case RTIInfoName:
 		return NewRTIInfoSource(source), nil
 	default:
