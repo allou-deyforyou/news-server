@@ -55,7 +55,6 @@ func (src *RFISource) latestPost(document *sutil.Element) []*schema.NewsPost {
 		title := element.ChildText(selector.Title[0])
 
 		link = sutil.ParseURL(src.URL, link)
-		log.Println(link)
 		if strings.HasPrefix(link, src.URL) {
 			if len(title) != 0 {
 				rawImage := strings.Split(image, ",")
