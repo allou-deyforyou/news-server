@@ -154,7 +154,7 @@ func TestCreateFrance24Source(t *testing.T) {
 			},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{".t-content__chapo, .t-content__body > p, .t-content__body > h1, .t-content__body > h2, .t-content__body figure img,"},
+			Description: []string{".t-content__chapo, .t-content__body > p, .t-content__body > h1, .t-content__body > h2, .t-content__body figure img"},
 		}).
 		Save(context.Background())
 }
