@@ -9,6 +9,7 @@ import (
 	"news/internal/store"
 	"news/internal/store/schema"
 	"path"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -56,8 +57,10 @@ func (src *YecloSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 		title := element.ChildText(selector.Title[0])
 
 		if len(image) != 0 {
-			rawPath := strings.Split(image, "-")
-			image = strings.ReplaceAll(image, fmt.Sprintf("-%v", rawPath[len(rawPath)-1]), path.Ext(image))
+			if len(regexp.MustCompile(`-\d{3}x\d{3}.`).FindString(image)) != 0 {
+				rawPath := strings.Split(image, "-")
+				image = strings.ReplaceAll(image, fmt.Sprintf("-%v", rawPath[len(rawPath)-1]), path.Ext(image))
+			}
 
 			image = sutil.ParseURL(src.URL, image)
 			link = sutil.ParseURL(src.URL, link)
@@ -108,7 +111,10 @@ func (src *YecloSource) categoryPost(document *sutil.Element) []*schema.NewsPost
 		title := element.ChildText(selector.Title[0])
 
 		if len(image) != 0 {
-			image = strings.ReplaceAll(image, fmt.Sprintf("-696x464%v", path.Ext(image)), path.Ext(image))
+			if len(regexp.MustCompile(`-\d{3}x\d{3}.`).FindString(image)) != 0 {
+				rawPath := strings.Split(image, "-")
+				image = strings.ReplaceAll(image, fmt.Sprintf("-%v", rawPath[len(rawPath)-1]), path.Ext(image))
+			}
 
 			image = sutil.ParseURL(src.URL, image)
 			link = sutil.ParseURL(src.URL, link)
