@@ -6,10 +6,11 @@ import (
 	"html"
 	"log"
 	"net/http"
-	"news/internal/source/sutil"
+	"strings"
+
 	"news/internal/store"
 	"news/internal/store/schema"
-	"strings"
+	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -32,7 +33,7 @@ func NewBBCSource(source *store.NewsSource) *BBCSource {
 ///
 ///
 func (src *BBCSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), true)
+	response, err := util.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL), true)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -42,13 +43,13 @@ func (src *BBCSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 		log.Println(err)
 		return nil
 	}
-	return src.latestPost(sutil.NewElement(document.Selection))
+	return src.latestPost(util.NewElement(document.Selection))
 }
 
-func (src *BBCSource) latestPost(document *sutil.Element) []*schema.NewsPost {
+func (src *BBCSource) latestPost(document *util.Element) []*schema.NewsPost {
 	selector := src.LatestPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
+	document.ForEach(selector.List[0], func(i int, element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -60,9 +61,9 @@ func (src *BBCSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 			rawImage := strings.Split(image, ",")
 			image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-			image = sutil.ParseURL(src.URL, image)
-			link = sutil.ParseURL(src.URL, link)
-			date, _ = sutil.ParseTime(date)
+			image = util.ParseURL(src.URL, image)
+			link = util.ParseURL(src.URL, link)
+			date, _ = util.ParseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,
@@ -80,12 +81,12 @@ func (src *BBCSource) latestPost(document *sutil.Element) []*schema.NewsPost {
 /// NewsCategory
 ////////////////
 func (src *BBCSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := sutil.ParseCategorySource(src.NewsSource, category)
+	category, err := util.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), true)
+	response, err := util.RodNavigate(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category, page)), true)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -95,13 +96,13 @@ func (src *BBCSource) CategoryPost(ctx context.Context, category string, page in
 		log.Println(err)
 		return nil
 	}
-	return src.categoryPost(sutil.NewElement(document.Selection))
+	return src.categoryPost(util.NewElement(document.Selection))
 }
 
-func (src *BBCSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
+func (src *BBCSource) categoryPost(document *util.Element) []*schema.NewsPost {
 	selector := src.CategoryPostSelector
 	result := make([]*schema.NewsPost, 0)
-	document.ForEach(selector.List[0], func(i int, element *sutil.Element) {
+	document.ForEach(selector.List[0], func(i int, element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
@@ -113,9 +114,9 @@ func (src *BBCSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 			rawImage := strings.Split(image, ",")
 			image = strings.Fields(rawImage[len(rawImage)-1])[0]
 
-			image = sutil.ParseURL(src.URL, image)
-			link = sutil.ParseURL(src.URL, link)
-			date, _ = sutil.ParseTime(date)
+			image = util.ParseURL(src.URL, image)
+			link = util.ParseURL(src.URL, link)
+			date, _ = util.ParseTime(date)
 
 			result = append(result, &schema.NewsPost{
 				Source: src.Name,
@@ -133,7 +134,7 @@ func (src *BBCSource) categoryPost(document *sutil.Element) []*schema.NewsPost {
 /// PostArticle
 ///////////////
 func (src *BBCSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodNavigate(link)
+	response, err := util.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -143,10 +144,10 @@ func (src *BBCSource) NewsArticle(ctx context.Context, link string) *schema.News
 		log.Println(err)
 		return nil
 	}
-	return src.newsArticle(sutil.NewElement(document.Selection))
+	return src.newsArticle(util.NewElement(document.Selection))
 }
 
-func (src *BBCSource) newsArticle(document *sutil.Element) *schema.NewsArticle {
+func (src *BBCSource) newsArticle(document *util.Element) *schema.NewsArticle {
 	selector := src.ArticleSelector
 	document.Selection.Find(selector.Description[1]).Each(func(i int, s *goquery.Selection) {
 		data, _ := s.Html()

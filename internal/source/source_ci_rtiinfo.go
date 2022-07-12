@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"news/internal/source/sutil"
+
 	"news/internal/store"
 	"news/internal/store/schema"
+	"news/internal/util"
 )
 
 const RTIInfoName = "RTI Info"
@@ -29,7 +30,7 @@ func NewRTIInfoSource(source *store.NewsSource) *RTIInfoSource {
 ///
 ///u00e0
 func (src *RTIInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
+	response, err := util.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -50,7 +51,7 @@ func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.News
 		date := data[selector.Date[0]].(string)
 
 		link = src.URL + link
-		date, _ = sutil.ParseTime(date)
+		date, _ = util.ParseTime(date)
 
 		result = append(result, &schema.NewsPost{
 			Source: src.Name,
@@ -67,12 +68,12 @@ func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.News
 /// CategoryPost
 ////////////////
 func (src *RTIInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := sutil.ParseCategorySource(src.NewsSource, category)
+	category, err := util.ParseCategorySource(src.NewsSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	response, err := sutil.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
+	response, err := util.RodGetRequest(fmt.Sprintf("%s%s", src.URL, fmt.Sprintf(*src.CategoryPostURL, category)))
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -93,7 +94,7 @@ func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.Ne
 		date := data[selector.Date[0]].(string)
 
 		link = src.URL + link
-		date, _ = sutil.ParseTime(date)
+		date, _ = util.ParseTime(date)
 
 		result = append(result, &schema.NewsPost{
 			Source: src.Name,
@@ -110,7 +111,7 @@ func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.Ne
 /// PostArticle
 ///////////////
 func (src *RTIInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
-	response, err := sutil.RodGetRequest(link)
+	response, err := util.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil

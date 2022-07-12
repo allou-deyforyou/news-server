@@ -3,6 +3,7 @@ package source
 import (
 	"context"
 	"errors"
+
 	"news/internal/source/trash"
 	"news/internal/store"
 	"news/internal/store/schema"
