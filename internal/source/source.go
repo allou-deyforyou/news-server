@@ -45,8 +45,8 @@ func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) 
 		return NewBBCSource(source), nil
 	case YecloName:
 		return NewYecloSource(source), nil
-	// case RTIInfoName:
-	// 	return NewRTIInfoSource(source), nil
+	case RTIInfoName:
+		return NewRTIInfoSource(source), nil
 	default:
 		return nil, errors.New("no-found")
 	}
