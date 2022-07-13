@@ -2,11 +2,9 @@ package internal_test
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"testing"
 
-	"news/internal"
 	"news/internal/store"
 	"news/internal/store/migrate"
 	"news/internal/store/schema"
@@ -15,16 +13,6 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-func TestSimple(t *testing.T) {
-	data := []string{"1", "1", "1", "4", "1"}
-
-	data = internal.Remove(data, func(a, b string) bool {
-		return a == b
-	})
-
-	log.Println(data)
-}
 
 var entClient *store.Client
 
@@ -45,7 +33,29 @@ func init() {
 	entClient = client
 }
 
-/// NewsSource
+func TestCreateNewsCategories(t *testing.T) {
+	entClient.NewsCategories.Create().
+		SetArticleCategories([]string{
+			schema.PoliticsArticleCategory,
+			schema.EconomyArticleCategory,
+			schema.SocietyArticleCategory,
+			schema.SportArticleCategory,
+			schema.CultureArticleCategory,
+			schema.TechnologyArticleCategory,
+			schema.HealthArticleCategory,
+			schema.InternationalArticleCategory,
+			schema.MusicArticleCategory,
+		}).
+		SetTvCategories([]string{}).
+		SaveX(context.Background())
+}
+
+func TestGetNewsCategories(t *testing.T) {
+	entClient.NewsCategories.Delete().Exec(context.Background())
+	// log.Println(entClient.NewsArticleSource.Query().AllX(context.Background()))
+}
+
+/// NewsArticleSource
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -53,14 +63,14 @@ func init() {
 // Cote d'ivoire
 
 func TestCreateYecloSource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("Yeclo").
 		SetURL("https://www.ivoiresoir.net").
 		SetLogo("https://www.ivoiresoir.net/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:economie", schema.Economy),
-			fmt.Sprintf("%v:culture", schema.Culture),
+		SetCategories(map[string]string{
+			schema.EconomyArticleCategory: "economie",
+			schema.CultureArticleCategory: "culture",
 		}).
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -87,14 +97,14 @@ func TestCreateYecloSource(t *testing.T) {
 }
 
 func TestCreateRTISource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("RTI Info").
 		SetURL("https://vodadmin.rtireplays.com/api/v1/news/get").
 		SetLogo("https://rti.info/icon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:economie", schema.Economy),
-			fmt.Sprintf("%v:culture", schema.Culture),
+		SetCategories(map[string]string{
+			schema.EconomyArticleCategory: "economie",
+			schema.CultureArticleCategory: "culture",
 		}).
 		SetLatestPostURL("/home?page=1").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -124,16 +134,16 @@ func TestCreateRTISource(t *testing.T) {
 // International
 
 func TestCreateFrance24Source(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("France 24").
 		SetCountry("world").
 		SetURL("https://www.france24.com").
 		SetLogo("https://www.france24.com/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:éco-tech", schema.Economy),
-			fmt.Sprintf("%v:sports", schema.Sport),
-			fmt.Sprintf("%v:culture", schema.Culture),
+		SetCategories(map[string]string{
+			schema.EconomyArticleCategory: "éco-tech",
+			schema.SportArticleCategory:   "sports",
+			schema.CultureArticleCategory: "culture",
 		}).
 		SetLatestPostURL("/fr/afrique").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -159,17 +169,17 @@ func TestCreateFrance24Source(t *testing.T) {
 		Save(context.Background())
 }
 
-func TestCreateRfiSource(t *testing.T) {
-	entClient.NewsSource.Create().
+func TestCreateRFISource(t *testing.T) {
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("RFI").
 		SetCountry("world").
 		SetURL("https://www.rfi.fr").
 		SetLogo("https://www.rfi.fr/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:afrique-foot", schema.Sport),
-			fmt.Sprintf("%v:culture-médias", schema.Culture),
-			fmt.Sprintf("%v:économie", schema.Economy),
+		SetCategories(map[string]string{
+			schema.SportArticleCategory:   "afrique-foot",
+			schema.CultureArticleCategory: "culture-médias",
+			schema.EconomyArticleCategory: "économie",
 		}).
 		SetLatestPostURL("/fr/afrique").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -195,18 +205,18 @@ func TestCreateRfiSource(t *testing.T) {
 		Save(context.Background())
 }
 
-func TestCreateAfricaNewsSource(t *testing.T) {
-	entClient.NewsSource.Create().
+func TestCreateAfricaNewsArticleSource(t *testing.T) {
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("Africa News").
 		SetCountry("world").
 		SetURL("https://fr.africanews.com").
 		SetLogo("https://fr.africanews.com/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:economie", schema.Economy),
-			fmt.Sprintf("%v:science-technologie", schema.Technology),
-			fmt.Sprintf("%v:sport", schema.Sport),
-			fmt.Sprintf("%v:culture", schema.Culture),
+		SetCategories(map[string]string{
+			schema.EconomyArticleCategory:    "economie",
+			schema.TechnologyArticleCategory: "science-technologie",
+			schema.SportArticleCategory:      "sport",
+			schema.CultureArticleCategory:    "culture",
 		}).
 		SetLatestPostURL("/infos").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -231,17 +241,17 @@ func TestCreateAfricaNewsSource(t *testing.T) {
 }
 
 func TestCreateBBCSource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("BBC").
 		SetCountry("world").
 		SetURL("https://www.bbc.com").
 		SetLogo("https://ichef.bbci.co.uk/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:cnq687nr9v1t", schema.Economy),
-			fmt.Sprintf("%v:cnq687nn703t", schema.Technology),
-			fmt.Sprintf("%v:c06gq9jxz3rt", schema.Health),
-			fmt.Sprintf("%v:cnq687nrrw8t", schema.Culture),
+		SetCategories(map[string]string{
+			schema.EconomyArticleCategory:    "cnq687nr9v1t",
+			schema.TechnologyArticleCategory: "cnq687nn703t",
+			schema.HealthArticleCategory:     "c06gq9jxz3rt",
+			schema.CultureArticleCategory:    "cnq687nrrw8t",
 		}).
 		SetLatestPostURL("/afrique").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -268,21 +278,21 @@ func TestCreateBBCSource(t *testing.T) {
 		Save(context.Background())
 }
 
-func TestGetNewsSources(t *testing.T) {
-	
-	entClient.NewsSource.Delete().Exec(context.Background())
-	// log.Println(entClient.NewsSource.Query().AllX(context.Background()))
+func TestGetNewsArticleSources(t *testing.T) {
+	entClient.NewsArticleSource.Delete().Exec(context.Background())
+	// log.Println(entClient.NewsArticleSource.Query().AllX(context.Background()))
 }
 
-/// TvSource
+/// NewsTvSource
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 func TestCreateRti1TV(t *testing.T) {
-	entClient.TvSource.Create().
+	entClient.NewsTvSource.Create().
+		SetLive(true).
 		SetStatus(true).
-		SetTitle("RTI 1").
+		SetSource("RTI 1").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti1.smil/playlist.m3u8").
 		SetLogo("https://rti.ci/_nuxt/img/6a12f31.svg").
 		SetDescription("La première chaîne de télévision publique ivoirienne du Groupe RTI").
@@ -290,9 +300,10 @@ func TestCreateRti1TV(t *testing.T) {
 }
 
 func TestCreateRti2TV(t *testing.T) {
-	entClient.TvSource.Create().
+	entClient.NewsTvSource.Create().
+		SetLive(true).
 		SetStatus(true).
-		SetTitle("RTI 2").
+		SetSource("RTI 2").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti2.smil/playlist.m3u8").
 		SetLogo("https://rti.ci/_nuxt/img/6d85e57.svg").
 		SetDescription("Une nouvelle chaîne de télévision ivoirienne du Groupe RTI").
@@ -300,9 +311,10 @@ func TestCreateRti2TV(t *testing.T) {
 }
 
 func TestCreateRti3TV(t *testing.T) {
-	entClient.TvSource.Create().
+	entClient.NewsTvSource.Create().
+		SetLive(true).
 		SetStatus(true).
-		SetTitle("La 3").
+		SetSource("La 3").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti3.smil/playlist.m3u8").
 		SetLogo("https://rti.ci/_nuxt/img/4da62df.svg").
 		SetDescription("Appelée aussi RTI 3, une nouvelle chaîne de télévision ivoirienne du Groupe RTI").
@@ -311,16 +323,17 @@ func TestCreateRti3TV(t *testing.T) {
 }
 
 func TestCreateNciTV(t *testing.T) {
-	entClient.TvSource.Create().
+	entClient.NewsTvSource.Create().
+		SetLive(true).
 		SetStatus(true).
-		SetTitle("NCI").
+		SetSource("NCI").
 		SetVideo("https://nci-live.secure2.footprint.net/nci/nci.isml/.m3u8").
 		SetLogo("https://static.wixstatic.com/media/f8668c_8cf416367fb743378ec26c7e7978a318~mv2_d_1692_1295_s_2.png").
 		SetDescription("La Nouvelle Chaîne Ivoirienne").
 		SaveX(context.Background())
 }
 
-func TestGetTvSources(t *testing.T) {
-	entClient.TvSource.Delete().Exec(context.Background())
-	// log.Println(entClient.TvSource.Query().AllX(context.Background()))
+func TestGetNewsTvSources(t *testing.T) {
+	entClient.NewsTvSource.Delete().Exec(context.Background())
+	// log.Println(entClient.NewsTvSource.Query().AllX(context.Background()))
 }

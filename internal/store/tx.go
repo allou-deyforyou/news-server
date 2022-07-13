@@ -12,10 +12,12 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// NewsSource is the client for interacting with the NewsSource builders.
-	NewsSource *NewsSourceClient
-	// TvSource is the client for interacting with the TvSource builders.
-	TvSource *TvSourceClient
+	// NewsArticleSource is the client for interacting with the NewsArticleSource builders.
+	NewsArticleSource *NewsArticleSourceClient
+	// NewsCategories is the client for interacting with the NewsCategories builders.
+	NewsCategories *NewsCategoriesClient
+	// NewsTvSource is the client for interacting with the NewsTvSource builders.
+	NewsTvSource *NewsTvSourceClient
 
 	// lazily loaded.
 	client     *Client
@@ -151,8 +153,9 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.NewsSource = NewNewsSourceClient(tx.config)
-	tx.TvSource = NewTvSourceClient(tx.config)
+	tx.NewsArticleSource = NewNewsArticleSourceClient(tx.config)
+	tx.NewsCategories = NewNewsCategoriesClient(tx.config)
+	tx.NewsTvSource = NewNewsTvSourceClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -162,7 +165,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: NewsSource.QueryXXX(), the query will be executed
+// applies a query, for example: NewsArticleSource.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

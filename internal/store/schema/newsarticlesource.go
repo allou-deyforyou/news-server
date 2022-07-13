@@ -5,13 +5,13 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// NewsSource holds the schema definition for the NewsSource entity.
-type NewsSource struct {
+// NewsArticleSource holds the schema definition for the NewsArticleSource entity.
+type NewsArticleSource struct {
 	ent.Schema
 }
 
-// Fields of the NewsSource.
-func (NewsSource) Fields() []ent.Field {
+// Fields of the NewsArticleSource.
+func (NewsArticleSource) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("latest_post_url").
 			Optional().Nillable(),
@@ -26,17 +26,17 @@ func (NewsSource) Fields() []ent.Field {
 		field.JSON("article_selector", &NewsArticleSelector{}).
 			Optional(),
 
+		field.JSON("categories", map[string]string{}),
 		field.String("language").Default("fr"),
 		field.String("country").Default("ci"),
 		field.Bool("status").Default(true),
 		field.String("logo").NotEmpty(),
 		field.String("name").Unique(),
-		field.Strings("categories"),
 		field.String("url"),
 	}
 }
 
-// Edges of the NewsSource.
-func (NewsSource) Edges() []ent.Edge {
+// Edges of the NewsArticleSource.
+func (NewsArticleSource) Edges() []ent.Edge {
 	return nil
 }

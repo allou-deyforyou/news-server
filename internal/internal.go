@@ -2,13 +2,16 @@ package internal
 
 import (
 	"context"
+	"io"
 	"log"
 	"math/rand"
 
 	"news/internal/store"
 	"news/internal/store/migrate"
+	"news/internal/store/schema"
 
 	"entgo.io/ent/dialect"
+	"google.golang.org/protobuf/proto"
 )
 
 func NewEntClient() *store.Client {
@@ -49,4 +52,38 @@ func Remove[T any](data []T, f func(T, T) bool) []T {
 		}
 	}
 	return data
+}
+
+func ProtoDecode(r io.Reader, m proto.Message) error {
+	bytes, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	return proto.Unmarshal(bytes, m)
+}
+
+func ProtoEncode(w io.Writer, m proto.Message) error {
+	bytes, err := proto.Marshal(m)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ConvertToNewsTvPost(data []*store.NewsTvSource) []*schema.NewsTvPost {
+	result := make([]*schema.NewsTvPost, len(data))
+	for _, item := range data {
+		result = append(result, &schema.NewsTvPost{
+			Description: item.Description,
+			Source:      item.Source,
+			Video:       item.Video,
+			Logo:        item.Logo,
+			Live:        item.Live,
+		})
+	}
+	return result
 }

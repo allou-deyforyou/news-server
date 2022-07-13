@@ -5,15 +5,15 @@ package store
 import (
 	"encoding/json"
 	"fmt"
-	"news/internal/store/newssource"
+	"news/internal/store/newsarticlesource"
 	"news/internal/store/schema"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
 )
 
-// NewsSource is the model entity for the NewsSource schema.
-type NewsSource struct {
+// NewsArticleSource is the model entity for the NewsArticleSource schema.
+type NewsArticleSource struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
@@ -27,6 +27,8 @@ type NewsSource struct {
 	CategoryPostSelector *schema.NewsPostSelector `json:"category_post_selector,omitempty"`
 	// ArticleSelector holds the value of the "article_selector" field.
 	ArticleSelector *schema.NewsArticleSelector `json:"article_selector,omitempty"`
+	// Categories holds the value of the "categories" field.
+	Categories map[string]string `json:"categories,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
 	// Country holds the value of the "country" field.
@@ -37,193 +39,191 @@ type NewsSource struct {
 	Logo string `json:"logo,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Categories holds the value of the "categories" field.
-	Categories []string `json:"categories,omitempty"`
 	// URL holds the value of the "url" field.
 	URL string `json:"url,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*NewsSource) scanValues(columns []string) ([]interface{}, error) {
+func (*NewsArticleSource) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case newssource.FieldLatestPostSelector, newssource.FieldCategoryPostSelector, newssource.FieldArticleSelector, newssource.FieldCategories:
+		case newsarticlesource.FieldLatestPostSelector, newsarticlesource.FieldCategoryPostSelector, newsarticlesource.FieldArticleSelector, newsarticlesource.FieldCategories:
 			values[i] = new([]byte)
-		case newssource.FieldStatus:
+		case newsarticlesource.FieldStatus:
 			values[i] = new(sql.NullBool)
-		case newssource.FieldID:
+		case newsarticlesource.FieldID:
 			values[i] = new(sql.NullInt64)
-		case newssource.FieldLatestPostURL, newssource.FieldCategoryPostURL, newssource.FieldLanguage, newssource.FieldCountry, newssource.FieldLogo, newssource.FieldName, newssource.FieldURL:
+		case newsarticlesource.FieldLatestPostURL, newsarticlesource.FieldCategoryPostURL, newsarticlesource.FieldLanguage, newsarticlesource.FieldCountry, newsarticlesource.FieldLogo, newsarticlesource.FieldName, newsarticlesource.FieldURL:
 			values[i] = new(sql.NullString)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type NewsSource", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type NewsArticleSource", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the NewsSource fields.
-func (ns *NewsSource) assignValues(columns []string, values []interface{}) error {
+// to the NewsArticleSource fields.
+func (nas *NewsArticleSource) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case newssource.FieldID:
+		case newsarticlesource.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ns.ID = int(value.Int64)
-		case newssource.FieldLatestPostURL:
+			nas.ID = int(value.Int64)
+		case newsarticlesource.FieldLatestPostURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field latest_post_url", values[i])
 			} else if value.Valid {
-				ns.LatestPostURL = new(string)
-				*ns.LatestPostURL = value.String
+				nas.LatestPostURL = new(string)
+				*nas.LatestPostURL = value.String
 			}
-		case newssource.FieldLatestPostSelector:
+		case newsarticlesource.FieldLatestPostSelector:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field latest_post_selector", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ns.LatestPostSelector); err != nil {
+				if err := json.Unmarshal(*value, &nas.LatestPostSelector); err != nil {
 					return fmt.Errorf("unmarshal field latest_post_selector: %w", err)
 				}
 			}
-		case newssource.FieldCategoryPostURL:
+		case newsarticlesource.FieldCategoryPostURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field category_post_url", values[i])
 			} else if value.Valid {
-				ns.CategoryPostURL = new(string)
-				*ns.CategoryPostURL = value.String
+				nas.CategoryPostURL = new(string)
+				*nas.CategoryPostURL = value.String
 			}
-		case newssource.FieldCategoryPostSelector:
+		case newsarticlesource.FieldCategoryPostSelector:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field category_post_selector", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ns.CategoryPostSelector); err != nil {
+				if err := json.Unmarshal(*value, &nas.CategoryPostSelector); err != nil {
 					return fmt.Errorf("unmarshal field category_post_selector: %w", err)
 				}
 			}
-		case newssource.FieldArticleSelector:
+		case newsarticlesource.FieldArticleSelector:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field article_selector", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ns.ArticleSelector); err != nil {
+				if err := json.Unmarshal(*value, &nas.ArticleSelector); err != nil {
 					return fmt.Errorf("unmarshal field article_selector: %w", err)
 				}
 			}
-		case newssource.FieldLanguage:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field language", values[i])
-			} else if value.Valid {
-				ns.Language = value.String
-			}
-		case newssource.FieldCountry:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field country", values[i])
-			} else if value.Valid {
-				ns.Country = value.String
-			}
-		case newssource.FieldStatus:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field status", values[i])
-			} else if value.Valid {
-				ns.Status = value.Bool
-			}
-		case newssource.FieldLogo:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field logo", values[i])
-			} else if value.Valid {
-				ns.Logo = value.String
-			}
-		case newssource.FieldName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[i])
-			} else if value.Valid {
-				ns.Name = value.String
-			}
-		case newssource.FieldCategories:
+		case newsarticlesource.FieldCategories:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field categories", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ns.Categories); err != nil {
+				if err := json.Unmarshal(*value, &nas.Categories); err != nil {
 					return fmt.Errorf("unmarshal field categories: %w", err)
 				}
 			}
-		case newssource.FieldURL:
+		case newsarticlesource.FieldLanguage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field language", values[i])
+			} else if value.Valid {
+				nas.Language = value.String
+			}
+		case newsarticlesource.FieldCountry:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field country", values[i])
+			} else if value.Valid {
+				nas.Country = value.String
+			}
+		case newsarticlesource.FieldStatus:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				nas.Status = value.Bool
+			}
+		case newsarticlesource.FieldLogo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value.Valid {
+				nas.Logo = value.String
+			}
+		case newsarticlesource.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				nas.Name = value.String
+			}
+		case newsarticlesource.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				ns.URL = value.String
+				nas.URL = value.String
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this NewsSource.
-// Note that you need to call NewsSource.Unwrap() before calling this method if this NewsSource
+// Update returns a builder for updating this NewsArticleSource.
+// Note that you need to call NewsArticleSource.Unwrap() before calling this method if this NewsArticleSource
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ns *NewsSource) Update() *NewsSourceUpdateOne {
-	return (&NewsSourceClient{config: ns.config}).UpdateOne(ns)
+func (nas *NewsArticleSource) Update() *NewsArticleSourceUpdateOne {
+	return (&NewsArticleSourceClient{config: nas.config}).UpdateOne(nas)
 }
 
-// Unwrap unwraps the NewsSource entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the NewsArticleSource entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ns *NewsSource) Unwrap() *NewsSource {
-	tx, ok := ns.config.driver.(*txDriver)
+func (nas *NewsArticleSource) Unwrap() *NewsArticleSource {
+	tx, ok := nas.config.driver.(*txDriver)
 	if !ok {
-		panic("store: NewsSource is not a transactional entity")
+		panic("store: NewsArticleSource is not a transactional entity")
 	}
-	ns.config.driver = tx.drv
-	return ns
+	nas.config.driver = tx.drv
+	return nas
 }
 
 // String implements the fmt.Stringer.
-func (ns *NewsSource) String() string {
+func (nas *NewsArticleSource) String() string {
 	var builder strings.Builder
-	builder.WriteString("NewsSource(")
-	builder.WriteString(fmt.Sprintf("id=%v", ns.ID))
-	if v := ns.LatestPostURL; v != nil {
+	builder.WriteString("NewsArticleSource(")
+	builder.WriteString(fmt.Sprintf("id=%v", nas.ID))
+	if v := nas.LatestPostURL; v != nil {
 		builder.WriteString(", latest_post_url=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", latest_post_selector=")
-	builder.WriteString(fmt.Sprintf("%v", ns.LatestPostSelector))
-	if v := ns.CategoryPostURL; v != nil {
+	builder.WriteString(fmt.Sprintf("%v", nas.LatestPostSelector))
+	if v := nas.CategoryPostURL; v != nil {
 		builder.WriteString(", category_post_url=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", category_post_selector=")
-	builder.WriteString(fmt.Sprintf("%v", ns.CategoryPostSelector))
+	builder.WriteString(fmt.Sprintf("%v", nas.CategoryPostSelector))
 	builder.WriteString(", article_selector=")
-	builder.WriteString(fmt.Sprintf("%v", ns.ArticleSelector))
-	builder.WriteString(", language=")
-	builder.WriteString(ns.Language)
-	builder.WriteString(", country=")
-	builder.WriteString(ns.Country)
-	builder.WriteString(", status=")
-	builder.WriteString(fmt.Sprintf("%v", ns.Status))
-	builder.WriteString(", logo=")
-	builder.WriteString(ns.Logo)
-	builder.WriteString(", name=")
-	builder.WriteString(ns.Name)
+	builder.WriteString(fmt.Sprintf("%v", nas.ArticleSelector))
 	builder.WriteString(", categories=")
-	builder.WriteString(fmt.Sprintf("%v", ns.Categories))
+	builder.WriteString(fmt.Sprintf("%v", nas.Categories))
+	builder.WriteString(", language=")
+	builder.WriteString(nas.Language)
+	builder.WriteString(", country=")
+	builder.WriteString(nas.Country)
+	builder.WriteString(", status=")
+	builder.WriteString(fmt.Sprintf("%v", nas.Status))
+	builder.WriteString(", logo=")
+	builder.WriteString(nas.Logo)
+	builder.WriteString(", name=")
+	builder.WriteString(nas.Name)
 	builder.WriteString(", url=")
-	builder.WriteString(ns.URL)
+	builder.WriteString(nas.URL)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// NewsSources is a parsable slice of NewsSource.
-type NewsSources []*NewsSource
+// NewsArticleSources is a parsable slice of NewsArticleSource.
+type NewsArticleSources []*NewsArticleSource
 
-func (ns NewsSources) config(cfg config) {
-	for _i := range ns {
-		ns[_i].config = cfg
+func (nas NewsArticleSources) config(cfg config) {
+	for _i := range nas {
+		nas[_i].config = cfg
 	}
 }

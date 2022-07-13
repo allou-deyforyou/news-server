@@ -8,49 +8,66 @@ import (
 )
 
 var (
-	// NewsSourcesColumns holds the columns for the "news_sources" table.
-	NewsSourcesColumns = []*schema.Column{
+	// NewsArticleSourcesColumns holds the columns for the "news_article_sources" table.
+	NewsArticleSourcesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "latest_post_url", Type: field.TypeString, Nullable: true},
 		{Name: "latest_post_selector", Type: field.TypeJSON, Nullable: true},
 		{Name: "category_post_url", Type: field.TypeString, Nullable: true},
 		{Name: "category_post_selector", Type: field.TypeJSON, Nullable: true},
 		{Name: "article_selector", Type: field.TypeJSON, Nullable: true},
+		{Name: "categories", Type: field.TypeJSON},
 		{Name: "language", Type: field.TypeString, Default: "fr"},
 		{Name: "country", Type: field.TypeString, Default: "ci"},
 		{Name: "status", Type: field.TypeBool, Default: true},
 		{Name: "logo", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "categories", Type: field.TypeJSON},
 		{Name: "url", Type: field.TypeString},
 	}
-	// NewsSourcesTable holds the schema information for the "news_sources" table.
-	NewsSourcesTable = &schema.Table{
-		Name:       "news_sources",
-		Columns:    NewsSourcesColumns,
-		PrimaryKey: []*schema.Column{NewsSourcesColumns[0]},
+	// NewsArticleSourcesTable holds the schema information for the "news_article_sources" table.
+	NewsArticleSourcesTable = &schema.Table{
+		Name:       "news_article_sources",
+		Columns:    NewsArticleSourcesColumns,
+		PrimaryKey: []*schema.Column{NewsArticleSourcesColumns[0]},
 	}
-	// TvSourcesColumns holds the columns for the "tv_sources" table.
-	TvSourcesColumns = []*schema.Column{
+	// NewsCategoriesColumns holds the columns for the "news_categories" table.
+	NewsCategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "tv_categories", Type: field.TypeJSON},
+		{Name: "status", Type: field.TypeBool, Default: true},
+		{Name: "article_categories", Type: field.TypeJSON},
+		{Name: "language", Type: field.TypeString, Default: "fr"},
+	}
+	// NewsCategoriesTable holds the schema information for the "news_categories" table.
+	NewsCategoriesTable = &schema.Table{
+		Name:       "news_categories",
+		Columns:    NewsCategoriesColumns,
+		PrimaryKey: []*schema.Column{NewsCategoriesColumns[0]},
+	}
+	// NewsTvSourcesColumns holds the columns for the "news_tv_sources" table.
+	NewsTvSourcesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "logo", Type: field.TypeString},
 		{Name: "video", Type: field.TypeString},
-		{Name: "title", Type: field.TypeString},
+		{Name: "live", Type: field.TypeBool, Default: true},
 		{Name: "status", Type: field.TypeBool, Default: true},
 		{Name: "country", Type: field.TypeString, Default: "ci"},
 		{Name: "description", Type: field.TypeString},
 		{Name: "language", Type: field.TypeString, Default: "fr"},
+		{Name: "source", Type: field.TypeString, Unique: true},
+		{Name: "categories", Type: field.TypeJSON, Nullable: true},
 	}
-	// TvSourcesTable holds the schema information for the "tv_sources" table.
-	TvSourcesTable = &schema.Table{
-		Name:       "tv_sources",
-		Columns:    TvSourcesColumns,
-		PrimaryKey: []*schema.Column{TvSourcesColumns[0]},
+	// NewsTvSourcesTable holds the schema information for the "news_tv_sources" table.
+	NewsTvSourcesTable = &schema.Table{
+		Name:       "news_tv_sources",
+		Columns:    NewsTvSourcesColumns,
+		PrimaryKey: []*schema.Column{NewsTvSourcesColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		NewsSourcesTable,
-		TvSourcesTable,
+		NewsArticleSourcesTable,
+		NewsCategoriesTable,
+		NewsTvSourcesTable,
 	}
 )
 

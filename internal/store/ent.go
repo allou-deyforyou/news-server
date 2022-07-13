@@ -5,8 +5,9 @@ package store
 import (
 	"errors"
 	"fmt"
-	"news/internal/store/newssource"
-	"news/internal/store/tvsource"
+	"news/internal/store/newsarticlesource"
+	"news/internal/store/newscategories"
+	"news/internal/store/newstvsource"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -30,8 +31,9 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		newssource.Table: newssource.ValidColumn,
-		tvsource.Table:   tvsource.ValidColumn,
+		newsarticlesource.Table: newsarticlesource.ValidColumn,
+		newscategories.Table:    newscategories.ValidColumn,
+		newstvsource.Table:      newstvsource.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

@@ -18,21 +18,21 @@ import (
 const RFIName = "RFI"
 
 type RFISource struct {
-	*store.NewsSource
+	*store.NewsArticleSource
 	*http.Client
 }
 
-func NewRFISource(source *store.NewsSource) *RFISource {
+func NewRFISource(source *store.NewsArticleSource) *RFISource {
 	return &RFISource{
-		Client:     http.DefaultClient,
-		NewsSource: source,
+		Client:            http.DefaultClient,
+		NewsArticleSource: source,
 	}
 }
 
 /// LatestPost
 ///
 ///
-func (src *RFISource) LatestPost(ctx context.Context) []*schema.NewsPost {
+func (src *RFISource) LatestPost(ctx context.Context) []*schema.NewsArticlePost {
 	response, err := util.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
@@ -46,9 +46,9 @@ func (src *RFISource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	return src.latestPost(util.NewElement(document.Selection))
 }
 
-func (src *RFISource) latestPost(document *util.Element) []*schema.NewsPost {
+func (src *RFISource) latestPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	result := make([]*schema.NewsPost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0], func(i int, element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
@@ -67,7 +67,7 @@ func (src *RFISource) latestPost(document *util.Element) []*schema.NewsPost {
 				image = util.ParseURL(src.URL, image)
 				date, _ = util.ParseTime(date)
 
-				result = append(result, &schema.NewsPost{
+				result = append(result, &schema.NewsArticlePost{
 					Source: src.Name,
 					Logo:   src.Logo,
 					Image:  image,
@@ -84,11 +84,11 @@ func (src *RFISource) latestPost(document *util.Element) []*schema.NewsPost {
 
 /// NewsCategory
 ////////////////
-func (src *RFISource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
+func (src *RFISource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost {
 	if page != 1 {
 		return nil
 	}
-	category, err := util.ParseCategorySource(src.NewsSource, category)
+	category, err := util.ParseCategorySource(src.NewsArticleSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -106,9 +106,9 @@ func (src *RFISource) CategoryPost(ctx context.Context, category string, page in
 	return src.categoryPost(util.NewElement(document.Selection))
 }
 
-func (src *RFISource) categoryPost(document *util.Element) []*schema.NewsPost {
+func (src *RFISource) categoryPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.CategoryPostSelector
-	result := make([]*schema.NewsPost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0], func(i int, element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
@@ -126,7 +126,7 @@ func (src *RFISource) categoryPost(document *util.Element) []*schema.NewsPost {
 			link = util.ParseURL(src.URL, link)
 			date, _ = util.ParseTime(date)
 
-			result = append(result, &schema.NewsPost{
+			result = append(result, &schema.NewsArticlePost{
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
@@ -141,7 +141,7 @@ func (src *RFISource) categoryPost(document *util.Element) []*schema.NewsPost {
 
 /// PostArticle
 ///////////////
-func (src *RFISource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
+func (src *RFISource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {
 	response, err := util.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
@@ -155,11 +155,11 @@ func (src *RFISource) NewsArticle(ctx context.Context, link string) *schema.News
 	return src.newsArticle(util.NewElement(document.Selection))
 }
 
-func (src *RFISource) newsArticle(document *util.Element) *schema.NewsArticle {
+func (src *RFISource) newsArticle(document *util.Element) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
 	contents := document.ChildrenOuterHtmls(selector.Description[0])
 	description := strings.Join(contents, "")
-	return &schema.NewsArticle{
+	return &schema.NewsArticlePost{
 		Description: description,
 	}
 }

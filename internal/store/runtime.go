@@ -3,61 +3,76 @@
 package store
 
 import (
-	"news/internal/store/newssource"
+	"news/internal/store/newsarticlesource"
+	"news/internal/store/newscategories"
+	"news/internal/store/newstvsource"
 	"news/internal/store/schema"
-	"news/internal/store/tvsource"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	newssourceFields := schema.NewsSource{}.Fields()
-	_ = newssourceFields
-	// newssourceDescLanguage is the schema descriptor for language field.
-	newssourceDescLanguage := newssourceFields[5].Descriptor()
-	// newssource.DefaultLanguage holds the default value on creation for the language field.
-	newssource.DefaultLanguage = newssourceDescLanguage.Default.(string)
-	// newssourceDescCountry is the schema descriptor for country field.
-	newssourceDescCountry := newssourceFields[6].Descriptor()
-	// newssource.DefaultCountry holds the default value on creation for the country field.
-	newssource.DefaultCountry = newssourceDescCountry.Default.(string)
-	// newssourceDescStatus is the schema descriptor for status field.
-	newssourceDescStatus := newssourceFields[7].Descriptor()
-	// newssource.DefaultStatus holds the default value on creation for the status field.
-	newssource.DefaultStatus = newssourceDescStatus.Default.(bool)
-	// newssourceDescLogo is the schema descriptor for logo field.
-	newssourceDescLogo := newssourceFields[8].Descriptor()
-	// newssource.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
-	newssource.LogoValidator = newssourceDescLogo.Validators[0].(func(string) error)
-	tvsourceFields := schema.TvSource{}.Fields()
-	_ = tvsourceFields
-	// tvsourceDescLogo is the schema descriptor for logo field.
-	tvsourceDescLogo := tvsourceFields[0].Descriptor()
-	// tvsource.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
-	tvsource.LogoValidator = tvsourceDescLogo.Validators[0].(func(string) error)
-	// tvsourceDescVideo is the schema descriptor for video field.
-	tvsourceDescVideo := tvsourceFields[1].Descriptor()
-	// tvsource.VideoValidator is a validator for the "video" field. It is called by the builders before save.
-	tvsource.VideoValidator = tvsourceDescVideo.Validators[0].(func(string) error)
-	// tvsourceDescTitle is the schema descriptor for title field.
-	tvsourceDescTitle := tvsourceFields[2].Descriptor()
-	// tvsource.TitleValidator is a validator for the "title" field. It is called by the builders before save.
-	tvsource.TitleValidator = tvsourceDescTitle.Validators[0].(func(string) error)
-	// tvsourceDescStatus is the schema descriptor for status field.
-	tvsourceDescStatus := tvsourceFields[3].Descriptor()
-	// tvsource.DefaultStatus holds the default value on creation for the status field.
-	tvsource.DefaultStatus = tvsourceDescStatus.Default.(bool)
-	// tvsourceDescCountry is the schema descriptor for country field.
-	tvsourceDescCountry := tvsourceFields[4].Descriptor()
-	// tvsource.DefaultCountry holds the default value on creation for the country field.
-	tvsource.DefaultCountry = tvsourceDescCountry.Default.(string)
-	// tvsourceDescDescription is the schema descriptor for description field.
-	tvsourceDescDescription := tvsourceFields[5].Descriptor()
-	// tvsource.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
-	tvsource.DescriptionValidator = tvsourceDescDescription.Validators[0].(func(string) error)
-	// tvsourceDescLanguage is the schema descriptor for language field.
-	tvsourceDescLanguage := tvsourceFields[6].Descriptor()
-	// tvsource.DefaultLanguage holds the default value on creation for the language field.
-	tvsource.DefaultLanguage = tvsourceDescLanguage.Default.(string)
+	newsarticlesourceFields := schema.NewsArticleSource{}.Fields()
+	_ = newsarticlesourceFields
+	// newsarticlesourceDescLanguage is the schema descriptor for language field.
+	newsarticlesourceDescLanguage := newsarticlesourceFields[6].Descriptor()
+	// newsarticlesource.DefaultLanguage holds the default value on creation for the language field.
+	newsarticlesource.DefaultLanguage = newsarticlesourceDescLanguage.Default.(string)
+	// newsarticlesourceDescCountry is the schema descriptor for country field.
+	newsarticlesourceDescCountry := newsarticlesourceFields[7].Descriptor()
+	// newsarticlesource.DefaultCountry holds the default value on creation for the country field.
+	newsarticlesource.DefaultCountry = newsarticlesourceDescCountry.Default.(string)
+	// newsarticlesourceDescStatus is the schema descriptor for status field.
+	newsarticlesourceDescStatus := newsarticlesourceFields[8].Descriptor()
+	// newsarticlesource.DefaultStatus holds the default value on creation for the status field.
+	newsarticlesource.DefaultStatus = newsarticlesourceDescStatus.Default.(bool)
+	// newsarticlesourceDescLogo is the schema descriptor for logo field.
+	newsarticlesourceDescLogo := newsarticlesourceFields[9].Descriptor()
+	// newsarticlesource.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	newsarticlesource.LogoValidator = newsarticlesourceDescLogo.Validators[0].(func(string) error)
+	newscategoriesFields := schema.NewsCategories{}.Fields()
+	_ = newscategoriesFields
+	// newscategoriesDescStatus is the schema descriptor for status field.
+	newscategoriesDescStatus := newscategoriesFields[1].Descriptor()
+	// newscategories.DefaultStatus holds the default value on creation for the status field.
+	newscategories.DefaultStatus = newscategoriesDescStatus.Default.(bool)
+	// newscategoriesDescLanguage is the schema descriptor for language field.
+	newscategoriesDescLanguage := newscategoriesFields[3].Descriptor()
+	// newscategories.DefaultLanguage holds the default value on creation for the language field.
+	newscategories.DefaultLanguage = newscategoriesDescLanguage.Default.(string)
+	newstvsourceFields := schema.NewsTvSource{}.Fields()
+	_ = newstvsourceFields
+	// newstvsourceDescLogo is the schema descriptor for logo field.
+	newstvsourceDescLogo := newstvsourceFields[0].Descriptor()
+	// newstvsource.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	newstvsource.LogoValidator = newstvsourceDescLogo.Validators[0].(func(string) error)
+	// newstvsourceDescVideo is the schema descriptor for video field.
+	newstvsourceDescVideo := newstvsourceFields[1].Descriptor()
+	// newstvsource.VideoValidator is a validator for the "video" field. It is called by the builders before save.
+	newstvsource.VideoValidator = newstvsourceDescVideo.Validators[0].(func(string) error)
+	// newstvsourceDescLive is the schema descriptor for live field.
+	newstvsourceDescLive := newstvsourceFields[2].Descriptor()
+	// newstvsource.DefaultLive holds the default value on creation for the live field.
+	newstvsource.DefaultLive = newstvsourceDescLive.Default.(bool)
+	// newstvsourceDescStatus is the schema descriptor for status field.
+	newstvsourceDescStatus := newstvsourceFields[3].Descriptor()
+	// newstvsource.DefaultStatus holds the default value on creation for the status field.
+	newstvsource.DefaultStatus = newstvsourceDescStatus.Default.(bool)
+	// newstvsourceDescCountry is the schema descriptor for country field.
+	newstvsourceDescCountry := newstvsourceFields[4].Descriptor()
+	// newstvsource.DefaultCountry holds the default value on creation for the country field.
+	newstvsource.DefaultCountry = newstvsourceDescCountry.Default.(string)
+	// newstvsourceDescDescription is the schema descriptor for description field.
+	newstvsourceDescDescription := newstvsourceFields[5].Descriptor()
+	// newstvsource.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	newstvsource.DescriptionValidator = newstvsourceDescDescription.Validators[0].(func(string) error)
+	// newstvsourceDescLanguage is the schema descriptor for language field.
+	newstvsourceDescLanguage := newstvsourceFields[6].Descriptor()
+	// newstvsource.DefaultLanguage holds the default value on creation for the language field.
+	newstvsource.DefaultLanguage = newstvsourceDescLanguage.Default.(string)
+	// newstvsourceDescSource is the schema descriptor for source field.
+	newstvsourceDescSource := newstvsourceFields[7].Descriptor()
+	// newstvsource.SourceValidator is a validator for the "source" field. It is called by the builders before save.
+	newstvsource.SourceValidator = newstvsourceDescSource.Validators[0].(func(string) error)
 }

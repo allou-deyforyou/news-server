@@ -9,8 +9,9 @@ import (
 
 	"news/internal/store/migrate"
 
-	"news/internal/store/newssource"
-	"news/internal/store/tvsource"
+	"news/internal/store/newsarticlesource"
+	"news/internal/store/newscategories"
+	"news/internal/store/newstvsource"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -21,10 +22,12 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// NewsSource is the client for interacting with the NewsSource builders.
-	NewsSource *NewsSourceClient
-	// TvSource is the client for interacting with the TvSource builders.
-	TvSource *TvSourceClient
+	// NewsArticleSource is the client for interacting with the NewsArticleSource builders.
+	NewsArticleSource *NewsArticleSourceClient
+	// NewsCategories is the client for interacting with the NewsCategories builders.
+	NewsCategories *NewsCategoriesClient
+	// NewsTvSource is the client for interacting with the NewsTvSource builders.
+	NewsTvSource *NewsTvSourceClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -38,8 +41,9 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.NewsSource = NewNewsSourceClient(c.config)
-	c.TvSource = NewTvSourceClient(c.config)
+	c.NewsArticleSource = NewNewsArticleSourceClient(c.config)
+	c.NewsCategories = NewNewsCategoriesClient(c.config)
+	c.NewsTvSource = NewNewsTvSourceClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -71,10 +75,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		NewsSource: NewNewsSourceClient(cfg),
-		TvSource:   NewTvSourceClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		NewsArticleSource: NewNewsArticleSourceClient(cfg),
+		NewsCategories:    NewNewsCategoriesClient(cfg),
+		NewsTvSource:      NewNewsTvSourceClient(cfg),
 	}, nil
 }
 
@@ -92,17 +97,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		NewsSource: NewNewsSourceClient(cfg),
-		TvSource:   NewTvSourceClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		NewsArticleSource: NewNewsArticleSourceClient(cfg),
+		NewsCategories:    NewNewsCategoriesClient(cfg),
+		NewsTvSource:      NewNewsTvSourceClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		NewsSource.
+//		NewsArticleSource.
 //		Query().
 //		Count(ctx)
 //
@@ -125,88 +131,89 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.NewsSource.Use(hooks...)
-	c.TvSource.Use(hooks...)
+	c.NewsArticleSource.Use(hooks...)
+	c.NewsCategories.Use(hooks...)
+	c.NewsTvSource.Use(hooks...)
 }
 
-// NewsSourceClient is a client for the NewsSource schema.
-type NewsSourceClient struct {
+// NewsArticleSourceClient is a client for the NewsArticleSource schema.
+type NewsArticleSourceClient struct {
 	config
 }
 
-// NewNewsSourceClient returns a client for the NewsSource from the given config.
-func NewNewsSourceClient(c config) *NewsSourceClient {
-	return &NewsSourceClient{config: c}
+// NewNewsArticleSourceClient returns a client for the NewsArticleSource from the given config.
+func NewNewsArticleSourceClient(c config) *NewsArticleSourceClient {
+	return &NewsArticleSourceClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `newssource.Hooks(f(g(h())))`.
-func (c *NewsSourceClient) Use(hooks ...Hook) {
-	c.hooks.NewsSource = append(c.hooks.NewsSource, hooks...)
+// A call to `Use(f, g, h)` equals to `newsarticlesource.Hooks(f(g(h())))`.
+func (c *NewsArticleSourceClient) Use(hooks ...Hook) {
+	c.hooks.NewsArticleSource = append(c.hooks.NewsArticleSource, hooks...)
 }
 
-// Create returns a create builder for NewsSource.
-func (c *NewsSourceClient) Create() *NewsSourceCreate {
-	mutation := newNewsSourceMutation(c.config, OpCreate)
-	return &NewsSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for NewsArticleSource.
+func (c *NewsArticleSourceClient) Create() *NewsArticleSourceCreate {
+	mutation := newNewsArticleSourceMutation(c.config, OpCreate)
+	return &NewsArticleSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of NewsSource entities.
-func (c *NewsSourceClient) CreateBulk(builders ...*NewsSourceCreate) *NewsSourceCreateBulk {
-	return &NewsSourceCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of NewsArticleSource entities.
+func (c *NewsArticleSourceClient) CreateBulk(builders ...*NewsArticleSourceCreate) *NewsArticleSourceCreateBulk {
+	return &NewsArticleSourceCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for NewsSource.
-func (c *NewsSourceClient) Update() *NewsSourceUpdate {
-	mutation := newNewsSourceMutation(c.config, OpUpdate)
-	return &NewsSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for NewsArticleSource.
+func (c *NewsArticleSourceClient) Update() *NewsArticleSourceUpdate {
+	mutation := newNewsArticleSourceMutation(c.config, OpUpdate)
+	return &NewsArticleSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *NewsSourceClient) UpdateOne(ns *NewsSource) *NewsSourceUpdateOne {
-	mutation := newNewsSourceMutation(c.config, OpUpdateOne, withNewsSource(ns))
-	return &NewsSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NewsArticleSourceClient) UpdateOne(nas *NewsArticleSource) *NewsArticleSourceUpdateOne {
+	mutation := newNewsArticleSourceMutation(c.config, OpUpdateOne, withNewsArticleSource(nas))
+	return &NewsArticleSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *NewsSourceClient) UpdateOneID(id int) *NewsSourceUpdateOne {
-	mutation := newNewsSourceMutation(c.config, OpUpdateOne, withNewsSourceID(id))
-	return &NewsSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NewsArticleSourceClient) UpdateOneID(id int) *NewsArticleSourceUpdateOne {
+	mutation := newNewsArticleSourceMutation(c.config, OpUpdateOne, withNewsArticleSourceID(id))
+	return &NewsArticleSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for NewsSource.
-func (c *NewsSourceClient) Delete() *NewsSourceDelete {
-	mutation := newNewsSourceMutation(c.config, OpDelete)
-	return &NewsSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for NewsArticleSource.
+func (c *NewsArticleSourceClient) Delete() *NewsArticleSourceDelete {
+	mutation := newNewsArticleSourceMutation(c.config, OpDelete)
+	return &NewsArticleSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *NewsSourceClient) DeleteOne(ns *NewsSource) *NewsSourceDeleteOne {
-	return c.DeleteOneID(ns.ID)
+func (c *NewsArticleSourceClient) DeleteOne(nas *NewsArticleSource) *NewsArticleSourceDeleteOne {
+	return c.DeleteOneID(nas.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *NewsSourceClient) DeleteOneID(id int) *NewsSourceDeleteOne {
-	builder := c.Delete().Where(newssource.ID(id))
+func (c *NewsArticleSourceClient) DeleteOneID(id int) *NewsArticleSourceDeleteOne {
+	builder := c.Delete().Where(newsarticlesource.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &NewsSourceDeleteOne{builder}
+	return &NewsArticleSourceDeleteOne{builder}
 }
 
-// Query returns a query builder for NewsSource.
-func (c *NewsSourceClient) Query() *NewsSourceQuery {
-	return &NewsSourceQuery{
+// Query returns a query builder for NewsArticleSource.
+func (c *NewsArticleSourceClient) Query() *NewsArticleSourceQuery {
+	return &NewsArticleSourceQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a NewsSource entity by its id.
-func (c *NewsSourceClient) Get(ctx context.Context, id int) (*NewsSource, error) {
-	return c.Query().Where(newssource.ID(id)).Only(ctx)
+// Get returns a NewsArticleSource entity by its id.
+func (c *NewsArticleSourceClient) Get(ctx context.Context, id int) (*NewsArticleSource, error) {
+	return c.Query().Where(newsarticlesource.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *NewsSourceClient) GetX(ctx context.Context, id int) *NewsSource {
+func (c *NewsArticleSourceClient) GetX(ctx context.Context, id int) *NewsArticleSource {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -215,88 +222,88 @@ func (c *NewsSourceClient) GetX(ctx context.Context, id int) *NewsSource {
 }
 
 // Hooks returns the client hooks.
-func (c *NewsSourceClient) Hooks() []Hook {
-	return c.hooks.NewsSource
+func (c *NewsArticleSourceClient) Hooks() []Hook {
+	return c.hooks.NewsArticleSource
 }
 
-// TvSourceClient is a client for the TvSource schema.
-type TvSourceClient struct {
+// NewsCategoriesClient is a client for the NewsCategories schema.
+type NewsCategoriesClient struct {
 	config
 }
 
-// NewTvSourceClient returns a client for the TvSource from the given config.
-func NewTvSourceClient(c config) *TvSourceClient {
-	return &TvSourceClient{config: c}
+// NewNewsCategoriesClient returns a client for the NewsCategories from the given config.
+func NewNewsCategoriesClient(c config) *NewsCategoriesClient {
+	return &NewsCategoriesClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `tvsource.Hooks(f(g(h())))`.
-func (c *TvSourceClient) Use(hooks ...Hook) {
-	c.hooks.TvSource = append(c.hooks.TvSource, hooks...)
+// A call to `Use(f, g, h)` equals to `newscategories.Hooks(f(g(h())))`.
+func (c *NewsCategoriesClient) Use(hooks ...Hook) {
+	c.hooks.NewsCategories = append(c.hooks.NewsCategories, hooks...)
 }
 
-// Create returns a create builder for TvSource.
-func (c *TvSourceClient) Create() *TvSourceCreate {
-	mutation := newTvSourceMutation(c.config, OpCreate)
-	return &TvSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for NewsCategories.
+func (c *NewsCategoriesClient) Create() *NewsCategoriesCreate {
+	mutation := newNewsCategoriesMutation(c.config, OpCreate)
+	return &NewsCategoriesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of TvSource entities.
-func (c *TvSourceClient) CreateBulk(builders ...*TvSourceCreate) *TvSourceCreateBulk {
-	return &TvSourceCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of NewsCategories entities.
+func (c *NewsCategoriesClient) CreateBulk(builders ...*NewsCategoriesCreate) *NewsCategoriesCreateBulk {
+	return &NewsCategoriesCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for TvSource.
-func (c *TvSourceClient) Update() *TvSourceUpdate {
-	mutation := newTvSourceMutation(c.config, OpUpdate)
-	return &TvSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for NewsCategories.
+func (c *NewsCategoriesClient) Update() *NewsCategoriesUpdate {
+	mutation := newNewsCategoriesMutation(c.config, OpUpdate)
+	return &NewsCategoriesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TvSourceClient) UpdateOne(ts *TvSource) *TvSourceUpdateOne {
-	mutation := newTvSourceMutation(c.config, OpUpdateOne, withTvSource(ts))
-	return &TvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NewsCategoriesClient) UpdateOne(nc *NewsCategories) *NewsCategoriesUpdateOne {
+	mutation := newNewsCategoriesMutation(c.config, OpUpdateOne, withNewsCategories(nc))
+	return &NewsCategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *TvSourceClient) UpdateOneID(id int) *TvSourceUpdateOne {
-	mutation := newTvSourceMutation(c.config, OpUpdateOne, withTvSourceID(id))
-	return &TvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *NewsCategoriesClient) UpdateOneID(id int) *NewsCategoriesUpdateOne {
+	mutation := newNewsCategoriesMutation(c.config, OpUpdateOne, withNewsCategoriesID(id))
+	return &NewsCategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for TvSource.
-func (c *TvSourceClient) Delete() *TvSourceDelete {
-	mutation := newTvSourceMutation(c.config, OpDelete)
-	return &TvSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for NewsCategories.
+func (c *NewsCategoriesClient) Delete() *NewsCategoriesDelete {
+	mutation := newNewsCategoriesMutation(c.config, OpDelete)
+	return &NewsCategoriesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *TvSourceClient) DeleteOne(ts *TvSource) *TvSourceDeleteOne {
-	return c.DeleteOneID(ts.ID)
+func (c *NewsCategoriesClient) DeleteOne(nc *NewsCategories) *NewsCategoriesDeleteOne {
+	return c.DeleteOneID(nc.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *TvSourceClient) DeleteOneID(id int) *TvSourceDeleteOne {
-	builder := c.Delete().Where(tvsource.ID(id))
+func (c *NewsCategoriesClient) DeleteOneID(id int) *NewsCategoriesDeleteOne {
+	builder := c.Delete().Where(newscategories.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &TvSourceDeleteOne{builder}
+	return &NewsCategoriesDeleteOne{builder}
 }
 
-// Query returns a query builder for TvSource.
-func (c *TvSourceClient) Query() *TvSourceQuery {
-	return &TvSourceQuery{
+// Query returns a query builder for NewsCategories.
+func (c *NewsCategoriesClient) Query() *NewsCategoriesQuery {
+	return &NewsCategoriesQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a TvSource entity by its id.
-func (c *TvSourceClient) Get(ctx context.Context, id int) (*TvSource, error) {
-	return c.Query().Where(tvsource.ID(id)).Only(ctx)
+// Get returns a NewsCategories entity by its id.
+func (c *NewsCategoriesClient) Get(ctx context.Context, id int) (*NewsCategories, error) {
+	return c.Query().Where(newscategories.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *TvSourceClient) GetX(ctx context.Context, id int) *TvSource {
+func (c *NewsCategoriesClient) GetX(ctx context.Context, id int) *NewsCategories {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -305,6 +312,96 @@ func (c *TvSourceClient) GetX(ctx context.Context, id int) *TvSource {
 }
 
 // Hooks returns the client hooks.
-func (c *TvSourceClient) Hooks() []Hook {
-	return c.hooks.TvSource
+func (c *NewsCategoriesClient) Hooks() []Hook {
+	return c.hooks.NewsCategories
+}
+
+// NewsTvSourceClient is a client for the NewsTvSource schema.
+type NewsTvSourceClient struct {
+	config
+}
+
+// NewNewsTvSourceClient returns a client for the NewsTvSource from the given config.
+func NewNewsTvSourceClient(c config) *NewsTvSourceClient {
+	return &NewsTvSourceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `newstvsource.Hooks(f(g(h())))`.
+func (c *NewsTvSourceClient) Use(hooks ...Hook) {
+	c.hooks.NewsTvSource = append(c.hooks.NewsTvSource, hooks...)
+}
+
+// Create returns a create builder for NewsTvSource.
+func (c *NewsTvSourceClient) Create() *NewsTvSourceCreate {
+	mutation := newNewsTvSourceMutation(c.config, OpCreate)
+	return &NewsTvSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NewsTvSource entities.
+func (c *NewsTvSourceClient) CreateBulk(builders ...*NewsTvSourceCreate) *NewsTvSourceCreateBulk {
+	return &NewsTvSourceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NewsTvSource.
+func (c *NewsTvSourceClient) Update() *NewsTvSourceUpdate {
+	mutation := newNewsTvSourceMutation(c.config, OpUpdate)
+	return &NewsTvSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NewsTvSourceClient) UpdateOne(nts *NewsTvSource) *NewsTvSourceUpdateOne {
+	mutation := newNewsTvSourceMutation(c.config, OpUpdateOne, withNewsTvSource(nts))
+	return &NewsTvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NewsTvSourceClient) UpdateOneID(id int) *NewsTvSourceUpdateOne {
+	mutation := newNewsTvSourceMutation(c.config, OpUpdateOne, withNewsTvSourceID(id))
+	return &NewsTvSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NewsTvSource.
+func (c *NewsTvSourceClient) Delete() *NewsTvSourceDelete {
+	mutation := newNewsTvSourceMutation(c.config, OpDelete)
+	return &NewsTvSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *NewsTvSourceClient) DeleteOne(nts *NewsTvSource) *NewsTvSourceDeleteOne {
+	return c.DeleteOneID(nts.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *NewsTvSourceClient) DeleteOneID(id int) *NewsTvSourceDeleteOne {
+	builder := c.Delete().Where(newstvsource.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NewsTvSourceDeleteOne{builder}
+}
+
+// Query returns a query builder for NewsTvSource.
+func (c *NewsTvSourceClient) Query() *NewsTvSourceQuery {
+	return &NewsTvSourceQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a NewsTvSource entity by its id.
+func (c *NewsTvSourceClient) Get(ctx context.Context, id int) (*NewsTvSource, error) {
+	return c.Query().Where(newstvsource.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NewsTvSourceClient) GetX(ctx context.Context, id int) *NewsTvSource {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *NewsTvSourceClient) Hooks() []Hook {
+	return c.hooks.NewsTvSource
 }

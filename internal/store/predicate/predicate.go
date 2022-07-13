@@ -6,8 +6,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// NewsSource is the predicate function for newssource builders.
-type NewsSource func(*sql.Selector)
+// NewsArticleSource is the predicate function for newsarticlesource builders.
+type NewsArticleSource func(*sql.Selector)
 
-// TvSource is the predicate function for tvsource builders.
-type TvSource func(*sql.Selector)
+// NewsCategories is the predicate function for newscategories builders.
+type NewsCategories func(*sql.Selector)
+
+// NewsTvSource is the predicate function for newstvsource builders.
+type NewsTvSource func(*sql.Selector)

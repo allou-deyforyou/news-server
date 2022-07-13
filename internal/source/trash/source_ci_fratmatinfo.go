@@ -17,20 +17,20 @@ import (
 const FratmatInfoName = "Fratmat Info"
 
 type FratmatInfoSource struct {
-	*store.NewsSource
+	*store.NewsArticleSource
 	*http.Client
 }
 
-func NewFratmatInfoSource(source *store.NewsSource) *FratmatInfoSource {
+func NewFratmatInfoSource(source *store.NewsArticleSource) *FratmatInfoSource {
 	return &FratmatInfoSource{
 		Client:     http.DefaultClient,
-		NewsSource: source,
+		NewsArticleSource: source,
 	}
 }
 
 /// NewsLatest
 //////////////
-func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
+func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsArticlePost {
 	response, err := util.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
@@ -44,9 +44,9 @@ func (src *FratmatInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost
 	return src.latestPost(util.NewElement(document.Selection))
 }
 
-func (src *FratmatInfoSource) latestPost(document *util.Element) []*schema.NewsPost {
+func (src *FratmatInfoSource) latestPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsPost, 0)
+	filmList := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -58,7 +58,7 @@ func (src *FratmatInfoSource) latestPost(document *util.Element) []*schema.NewsP
 			image = util.ParseURL(src.URL, image)
 			date, _ = util.ParseTime(date)
 
-			filmList = append(filmList, &schema.NewsPost{
+			filmList = append(filmList, &schema.NewsArticlePost{
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
@@ -72,8 +72,8 @@ func (src *FratmatInfoSource) latestPost(document *util.Element) []*schema.NewsP
 
 /// NewsCategory
 ////////////////
-func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := util.ParseCategorySource(src.NewsSource, category)
+func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost {
+	category, err := util.ParseCategorySource(src.NewsArticleSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -91,9 +91,9 @@ func (src *FratmatInfoSource) CategoryPost(ctx context.Context, category string,
 	return src.categoryPost(util.NewElement(document.Selection))
 }
 
-func (src *FratmatInfoSource) categoryPost(document *util.Element) []*schema.NewsPost {
+func (src *FratmatInfoSource) categoryPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.CategoryPostSelector
-	filmList := make([]*schema.NewsPost, 0)
+	filmList := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -105,7 +105,7 @@ func (src *FratmatInfoSource) categoryPost(document *util.Element) []*schema.New
 			image = util.ParseURL(src.URL, image)
 			date, _ = util.ParseTime(date)
 
-			filmList = append(filmList, &schema.NewsPost{
+			filmList = append(filmList, &schema.NewsArticlePost{
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
@@ -119,7 +119,7 @@ func (src *FratmatInfoSource) categoryPost(document *util.Element) []*schema.New
 
 /// PostArticle
 ///////////////
-func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
+func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {
 	response, err := util.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
@@ -133,11 +133,11 @@ func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *sch
 	return src.newsArticle(util.NewElement(document.Selection))
 }
 
-func (src *FratmatInfoSource) newsArticle(document *util.Element) *schema.NewsArticle {
+func (src *FratmatInfoSource) newsArticle(document *util.Element) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
 	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
-	return &schema.NewsArticle{
+	return &schema.NewsArticlePost{
 		Description: description,
 	}
 }

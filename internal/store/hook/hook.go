@@ -8,28 +8,41 @@ import (
 	"news/internal/store"
 )
 
-// The NewsSourceFunc type is an adapter to allow the use of ordinary
-// function as NewsSource mutator.
-type NewsSourceFunc func(context.Context, *store.NewsSourceMutation) (store.Value, error)
+// The NewsArticleSourceFunc type is an adapter to allow the use of ordinary
+// function as NewsArticleSource mutator.
+type NewsArticleSourceFunc func(context.Context, *store.NewsArticleSourceMutation) (store.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f NewsSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
-	mv, ok := m.(*store.NewsSourceMutation)
+func (f NewsArticleSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
+	mv, ok := m.(*store.NewsArticleSourceMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.NewsSourceMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.NewsArticleSourceMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The TvSourceFunc type is an adapter to allow the use of ordinary
-// function as TvSource mutator.
-type TvSourceFunc func(context.Context, *store.TvSourceMutation) (store.Value, error)
+// The NewsCategoriesFunc type is an adapter to allow the use of ordinary
+// function as NewsCategories mutator.
+type NewsCategoriesFunc func(context.Context, *store.NewsCategoriesMutation) (store.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f TvSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
-	mv, ok := m.(*store.TvSourceMutation)
+func (f NewsCategoriesFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
+	mv, ok := m.(*store.NewsCategoriesMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.TvSourceMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.NewsCategoriesMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The NewsTvSourceFunc type is an adapter to allow the use of ordinary
+// function as NewsTvSource mutator.
+type NewsTvSourceFunc func(context.Context, *store.NewsTvSourceMutation) (store.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NewsTvSourceFunc) Mutate(ctx context.Context, m store.Mutation) (store.Value, error) {
+	mv, ok := m.(*store.NewsTvSourceMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *store.NewsTvSourceMutation", m)
 	}
 	return f(ctx, mv)
 }

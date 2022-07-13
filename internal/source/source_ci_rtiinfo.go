@@ -15,21 +15,21 @@ import (
 const RTIInfoName = "RTI Info"
 
 type RTIInfoSource struct {
-	*store.NewsSource
+	*store.NewsArticleSource
 	*http.Client
 }
 
-func NewRTIInfoSource(source *store.NewsSource) *RTIInfoSource {
+func NewRTIInfoSource(source *store.NewsArticleSource) *RTIInfoSource {
 	return &RTIInfoSource{
 		Client:     http.DefaultClient,
-		NewsSource: source,
+		NewsArticleSource: source,
 	}
 }
 
 /// LatestPost
 ///
 ///u00e0
-func (src *RTIInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
+func (src *RTIInfoSource) LatestPost(ctx context.Context) []*schema.NewsArticlePost {
 	response, err := util.RodGetRequest(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
@@ -40,9 +40,9 @@ func (src *RTIInfoSource) LatestPost(ctx context.Context) []*schema.NewsPost {
 	return src.latestPost(data)
 }
 
-func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.NewsPost {
+func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	result := make([]*schema.NewsPost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	for _, value := range data[selector.List[0]].([]interface{}) {
 		data := value.(map[string]interface{})
 		image := fmt.Sprintf(selector.Image[1], data[selector.Image[0]].(string))
@@ -53,7 +53,7 @@ func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.News
 		link = src.URL + link
 		date, _ = util.ParseTime(date)
 
-		result = append(result, &schema.NewsPost{
+		result = append(result, &schema.NewsArticlePost{
 			Source: src.Name,
 			Logo:   src.Logo,
 			Title:  title,
@@ -67,8 +67,8 @@ func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.News
 
 /// CategoryPost
 ////////////////
-func (src *RTIInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := util.ParseCategorySource(src.NewsSource, category)
+func (src *RTIInfoSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost {
+	category, err := util.ParseCategorySource(src.NewsArticleSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -83,9 +83,9 @@ func (src *RTIInfoSource) CategoryPost(ctx context.Context, category string, pag
 	return src.categoryPost(data)
 }
 
-func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.NewsPost {
+func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.NewsArticlePost {
 	selector := src.CategoryPostSelector
-	result := make([]*schema.NewsPost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	for _, value := range data[selector.List[0]].(map[string]interface{})[selector.List[1]].([]interface{}) {
 		data := value.(map[string]interface{})
 		link := fmt.Sprintf(selector.Link[1], data[selector.Link[0]].(float64))
@@ -96,7 +96,7 @@ func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.Ne
 		link = src.URL + link
 		date, _ = util.ParseTime(date)
 
-		result = append(result, &schema.NewsPost{
+		result = append(result, &schema.NewsArticlePost{
 			Source: src.Name,
 			Logo:   src.Logo,
 			Title:  title,
@@ -110,7 +110,7 @@ func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.Ne
 
 /// PostArticle
 ///////////////
-func (src *RTIInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
+func (src *RTIInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {
 	response, err := util.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
@@ -121,10 +121,10 @@ func (src *RTIInfoSource) NewsArticle(ctx context.Context, link string) *schema.
 	return src.newsArticle(data)
 }
 
-func (src *RTIInfoSource) newsArticle(data map[string]interface{}) *schema.NewsArticle {
+func (src *RTIInfoSource) newsArticle(data map[string]interface{}) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
 	description := data[selector.Description[0]].(map[string]interface{})[selector.Description[1]].(string)
-	return &schema.NewsArticle{
+	return &schema.NewsArticlePost{
 		Description: description,
 	}
 }

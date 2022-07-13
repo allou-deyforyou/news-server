@@ -2,7 +2,6 @@ package internal_test
 
 import (
 	"context"
-	"fmt"
 	"news/internal/store/schema"
 	"testing"
 )
@@ -10,35 +9,33 @@ import (
 // Cote d'ivoire
 
 func TestCreateFratmatInfoSource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("Fratmat Info").
 		SetURL("https://www.fratmat.info").
 		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:politique", schema.Politics),
-			fmt.Sprintf("%v:économie", schema.Economy),
-			fmt.Sprintf("%v:société", schema.Society),
-			fmt.Sprintf("%v:sport", schema.Sport),
-			fmt.Sprintf("%v:culture", schema.Culture),
+		SetCategories(map[string]string{
+			schema.PoliticsArticleCategory: "politique",
+			schema.EconomyArticleCategory:  "économie",
+			schema.SocietyArticleCategory:  "société",
+			schema.SportArticleCategory:    "sport",
+			schema.CultureArticleCategory:  "culture",
 		}).
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{
-			Category: []string{".single_article_tag"},
-			Title:    []string{".article-title"},
-			Image:    []string{"img", "data-src"},
-			Date:     []string{".publishTime"},
-			Link:     []string{"a", "href"},
-			List:     []string{".fratmat-more-articles .ajaxArticles .article-info"},
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
 		}).
 		SetCategoryPostURL("/morearticles/%v?pgno=%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
-			Category: []string{".single_article_tag"},
-			Title:    []string{".article-title"},
-			Image:    []string{"img", "data-src"},
-			Date:     []string{".publishTime"},
-			Link:     []string{"a", "href"},
-			List:     []string{".fratmat-more-articles .ajaxArticles .article-info"},
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
 			Description: []string{".body-desc div:nth-child(3)"},
@@ -47,20 +44,20 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 }
 
 func TestCreateAbidjanNetSource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("Abidjan.Net").
 		SetURL("https://news.abidjan.net").
 		SetLogo("https://abidjan.net/public/img/favicon-32x32.png").
-		SetCategories([]string{
-			fmt.Sprintf("%v:politique", schema.Politics),
-			fmt.Sprintf("%v:economie", schema.Economy),
-			fmt.Sprintf("%v:societe", schema.Society),
-			fmt.Sprintf("%v:sport", schema.Sport),
-			fmt.Sprintf("%v:art-et-culture", schema.Culture),
-			fmt.Sprintf("%v:sante", schema.Health),
-			fmt.Sprintf("%v:international", schema.International),
-			fmt.Sprintf("%v:musique", schema.Music),
+		SetCategories(map[string]string{
+			schema.PoliticsArticleCategory:      "politique",
+			schema.EconomyArticleCategory:       "economie",
+			schema.SocietyArticleCategory:       "societe",
+			schema.SportArticleCategory:         "sport",
+			schema.CultureArticleCategory:       "art-et-culture",
+			schema.HealthArticleCategory:        "sante",
+			schema.InternationalArticleCategory: "international",
+			schema.MusicArticleCategory:         "musique",
 		}).
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{
@@ -85,18 +82,18 @@ func TestCreateAbidjanNetSource(t *testing.T) {
 }
 
 func TestCreateAfrikMagSource(t *testing.T) {
-	entClient.NewsSource.Create().
+	entClient.NewsArticleSource.Create().
 		SetStatus(true).
 		SetName("AfrikMag").
 		SetURL("https://www.afrikmag.com").
 		SetLogo("https://www.afrikmag.com/favicon.ico").
-		SetCategories([]string{
-			fmt.Sprintf("%v:197", schema.Politics),
-			fmt.Sprintf("%v:8464", schema.Economy),
-			fmt.Sprintf("%v:7020", schema.Society),
-			fmt.Sprintf("%v:8", schema.Sport),
-			fmt.Sprintf("%v:1233", schema.Culture),
-			fmt.Sprintf("%v:8464", schema.Health),
+		SetCategories(map[string]string{
+			schema.PoliticsArticleCategory: "197",
+			schema.EconomyArticleCategory:  "8464",
+			schema.SocietyArticleCategory:  "7020",
+			schema.SportArticleCategory:    "8",
+			schema.CultureArticleCategory:  "1233",
+			schema.HealthArticleCategory:   "8464",
 		}).
 		SetLatestPostURL("/").
 		SetLatestPostSelector(&schema.NewsPostSelector{

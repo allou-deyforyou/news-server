@@ -18,21 +18,21 @@ import (
 const AbidjanNetName = "Abidjan.Net"
 
 type AbidjanNetSource struct {
-	*store.NewsSource
+	*store.NewsArticleSource
 	*http.Client
 }
 
-func NewAbidjanNetSource(source *store.NewsSource) *AbidjanNetSource {
+func NewAbidjanNetSource(source *store.NewsArticleSource) *AbidjanNetSource {
 	return &AbidjanNetSource{
 		Client:     http.DefaultClient,
-		NewsSource: source,
+		NewsArticleSource: source,
 	}
 }
 
 /// LatestPost
 ///
 ///
-func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost {
+func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsArticlePost {
 	response, err := util.RodNavigate(fmt.Sprintf("%s%s", src.URL, *src.LatestPostURL))
 	if err != nil {
 		log.Println(err)
@@ -46,9 +46,9 @@ func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsPost 
 	return src.latestPost(util.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsPost {
+func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsPost, 0)
+	filmList := make([]*schema.NewsArticlePost, 0)
 
 	elementCallBack := func(element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
@@ -76,7 +76,7 @@ func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsPo
 		}
 
 		if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
-			filmList = append(filmList, &schema.NewsPost{
+			filmList = append(filmList, &schema.NewsArticlePost{
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
@@ -99,8 +99,8 @@ func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsPo
 /// CategoryPost
 ///
 ///
-func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost {
-	category, err := util.ParseCategorySource(src.NewsSource, category)
+func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost {
+	category, err := util.ParseCategorySource(src.NewsArticleSource, category)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -118,9 +118,9 @@ func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, 
 	return src.categoryPost(util.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.NewsPost {
+func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsPost, 0)
+	filmList := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -141,7 +141,7 @@ func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.News
 			}
 
 			if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
-				filmList = append(filmList, &schema.NewsPost{
+				filmList = append(filmList, &schema.NewsArticlePost{
 					Source: src.Name,
 					Logo:   src.Logo,
 					Image:  image,
@@ -158,7 +158,7 @@ func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.News
 ///
 ///
 
-func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticle {
+func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {
 	response, err := util.RodNavigate(link)
 	if err != nil {
 		log.Println(err)
@@ -172,11 +172,11 @@ func (src *AbidjanNetSource) NewsArticle(ctx context.Context, link string) *sche
 	return src.newsArticle(util.NewElement(document.Selection))
 }
 
-func (src *AbidjanNetSource) newsArticle(document *util.Element) *schema.NewsArticle {
+func (src *AbidjanNetSource) newsArticle(document *util.Element) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
 	description := document.ChildOuterHtml(selector.Description[0])
 	description = strings.Join(strings.Fields(description), " ")
-	return &schema.NewsArticle{
+	return &schema.NewsArticlePost{
 		Description: description,
 	}
 }

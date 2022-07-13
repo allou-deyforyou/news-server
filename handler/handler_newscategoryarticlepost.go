@@ -2,29 +2,32 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"news/internal"
 	"news/internal/source"
-	"news/internal/store/newssource"
+	"news/internal/store/newsarticlesource"
 	"news/internal/store/schema"
 
 	"sync"
 )
 
-func (h *Handler) NewsLatestPost(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) NewsCategoryArticlePost(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		timeout,
 	)
 	defer cancel()
 
-	newsSources := h.NewsSource.Query().Where(newssource.Status(true)).AllX(ctx)
+	params := internal.Params(r.Form)
+	name, _ := params.String("name")
+	page, _ := params.Int("page")
+
+	newsSources := h.NewsArticleSource.Query().Where(newsarticlesource.Status(true)).AllX(ctx)
 	sources := source.ParseListNewsSource(newsSources)
 
-	response := make([]*schema.NewsPost, 0)
+	response := make([]*schema.NewsArticlePost, 0)
 	group := new(sync.WaitGroup)
 	for _, s := range sources {
 		group.Add(1)
@@ -35,16 +38,18 @@ func (h *Handler) NewsLatestPost(w http.ResponseWriter, r *http.Request) {
 					log.Println("Recovered in f", r)
 				}
 			}()
-			posts := source.LatestPost(ctx)
+			posts := source.CategoryPost(ctx, name, page)
 			response = append(response, posts...)
 			group.Done()
 		}(s)
 	}
 	group.Wait()
 
-	response = internal.Remove(response, func(a, b *schema.NewsPost) bool {
+	response = internal.Remove(response, func(a, b *schema.NewsArticlePost) bool {
 		return a.Link == b.Link
 	})
 	response = internal.Shuffle(response)
-	json.NewEncoder(w).Encode(response)
+	internal.ProtoEncode(w, &schema.NewsArticlePostResponse{
+		Data: response,
+	})
 }

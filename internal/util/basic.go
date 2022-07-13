@@ -88,10 +88,10 @@ func ParseURL(baseURL, rawURL string) string {
 	return u.String()
 }
 
-func ParseCategorySource(source *store.NewsSource, name string) (string, error) {
-	for _, category := range source.Categories {
-		if strings.HasPrefix(category, name) {
-			return strings.TrimPrefix(category, name+":"), nil
+func ParseCategorySource(source *store.NewsArticleSource, category string) (string, error) {
+	for key, value := range source.Categories {
+		if key == category {
+			return value, nil
 		}
 	}
 	return "", errors.New("no found")

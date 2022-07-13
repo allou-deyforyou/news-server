@@ -10,12 +10,12 @@ import (
 )
 
 type NewsSource interface {
-	CategoryPost(ctx context.Context, category string, page int) []*schema.NewsPost
-	NewsArticle(ctx context.Context, link string) *schema.NewsArticle
-	LatestPost(ctx context.Context) []*schema.NewsPost
+	CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost
+	NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost
+	LatestPost(ctx context.Context) []*schema.NewsArticlePost
 }
 
-func ParseListNewsSource(sources []*store.NewsSource) (result []NewsSource) {
+func ParseListNewsSource(sources []*store.NewsArticleSource) (result []NewsSource) {
 	for _, source := range sources {
 		value, err := ParseNewsSource(source.Name, source)
 		if err == nil {
@@ -25,7 +25,7 @@ func ParseListNewsSource(sources []*store.NewsSource) (result []NewsSource) {
 	return
 }
 
-func ParseNewsSource(name string, source *store.NewsSource) (NewsSource, error) {
+func ParseNewsSource(name string, source *store.NewsArticleSource) (NewsSource, error) {
 	switch name {
 	// Trash Low Quality Image
 	case trash.FratmatInfoName:

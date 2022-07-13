@@ -19,11 +19,11 @@ func init() {
 }
 
 func init() {
-	server.Handle("/news/category", handler.ParseHandler(server.NewsCategoryPost))
-	server.Handle("/news/latest", handler.ParseHandler(server.NewsLatestPost))
+	server.Handle("/news/category/article/post", handler.ParseHandler(server.NewsCategoryArticlePost))
+	server.Handle("/news/latest/article/post", handler.ParseHandler(server.NewsLatestArticlePost))
 	server.Handle("/news/article", handler.ParseHandler(server.NewsArticle))
 
-	server.Handle("/tv/post", handler.ParseHandler(server.TvPost))
+	server.Handle("/news/tv/post", handler.ParseHandler(server.NewsTvPost))
 }
 
 func main() {

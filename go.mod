@@ -8,6 +8,7 @@ require (
 	github.com/go-rod/rod v0.107.3
 	github.com/mattn/go-sqlite3 v1.14.10
 	golang.org/x/text v0.3.7
+	google.golang.org/protobuf v1.28.0
 )
 
 require (
