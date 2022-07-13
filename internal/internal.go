@@ -76,14 +76,14 @@ func ProtoEncode(w io.Writer, m proto.Message) error {
 
 func ConvertToNewsTvPost(data []*store.NewsTvSource) []*schema.NewsTvPost {
 	result := make([]*schema.NewsTvPost, len(data))
-	for _, item := range data {
-		result = append(result, &schema.NewsTvPost{
+	for i, item := range data {
+		result[i] = &schema.NewsTvPost{
 			Description: item.Description,
 			Source:      item.Source,
 			Video:       item.Video,
 			Logo:        item.Logo,
 			Live:        item.Live,
-		})
+		}
 	}
 	return result
 }
