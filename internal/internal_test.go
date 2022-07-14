@@ -35,6 +35,7 @@ func init() {
 
 func TestCreateNewsCategories(t *testing.T) {
 	entClient.NewsCategories.Create().
+		SetLanguage("fr").
 		SetArticleCategories([]string{
 			schema.PoliticsArticleCategory,
 			schema.EconomyArticleCategory,

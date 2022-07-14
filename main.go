@@ -24,6 +24,9 @@ func init() {
 	server.Handle("/news/article", handler.ParseHandler(server.NewsArticle))
 
 	server.Handle("/news/tv/post", handler.ParseHandler(server.NewsTvPost))
+
+	server.Handle("/news/categories", handler.ParseHandler(server.NewsCategories))
+
 }
 
 func main() {
