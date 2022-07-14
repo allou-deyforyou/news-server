@@ -1,4 +1,4 @@
-FROM alpine/git
+FROM alpine/git as Time
 RUN git clone https://github.com/wolfcw/libfaketime /libfaketime \
  && apk -U add build-base
 WORKDIR /libfaketime
@@ -7,7 +7,7 @@ RUN make \
 
 FROM golang:1.18.3-alpine
 
-COPY --from=1 /faketime.so /lib/faketime.so
+COPY --from=Time /faketime.so /lib/faketime.so
 ENV LD_PRELOAD=/lib/faketime.so
 ENV FAKETIME="-15d" 
 ENV DONT_FAKE_MONOTONIC=1
