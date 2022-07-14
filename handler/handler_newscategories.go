@@ -27,7 +27,7 @@ func (h *Handler) NewsCategories(w http.ResponseWriter, r *http.Request) {
 	data := newsCategoriesQuery.Where(newscategories.Status(true)).FirstX(ctx)
 
 	internal.ProtoEncode(w, &schema.NewsCategoryResponse{
-		ArticleCategories: data.ArticleCategories,
-		TvCategories:      data.TvCategories,
+		ArticleCategories: internal.ConvertToNewsCategory(data.ArticleCategories),
+		TvCategories:      internal.ConvertToNewsCategory(data.TvCategories),
 	})
 }

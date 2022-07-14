@@ -254,12 +254,12 @@ func (ncq *NewsCategoriesQuery) Clone() *NewsCategoriesQuery {
 // Example:
 //
 //	var v []struct {
-//		TvCategories []string `json:"tv_categories,omitempty"`
+//		Status bool `json:"status,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.NewsCategories.Query().
-//		GroupBy(newscategories.FieldTvCategories).
+//		GroupBy(newscategories.FieldStatus).
 //		Aggregate(store.Count()).
 //		Scan(ctx, &v)
 //
@@ -281,11 +281,11 @@ func (ncq *NewsCategoriesQuery) GroupBy(field string, fields ...string) *NewsCat
 // Example:
 //
 //	var v []struct {
-//		TvCategories []string `json:"tv_categories,omitempty"`
+//		Status bool `json:"status,omitempty"`
 //	}
 //
 //	client.NewsCategories.Query().
-//		Select(newscategories.FieldTvCategories).
+//		Select(newscategories.FieldStatus).
 //		Scan(ctx, &v)
 //
 func (ncq *NewsCategoriesQuery) Select(fields ...string) *NewsCategoriesSelect {

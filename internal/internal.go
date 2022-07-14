@@ -87,3 +87,15 @@ func ConvertToNewsTvPost(data []*store.NewsTvSource) []*schema.NewsTvPost {
 	}
 	return result
 }
+
+
+func ConvertToNewsCategory(data map[string]string) []*schema.NewsCategory {
+	result := make([]*schema.NewsCategory,0)
+	for key, value := range data {
+		result = append(result, &schema.NewsCategory{
+			Value: value,
+			Name: key,
+		})
+	}
+	return result
+}

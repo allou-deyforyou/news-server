@@ -33,10 +33,10 @@ var (
 	// NewsCategoriesColumns holds the columns for the "news_categories" table.
 	NewsCategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "tv_categories", Type: field.TypeJSON},
 		{Name: "status", Type: field.TypeBool, Default: true},
-		{Name: "article_categories", Type: field.TypeJSON},
 		{Name: "language", Type: field.TypeString, Default: "fr"},
+		{Name: "tv_categories", Type: field.TypeJSON},
+		{Name: "article_categories", Type: field.TypeJSON},
 	}
 	// NewsCategoriesTable holds the schema information for the "news_categories" table.
 	NewsCategoriesTable = &schema.Table{

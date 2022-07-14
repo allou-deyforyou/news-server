@@ -34,11 +34,11 @@ func init() {
 	newscategoriesFields := schema.NewsCategories{}.Fields()
 	_ = newscategoriesFields
 	// newscategoriesDescStatus is the schema descriptor for status field.
-	newscategoriesDescStatus := newscategoriesFields[1].Descriptor()
+	newscategoriesDescStatus := newscategoriesFields[0].Descriptor()
 	// newscategories.DefaultStatus holds the default value on creation for the status field.
 	newscategories.DefaultStatus = newscategoriesDescStatus.Default.(bool)
 	// newscategoriesDescLanguage is the schema descriptor for language field.
-	newscategoriesDescLanguage := newscategoriesFields[3].Descriptor()
+	newscategoriesDescLanguage := newscategoriesFields[1].Descriptor()
 	// newscategories.DefaultLanguage holds the default value on creation for the language field.
 	newscategories.DefaultLanguage = newscategoriesDescLanguage.Default.(string)
 	newstvsourceFields := schema.NewsTvSource{}.Fields()

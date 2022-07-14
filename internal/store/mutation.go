@@ -1039,10 +1039,10 @@ type NewsCategoriesMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
-	tv_categories      *[]string
 	status             *bool
-	article_categories *[]string
 	language           *string
+	tv_categories      *map[string]string
+	article_categories *map[string]string
 	clearedFields      map[string]struct{}
 	done               bool
 	oldValue           func(context.Context) (*NewsCategories, error)
@@ -1147,42 +1147,6 @@ func (m *NewsCategoriesMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetTvCategories sets the "tv_categories" field.
-func (m *NewsCategoriesMutation) SetTvCategories(s []string) {
-	m.tv_categories = &s
-}
-
-// TvCategories returns the value of the "tv_categories" field in the mutation.
-func (m *NewsCategoriesMutation) TvCategories() (r []string, exists bool) {
-	v := m.tv_categories
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTvCategories returns the old "tv_categories" field's value of the NewsCategories entity.
-// If the NewsCategories object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NewsCategoriesMutation) OldTvCategories(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTvCategories is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTvCategories requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTvCategories: %w", err)
-	}
-	return oldValue.TvCategories, nil
-}
-
-// ResetTvCategories resets all changes to the "tv_categories" field.
-func (m *NewsCategoriesMutation) ResetTvCategories() {
-	m.tv_categories = nil
-}
-
 // SetStatus sets the "status" field.
 func (m *NewsCategoriesMutation) SetStatus(b bool) {
 	m.status = &b
@@ -1217,42 +1181,6 @@ func (m *NewsCategoriesMutation) OldStatus(ctx context.Context) (v bool, err err
 // ResetStatus resets all changes to the "status" field.
 func (m *NewsCategoriesMutation) ResetStatus() {
 	m.status = nil
-}
-
-// SetArticleCategories sets the "article_categories" field.
-func (m *NewsCategoriesMutation) SetArticleCategories(s []string) {
-	m.article_categories = &s
-}
-
-// ArticleCategories returns the value of the "article_categories" field in the mutation.
-func (m *NewsCategoriesMutation) ArticleCategories() (r []string, exists bool) {
-	v := m.article_categories
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldArticleCategories returns the old "article_categories" field's value of the NewsCategories entity.
-// If the NewsCategories object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NewsCategoriesMutation) OldArticleCategories(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldArticleCategories is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldArticleCategories requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldArticleCategories: %w", err)
-	}
-	return oldValue.ArticleCategories, nil
-}
-
-// ResetArticleCategories resets all changes to the "article_categories" field.
-func (m *NewsCategoriesMutation) ResetArticleCategories() {
-	m.article_categories = nil
 }
 
 // SetLanguage sets the "language" field.
@@ -1291,6 +1219,78 @@ func (m *NewsCategoriesMutation) ResetLanguage() {
 	m.language = nil
 }
 
+// SetTvCategories sets the "tv_categories" field.
+func (m *NewsCategoriesMutation) SetTvCategories(value map[string]string) {
+	m.tv_categories = &value
+}
+
+// TvCategories returns the value of the "tv_categories" field in the mutation.
+func (m *NewsCategoriesMutation) TvCategories() (r map[string]string, exists bool) {
+	v := m.tv_categories
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTvCategories returns the old "tv_categories" field's value of the NewsCategories entity.
+// If the NewsCategories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NewsCategoriesMutation) OldTvCategories(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTvCategories is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTvCategories requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTvCategories: %w", err)
+	}
+	return oldValue.TvCategories, nil
+}
+
+// ResetTvCategories resets all changes to the "tv_categories" field.
+func (m *NewsCategoriesMutation) ResetTvCategories() {
+	m.tv_categories = nil
+}
+
+// SetArticleCategories sets the "article_categories" field.
+func (m *NewsCategoriesMutation) SetArticleCategories(value map[string]string) {
+	m.article_categories = &value
+}
+
+// ArticleCategories returns the value of the "article_categories" field in the mutation.
+func (m *NewsCategoriesMutation) ArticleCategories() (r map[string]string, exists bool) {
+	v := m.article_categories
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldArticleCategories returns the old "article_categories" field's value of the NewsCategories entity.
+// If the NewsCategories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NewsCategoriesMutation) OldArticleCategories(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldArticleCategories is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldArticleCategories requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldArticleCategories: %w", err)
+	}
+	return oldValue.ArticleCategories, nil
+}
+
+// ResetArticleCategories resets all changes to the "article_categories" field.
+func (m *NewsCategoriesMutation) ResetArticleCategories() {
+	m.article_categories = nil
+}
+
 // Where appends a list predicates to the NewsCategoriesMutation builder.
 func (m *NewsCategoriesMutation) Where(ps ...predicate.NewsCategories) {
 	m.predicates = append(m.predicates, ps...)
@@ -1311,17 +1311,17 @@ func (m *NewsCategoriesMutation) Type() string {
 // AddedFields().
 func (m *NewsCategoriesMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.tv_categories != nil {
-		fields = append(fields, newscategories.FieldTvCategories)
-	}
 	if m.status != nil {
 		fields = append(fields, newscategories.FieldStatus)
 	}
-	if m.article_categories != nil {
-		fields = append(fields, newscategories.FieldArticleCategories)
-	}
 	if m.language != nil {
 		fields = append(fields, newscategories.FieldLanguage)
+	}
+	if m.tv_categories != nil {
+		fields = append(fields, newscategories.FieldTvCategories)
+	}
+	if m.article_categories != nil {
+		fields = append(fields, newscategories.FieldArticleCategories)
 	}
 	return fields
 }
@@ -1331,14 +1331,14 @@ func (m *NewsCategoriesMutation) Fields() []string {
 // schema.
 func (m *NewsCategoriesMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case newscategories.FieldTvCategories:
-		return m.TvCategories()
 	case newscategories.FieldStatus:
 		return m.Status()
-	case newscategories.FieldArticleCategories:
-		return m.ArticleCategories()
 	case newscategories.FieldLanguage:
 		return m.Language()
+	case newscategories.FieldTvCategories:
+		return m.TvCategories()
+	case newscategories.FieldArticleCategories:
+		return m.ArticleCategories()
 	}
 	return nil, false
 }
@@ -1348,14 +1348,14 @@ func (m *NewsCategoriesMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *NewsCategoriesMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case newscategories.FieldTvCategories:
-		return m.OldTvCategories(ctx)
 	case newscategories.FieldStatus:
 		return m.OldStatus(ctx)
-	case newscategories.FieldArticleCategories:
-		return m.OldArticleCategories(ctx)
 	case newscategories.FieldLanguage:
 		return m.OldLanguage(ctx)
+	case newscategories.FieldTvCategories:
+		return m.OldTvCategories(ctx)
+	case newscategories.FieldArticleCategories:
+		return m.OldArticleCategories(ctx)
 	}
 	return nil, fmt.Errorf("unknown NewsCategories field %s", name)
 }
@@ -1365,13 +1365,6 @@ func (m *NewsCategoriesMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *NewsCategoriesMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case newscategories.FieldTvCategories:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTvCategories(v)
-		return nil
 	case newscategories.FieldStatus:
 		v, ok := value.(bool)
 		if !ok {
@@ -1379,19 +1372,26 @@ func (m *NewsCategoriesMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
-	case newscategories.FieldArticleCategories:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetArticleCategories(v)
-		return nil
 	case newscategories.FieldLanguage:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguage(v)
+		return nil
+	case newscategories.FieldTvCategories:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTvCategories(v)
+		return nil
+	case newscategories.FieldArticleCategories:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetArticleCategories(v)
 		return nil
 	}
 	return fmt.Errorf("unknown NewsCategories field %s", name)
@@ -1442,17 +1442,17 @@ func (m *NewsCategoriesMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *NewsCategoriesMutation) ResetField(name string) error {
 	switch name {
-	case newscategories.FieldTvCategories:
-		m.ResetTvCategories()
-		return nil
 	case newscategories.FieldStatus:
 		m.ResetStatus()
 		return nil
-	case newscategories.FieldArticleCategories:
-		m.ResetArticleCategories()
-		return nil
 	case newscategories.FieldLanguage:
 		m.ResetLanguage()
+		return nil
+	case newscategories.FieldTvCategories:
+		m.ResetTvCategories()
+		return nil
+	case newscategories.FieldArticleCategories:
+		m.ResetArticleCategories()
 		return nil
 	}
 	return fmt.Errorf("unknown NewsCategories field %s", name)

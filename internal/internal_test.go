@@ -33,33 +33,38 @@ func init() {
 	entClient = client
 }
 
-func TestCreateNewsCategories(t *testing.T) {
-	entClient.NewsCategories.Create().
-		SetLanguage("fr").
-		SetArticleCategories([]string{
-			schema.PoliticsArticleCategory,
-			schema.EconomyArticleCategory,
-			schema.SocietyArticleCategory,
-			schema.SportArticleCategory,
-			schema.CultureArticleCategory,
-			schema.TechnologyArticleCategory,
-			schema.HealthArticleCategory,
-			schema.InternationalArticleCategory,
-			schema.MusicArticleCategory,
-		}).
-		SetTvCategories([]string{}).
-		SaveX(context.Background())
-}
-
 func TestGetNewsCategories(t *testing.T) {
 	entClient.NewsCategories.Delete().Exec(context.Background())
 	// log.Println(entClient.NewsArticleSource.Query().AllX(context.Background()))
+}
+
+func TestCreateNewsCategories(t *testing.T) {
+	entClient.NewsCategories.Create().
+		SetLanguage("fr").
+		SetArticleCategories(map[string]string{
+			schema.PoliticsArticleCategory: "politique",
+			schema.EconomyArticleCategory: "économie",
+			schema.SocietyArticleCategory: "société",
+			schema.SportArticleCategory: "sport",
+			schema.CultureArticleCategory: "culture",
+			schema.TechnologyArticleCategory: "technologie",
+			schema.HealthArticleCategory: "santé",
+			schema.InternationalArticleCategory: "international",
+			schema.MusicArticleCategory: "musique",
+		}).
+		SetTvCategories(map[string]string{}).
+		SaveX(context.Background())
 }
 
 /// NewsArticleSource
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+func TestGetNewsArticleSources(t *testing.T) {
+	entClient.NewsArticleSource.Delete().Exec(context.Background())
+	// log.Println(entClient.NewsArticleSource.Query().AllX(context.Background()))
+}
 
 // Cote d'ivoire
 
@@ -279,15 +284,15 @@ func TestCreateBBCSource(t *testing.T) {
 		Save(context.Background())
 }
 
-func TestGetNewsArticleSources(t *testing.T) {
-	entClient.NewsArticleSource.Delete().Exec(context.Background())
-	// log.Println(entClient.NewsArticleSource.Query().AllX(context.Background()))
-}
-
 /// NewsTvSource
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+func TestGetNewsTvSources(t *testing.T) {
+	entClient.NewsTvSource.Delete().Exec(context.Background())
+	// log.Println(entClient.NewsTvSource.Query().AllX(context.Background()))
+}
 
 func TestCreateRti1TV(t *testing.T) {
 	entClient.NewsTvSource.Create().
@@ -332,9 +337,4 @@ func TestCreateNciTV(t *testing.T) {
 		SetLogo("https://static.wixstatic.com/media/f8668c_8cf416367fb743378ec26c7e7978a318~mv2_d_1692_1295_s_2.png").
 		SetDescription("La Nouvelle Chaîne Ivoirienne").
 		SaveX(context.Background())
-}
-
-func TestGetNewsTvSources(t *testing.T) {
-	entClient.NewsTvSource.Delete().Exec(context.Background())
-	// log.Println(entClient.NewsTvSource.Query().AllX(context.Background()))
 }

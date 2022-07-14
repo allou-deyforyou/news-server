@@ -7,14 +7,14 @@ const (
 	Label = "news_categories"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldTvCategories holds the string denoting the tv_categories field in the database.
-	FieldTvCategories = "tv_categories"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// FieldArticleCategories holds the string denoting the article_categories field in the database.
-	FieldArticleCategories = "article_categories"
 	// FieldLanguage holds the string denoting the language field in the database.
 	FieldLanguage = "language"
+	// FieldTvCategories holds the string denoting the tv_categories field in the database.
+	FieldTvCategories = "tv_categories"
+	// FieldArticleCategories holds the string denoting the article_categories field in the database.
+	FieldArticleCategories = "article_categories"
 	// Table holds the table name of the newscategories in the database.
 	Table = "news_categories"
 )
@@ -22,10 +22,10 @@ const (
 // Columns holds all SQL columns for newscategories fields.
 var Columns = []string{
 	FieldID,
-	FieldTvCategories,
 	FieldStatus,
-	FieldArticleCategories,
 	FieldLanguage,
+	FieldTvCategories,
+	FieldArticleCategories,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

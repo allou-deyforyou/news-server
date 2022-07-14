@@ -27,12 +27,6 @@ func (ncu *NewsCategoriesUpdate) Where(ps ...predicate.NewsCategories) *NewsCate
 	return ncu
 }
 
-// SetTvCategories sets the "tv_categories" field.
-func (ncu *NewsCategoriesUpdate) SetTvCategories(s []string) *NewsCategoriesUpdate {
-	ncu.mutation.SetTvCategories(s)
-	return ncu
-}
-
 // SetStatus sets the "status" field.
 func (ncu *NewsCategoriesUpdate) SetStatus(b bool) *NewsCategoriesUpdate {
 	ncu.mutation.SetStatus(b)
@@ -47,12 +41,6 @@ func (ncu *NewsCategoriesUpdate) SetNillableStatus(b *bool) *NewsCategoriesUpdat
 	return ncu
 }
 
-// SetArticleCategories sets the "article_categories" field.
-func (ncu *NewsCategoriesUpdate) SetArticleCategories(s []string) *NewsCategoriesUpdate {
-	ncu.mutation.SetArticleCategories(s)
-	return ncu
-}
-
 // SetLanguage sets the "language" field.
 func (ncu *NewsCategoriesUpdate) SetLanguage(s string) *NewsCategoriesUpdate {
 	ncu.mutation.SetLanguage(s)
@@ -64,6 +52,18 @@ func (ncu *NewsCategoriesUpdate) SetNillableLanguage(s *string) *NewsCategoriesU
 	if s != nil {
 		ncu.SetLanguage(*s)
 	}
+	return ncu
+}
+
+// SetTvCategories sets the "tv_categories" field.
+func (ncu *NewsCategoriesUpdate) SetTvCategories(m map[string]string) *NewsCategoriesUpdate {
+	ncu.mutation.SetTvCategories(m)
+	return ncu
+}
+
+// SetArticleCategories sets the "article_categories" field.
+func (ncu *NewsCategoriesUpdate) SetArticleCategories(m map[string]string) *NewsCategoriesUpdate {
+	ncu.mutation.SetArticleCategories(m)
 	return ncu
 }
 
@@ -144,13 +144,6 @@ func (ncu *NewsCategoriesUpdate) sqlSave(ctx context.Context) (n int, err error)
 			}
 		}
 	}
-	if value, ok := ncu.mutation.TvCategories(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldTvCategories,
-		})
-	}
 	if value, ok := ncu.mutation.Status(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -158,18 +151,25 @@ func (ncu *NewsCategoriesUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Column: newscategories.FieldStatus,
 		})
 	}
-	if value, ok := ncu.mutation.ArticleCategories(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldArticleCategories,
-		})
-	}
 	if value, ok := ncu.mutation.Language(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: newscategories.FieldLanguage,
+		})
+	}
+	if value, ok := ncu.mutation.TvCategories(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldTvCategories,
+		})
+	}
+	if value, ok := ncu.mutation.ArticleCategories(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldArticleCategories,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ncu.driver, _spec); err != nil {
@@ -191,12 +191,6 @@ type NewsCategoriesUpdateOne struct {
 	mutation *NewsCategoriesMutation
 }
 
-// SetTvCategories sets the "tv_categories" field.
-func (ncuo *NewsCategoriesUpdateOne) SetTvCategories(s []string) *NewsCategoriesUpdateOne {
-	ncuo.mutation.SetTvCategories(s)
-	return ncuo
-}
-
 // SetStatus sets the "status" field.
 func (ncuo *NewsCategoriesUpdateOne) SetStatus(b bool) *NewsCategoriesUpdateOne {
 	ncuo.mutation.SetStatus(b)
@@ -211,12 +205,6 @@ func (ncuo *NewsCategoriesUpdateOne) SetNillableStatus(b *bool) *NewsCategoriesU
 	return ncuo
 }
 
-// SetArticleCategories sets the "article_categories" field.
-func (ncuo *NewsCategoriesUpdateOne) SetArticleCategories(s []string) *NewsCategoriesUpdateOne {
-	ncuo.mutation.SetArticleCategories(s)
-	return ncuo
-}
-
 // SetLanguage sets the "language" field.
 func (ncuo *NewsCategoriesUpdateOne) SetLanguage(s string) *NewsCategoriesUpdateOne {
 	ncuo.mutation.SetLanguage(s)
@@ -228,6 +216,18 @@ func (ncuo *NewsCategoriesUpdateOne) SetNillableLanguage(s *string) *NewsCategor
 	if s != nil {
 		ncuo.SetLanguage(*s)
 	}
+	return ncuo
+}
+
+// SetTvCategories sets the "tv_categories" field.
+func (ncuo *NewsCategoriesUpdateOne) SetTvCategories(m map[string]string) *NewsCategoriesUpdateOne {
+	ncuo.mutation.SetTvCategories(m)
+	return ncuo
+}
+
+// SetArticleCategories sets the "article_categories" field.
+func (ncuo *NewsCategoriesUpdateOne) SetArticleCategories(m map[string]string) *NewsCategoriesUpdateOne {
+	ncuo.mutation.SetArticleCategories(m)
 	return ncuo
 }
 
@@ -332,13 +332,6 @@ func (ncuo *NewsCategoriesUpdateOne) sqlSave(ctx context.Context) (_node *NewsCa
 			}
 		}
 	}
-	if value, ok := ncuo.mutation.TvCategories(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldTvCategories,
-		})
-	}
 	if value, ok := ncuo.mutation.Status(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -346,18 +339,25 @@ func (ncuo *NewsCategoriesUpdateOne) sqlSave(ctx context.Context) (_node *NewsCa
 			Column: newscategories.FieldStatus,
 		})
 	}
-	if value, ok := ncuo.mutation.ArticleCategories(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldArticleCategories,
-		})
-	}
 	if value, ok := ncuo.mutation.Language(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: newscategories.FieldLanguage,
+		})
+	}
+	if value, ok := ncuo.mutation.TvCategories(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldTvCategories,
+		})
+	}
+	if value, ok := ncuo.mutation.ArticleCategories(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldArticleCategories,
 		})
 	}
 	_node = &NewsCategories{config: ncuo.config}

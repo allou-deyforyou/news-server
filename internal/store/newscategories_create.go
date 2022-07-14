@@ -19,12 +19,6 @@ type NewsCategoriesCreate struct {
 	hooks    []Hook
 }
 
-// SetTvCategories sets the "tv_categories" field.
-func (ncc *NewsCategoriesCreate) SetTvCategories(s []string) *NewsCategoriesCreate {
-	ncc.mutation.SetTvCategories(s)
-	return ncc
-}
-
 // SetStatus sets the "status" field.
 func (ncc *NewsCategoriesCreate) SetStatus(b bool) *NewsCategoriesCreate {
 	ncc.mutation.SetStatus(b)
@@ -39,12 +33,6 @@ func (ncc *NewsCategoriesCreate) SetNillableStatus(b *bool) *NewsCategoriesCreat
 	return ncc
 }
 
-// SetArticleCategories sets the "article_categories" field.
-func (ncc *NewsCategoriesCreate) SetArticleCategories(s []string) *NewsCategoriesCreate {
-	ncc.mutation.SetArticleCategories(s)
-	return ncc
-}
-
 // SetLanguage sets the "language" field.
 func (ncc *NewsCategoriesCreate) SetLanguage(s string) *NewsCategoriesCreate {
 	ncc.mutation.SetLanguage(s)
@@ -56,6 +44,18 @@ func (ncc *NewsCategoriesCreate) SetNillableLanguage(s *string) *NewsCategoriesC
 	if s != nil {
 		ncc.SetLanguage(*s)
 	}
+	return ncc
+}
+
+// SetTvCategories sets the "tv_categories" field.
+func (ncc *NewsCategoriesCreate) SetTvCategories(m map[string]string) *NewsCategoriesCreate {
+	ncc.mutation.SetTvCategories(m)
+	return ncc
+}
+
+// SetArticleCategories sets the "article_categories" field.
+func (ncc *NewsCategoriesCreate) SetArticleCategories(m map[string]string) *NewsCategoriesCreate {
+	ncc.mutation.SetArticleCategories(m)
 	return ncc
 }
 
@@ -142,17 +142,17 @@ func (ncc *NewsCategoriesCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ncc *NewsCategoriesCreate) check() error {
-	if _, ok := ncc.mutation.TvCategories(); !ok {
-		return &ValidationError{Name: "tv_categories", err: errors.New(`store: missing required field "NewsCategories.tv_categories"`)}
-	}
 	if _, ok := ncc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`store: missing required field "NewsCategories.status"`)}
 	}
-	if _, ok := ncc.mutation.ArticleCategories(); !ok {
-		return &ValidationError{Name: "article_categories", err: errors.New(`store: missing required field "NewsCategories.article_categories"`)}
-	}
 	if _, ok := ncc.mutation.Language(); !ok {
 		return &ValidationError{Name: "language", err: errors.New(`store: missing required field "NewsCategories.language"`)}
+	}
+	if _, ok := ncc.mutation.TvCategories(); !ok {
+		return &ValidationError{Name: "tv_categories", err: errors.New(`store: missing required field "NewsCategories.tv_categories"`)}
+	}
+	if _, ok := ncc.mutation.ArticleCategories(); !ok {
+		return &ValidationError{Name: "article_categories", err: errors.New(`store: missing required field "NewsCategories.article_categories"`)}
 	}
 	return nil
 }
@@ -181,14 +181,6 @@ func (ncc *NewsCategoriesCreate) createSpec() (*NewsCategories, *sqlgraph.Create
 			},
 		}
 	)
-	if value, ok := ncc.mutation.TvCategories(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldTvCategories,
-		})
-		_node.TvCategories = value
-	}
 	if value, ok := ncc.mutation.Status(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -197,14 +189,6 @@ func (ncc *NewsCategoriesCreate) createSpec() (*NewsCategories, *sqlgraph.Create
 		})
 		_node.Status = value
 	}
-	if value, ok := ncc.mutation.ArticleCategories(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: newscategories.FieldArticleCategories,
-		})
-		_node.ArticleCategories = value
-	}
 	if value, ok := ncc.mutation.Language(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -212,6 +196,22 @@ func (ncc *NewsCategoriesCreate) createSpec() (*NewsCategories, *sqlgraph.Create
 			Column: newscategories.FieldLanguage,
 		})
 		_node.Language = value
+	}
+	if value, ok := ncc.mutation.TvCategories(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldTvCategories,
+		})
+		_node.TvCategories = value
+	}
+	if value, ok := ncc.mutation.ArticleCategories(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Value:  value,
+			Column: newscategories.FieldArticleCategories,
+		})
+		_node.ArticleCategories = value
 	}
 	return _node, _spec
 }

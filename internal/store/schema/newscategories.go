@@ -13,10 +13,10 @@ type NewsCategories struct {
 // Fields of the NewsCategories.
 func (NewsCategories) Fields() []ent.Field {
 	return []ent.Field{
-		field.Strings("tv_categories"),
 		field.Bool("status").Default(true),
-		field.Strings("article_categories"),
 		field.String("language").Default("fr"),
+		field.JSON("tv_categories", map[string]string{}),
+		field.JSON("article_categories", map[string]string{}),
 	}
 }
 

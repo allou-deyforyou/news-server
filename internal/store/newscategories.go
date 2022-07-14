@@ -16,14 +16,14 @@ type NewsCategories struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// TvCategories holds the value of the "tv_categories" field.
-	TvCategories []string `json:"tv_categories,omitempty"`
 	// Status holds the value of the "status" field.
 	Status bool `json:"status,omitempty"`
-	// ArticleCategories holds the value of the "article_categories" field.
-	ArticleCategories []string `json:"article_categories,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
+	// TvCategories holds the value of the "tv_categories" field.
+	TvCategories map[string]string `json:"tv_categories,omitempty"`
+	// ArticleCategories holds the value of the "article_categories" field.
+	ArticleCategories map[string]string `json:"article_categories,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -60,6 +60,18 @@ func (nc *NewsCategories) assignValues(columns []string, values []interface{}) e
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			nc.ID = int(value.Int64)
+		case newscategories.FieldStatus:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				nc.Status = value.Bool
+			}
+		case newscategories.FieldLanguage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field language", values[i])
+			} else if value.Valid {
+				nc.Language = value.String
+			}
 		case newscategories.FieldTvCategories:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field tv_categories", values[i])
@@ -68,12 +80,6 @@ func (nc *NewsCategories) assignValues(columns []string, values []interface{}) e
 					return fmt.Errorf("unmarshal field tv_categories: %w", err)
 				}
 			}
-		case newscategories.FieldStatus:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field status", values[i])
-			} else if value.Valid {
-				nc.Status = value.Bool
-			}
 		case newscategories.FieldArticleCategories:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field article_categories", values[i])
@@ -81,12 +87,6 @@ func (nc *NewsCategories) assignValues(columns []string, values []interface{}) e
 				if err := json.Unmarshal(*value, &nc.ArticleCategories); err != nil {
 					return fmt.Errorf("unmarshal field article_categories: %w", err)
 				}
-			}
-		case newscategories.FieldLanguage:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field language", values[i])
-			} else if value.Valid {
-				nc.Language = value.String
 			}
 		}
 	}
@@ -116,14 +116,14 @@ func (nc *NewsCategories) String() string {
 	var builder strings.Builder
 	builder.WriteString("NewsCategories(")
 	builder.WriteString(fmt.Sprintf("id=%v", nc.ID))
-	builder.WriteString(", tv_categories=")
-	builder.WriteString(fmt.Sprintf("%v", nc.TvCategories))
 	builder.WriteString(", status=")
 	builder.WriteString(fmt.Sprintf("%v", nc.Status))
-	builder.WriteString(", article_categories=")
-	builder.WriteString(fmt.Sprintf("%v", nc.ArticleCategories))
 	builder.WriteString(", language=")
 	builder.WriteString(nc.Language)
+	builder.WriteString(", tv_categories=")
+	builder.WriteString(fmt.Sprintf("%v", nc.TvCategories))
+	builder.WriteString(", article_categories=")
+	builder.WriteString(fmt.Sprintf("%v", nc.ArticleCategories))
 	builder.WriteByte(')')
 	return builder.String()
 }
