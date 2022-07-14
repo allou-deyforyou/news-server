@@ -9,4 +9,7 @@ WORKDIR /build
 RUN go mod download
 RUN CGO_ENABLED=1 GOOS=linux go build -o server -a -ldflags '-linkmode external -extldflags "-static"'
 
+RUN echo "Africa/Abidjan" > /etc/timezone
+RUN dpkg-reconfigure -f noninteractive tzdata
+
 CMD ["./server"]

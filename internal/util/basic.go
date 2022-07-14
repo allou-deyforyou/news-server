@@ -150,6 +150,10 @@ func ParseTime(value string) (string, error) {
 		if date, er := time.Parse(layout, dateInEnglish(regexp.MustCompile(expression).FindString(strings.Join(strings.Fields(value), " ")))); er != nil {
 			err = er
 		} else {
+			if date.Year() == 0 {
+				now := time.Now()
+				date = date.AddDate(now.Year(), int(now.Month()), now.Day())
+			}
 			return date.Format(time.RFC3339), nil
 		}
 	}

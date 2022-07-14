@@ -23,10 +23,9 @@ func init() {
 	server.Handle("/news/latest/article/post", handler.ParseHandler(server.NewsLatestArticlePost))
 	server.Handle("/news/article", handler.ParseHandler(server.NewsArticle))
 
-	server.Handle("/news/tv/post", handler.ParseHandler(server.NewsTvPost))
-
 	server.Handle("/news/categories", handler.ParseHandler(server.NewsCategories))
 
+	server.Handle("/news/tv/post", handler.ParseHandler(server.NewsTvPost))
 }
 
 func main() {
