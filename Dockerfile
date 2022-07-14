@@ -7,7 +7,7 @@ RUN make \
 
 FROM golang:1.18.3-alpine
 
-COPY --from=Time /faketime.so /lib/faketime.so
+COPY --from=Time /usr/local/lib/faketime/libfaketimeMT.so.1 /lib/faketime.so
 ENV LD_PRELOAD=/lib/faketime.so
 ENV FAKETIME="-15d" 
 ENV DONT_FAKE_MONOTONIC=1
