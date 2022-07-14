@@ -18,7 +18,13 @@ func (h *Handler) NewsCategories(w http.ResponseWriter, r *http.Request) {
 	params := internal.Params(r.Form)
 	language, _ := params.String("language")
 
-	data := h.Client.NewsCategories.Query().Where(newscategories.And(newscategories.Status(true), newscategories.Language(language))).OnlyX(ctx)
+	newsCategoriesQuery := h.Client.NewsCategories.Query()
+
+	if len(language) != 0 {
+		newsCategoriesQuery = newsCategoriesQuery.Where(newscategories.Language(language))
+	}
+
+	data := newsCategoriesQuery.Where(newscategories.Status(true)).FirstX(ctx)
 
 	internal.ProtoEncode(w, &schema.NewsCategoryResponse{
 		ArticleCategories: data.ArticleCategories,
