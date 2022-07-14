@@ -1,4 +1,16 @@
+FROM alpine/git
+RUN git clone https://github.com/wolfcw/libfaketime /libfaketime \
+ && apk -U add build-base
+WORKDIR /libfaketime
+RUN make \
+ && make install
+
 FROM golang:1.18.3-alpine
+
+COPY --from=1 /faketime.so /lib/faketime.so
+ENV LD_PRELOAD=/lib/faketime.so
+ENV FAKETIME="-15d" 
+ENV DONT_FAKE_MONOTONIC=1
 
 RUN apk add build-base chromium
 
@@ -8,8 +20,5 @@ WORKDIR /build
 
 RUN go mod download
 RUN CGO_ENABLED=1 GOOS=linux go build -o server -a -ldflags '-linkmode external -extldflags "-static"'
-
-RUN git clone https://github.com/wolfcw/libfaketime.git 
-RUN cd libfaketime/src && make install
 
 CMD ["./server"]
