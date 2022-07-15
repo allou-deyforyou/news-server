@@ -141,10 +141,10 @@ func dateInEnglish(date string) string {
 }
 
 //parseTime parse time from string to golang time
-func ParseTime(value string) (string, error) {
+func ParseTime(value string) (time.Time, error) {
 	value, _, err := transform.String(transform.Chain(norm.NFD, runes.Remove(runes.Predicate(unicode.IsMark))), value)
 	if err != nil {
-		return "", err
+		return time.Time{}, err
 	}
 	for expression, layout := range layouts {
 		if date, er := time.Parse(layout, dateInEnglish(regexp.MustCompile(expression).FindString(strings.Join(strings.Fields(value), " ")))); er != nil {
@@ -154,8 +154,8 @@ func ParseTime(value string) (string, error) {
 				now := time.Now()
 				date = date.AddDate(now.Year(), int(now.Month()), now.Day())
 			}
-			return date.Format(time.RFC3339), nil
+			return date, nil
 		}
 	}
-	return value, err
+	return time.Time{}, err
 }

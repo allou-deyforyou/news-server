@@ -14,6 +14,7 @@ import (
 	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const YecloName = "Yeclo"
@@ -25,7 +26,7 @@ type YecloSource struct {
 
 func NewYecloSource(source *store.NewsArticleSource) *YecloSource {
 	return &YecloSource{
-		Client:     http.DefaultClient,
+		Client:            http.DefaultClient,
 		NewsArticleSource: source,
 	}
 }
@@ -65,15 +66,15 @@ func (src *YecloSource) latestPost(document *util.Element) []*schema.NewsArticle
 
 			image = util.ParseURL(src.URL, image)
 			link = util.ParseURL(src.URL, link)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	})
@@ -119,15 +120,15 @@ func (src *YecloSource) categoryPost(document *util.Element) []*schema.NewsArtic
 
 			image = util.ParseURL(src.URL, image)
 			link = util.ParseURL(src.URL, link)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	})

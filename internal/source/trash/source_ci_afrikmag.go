@@ -17,6 +17,7 @@ import (
 	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const AfrikMagName = "AfrikMag"
@@ -28,7 +29,7 @@ type AfrikMagSource struct {
 
 func NewAfrikMagSource(source *store.NewsArticleSource) *AfrikMagSource {
 	return &AfrikMagSource{
-		Client:     http.DefaultClient,
+		Client:            http.DefaultClient,
 		NewsArticleSource: source,
 	}
 }
@@ -52,7 +53,7 @@ func (src *AfrikMagSource) LatestPost(ctx context.Context) []*schema.NewsArticle
 
 func (src *AfrikMagSource) latestPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsArticlePost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -65,19 +66,19 @@ func (src *AfrikMagSource) latestPost(document *util.Element) []*schema.NewsArti
 			}
 
 			image = util.ParseURL(src.URL, image)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
-			filmList = append(filmList, &schema.NewsArticlePost{
+			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		})
-	return filmList
+	return result
 }
 
 func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, page int) []*schema.NewsArticlePost {
@@ -115,7 +116,7 @@ func (src *AfrikMagSource) CategoryPost(ctx context.Context, category string, pa
 
 func (src *AfrikMagSource) categoryPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.CategoryPostSelector
-	filmList := make([]*schema.NewsArticlePost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -125,19 +126,19 @@ func (src *AfrikMagSource) categoryPost(document *util.Element) []*schema.NewsAr
 			date := element.ChildText(selector.Date[0])
 
 			image = util.ParseURL(src.URL, image)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			image = strings.ReplaceAll(image, fmt.Sprintf("-220x150%v", path.Ext(image)), path.Ext(image))
-			filmList = append(filmList, &schema.NewsArticlePost{
+			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		})
-	return filmList
+	return result
 }
 
 func (src *AfrikMagSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {

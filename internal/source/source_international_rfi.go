@@ -13,6 +13,7 @@ import (
 	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const RFIName = "RFI"
@@ -65,15 +66,15 @@ func (src *RFISource) latestPost(document *util.Element) []*schema.NewsArticlePo
 				date = fmt.Sprintf("%v-%v-%v", string(date[:4]), string(date[4:6]), string(date[6:8]))
 
 				image = util.ParseURL(src.URL, image)
-				date, _ = util.ParseTime(date)
+				dateTime, _ := util.ParseTime(date)
 
 				result = append(result, &schema.NewsArticlePost{
+					Date:   timestamppb.New(dateTime),
 					Source: src.Name,
 					Logo:   src.Logo,
 					Image:  image,
 					Title:  title,
 					Link:   link,
-					Date:   date,
 				})
 			}
 		}
@@ -124,15 +125,15 @@ func (src *RFISource) categoryPost(document *util.Element) []*schema.NewsArticle
 
 			image = util.ParseURL(src.URL, image)
 			link = util.ParseURL(src.URL, link)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	})

@@ -10,6 +10,8 @@ import (
 	"news/internal/store"
 	"news/internal/store/schema"
 	"news/internal/util"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const RTIInfoName = "RTI Info"
@@ -21,7 +23,7 @@ type RTIInfoSource struct {
 
 func NewRTIInfoSource(source *store.NewsArticleSource) *RTIInfoSource {
 	return &RTIInfoSource{
-		Client:     http.DefaultClient,
+		Client:            http.DefaultClient,
 		NewsArticleSource: source,
 	}
 }
@@ -51,14 +53,14 @@ func (src *RTIInfoSource) latestPost(data map[string]interface{}) []*schema.News
 		date := data[selector.Date[0]].(string)
 
 		link = src.URL + link
-		date, _ = util.ParseTime(date)
+		dateTime, _ := util.ParseTime(date)
 
 		result = append(result, &schema.NewsArticlePost{
+			Date:   timestamppb.New(dateTime),
 			Source: src.Name,
 			Logo:   src.Logo,
 			Title:  title,
 			Image:  image,
-			Date:   date,
 			Link:   link,
 		})
 	}
@@ -94,14 +96,14 @@ func (src *RTIInfoSource) categoryPost(data map[string]interface{}) []*schema.Ne
 		date := data[selector.Date[0]].(string)
 
 		link = src.URL + link
-		date, _ = util.ParseTime(date)
+		dateTime, _ := util.ParseTime(date)
 
 		result = append(result, &schema.NewsArticlePost{
+			Date:   timestamppb.New(dateTime),
 			Source: src.Name,
 			Logo:   src.Logo,
 			Title:  title,
 			Image:  image,
-			Date:   date,
 			Link:   link,
 		})
 	}

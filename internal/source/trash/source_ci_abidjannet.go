@@ -13,6 +13,7 @@ import (
 	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const AbidjanNetName = "Abidjan.Net"
@@ -24,7 +25,7 @@ type AbidjanNetSource struct {
 
 func NewAbidjanNetSource(source *store.NewsArticleSource) *AbidjanNetSource {
 	return &AbidjanNetSource{
-		Client:     http.DefaultClient,
+		Client:            http.DefaultClient,
 		NewsArticleSource: source,
 	}
 }
@@ -48,7 +49,7 @@ func (src *AbidjanNetSource) LatestPost(ctx context.Context) []*schema.NewsArtic
 
 func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsArticlePost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 
 	elementCallBack := func(element *util.Element) {
 		// category := element.ChildText(selector.Category[0])
@@ -68,21 +69,21 @@ func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsAr
 		date = strings.TrimSpace(value[len(value)-1])
 
 		image = util.ParseURL(src.URL, image)
-		link = util.ParseURL(src.URL, link)
-		date, _ = util.ParseTime(date)
-
 		if strings.Contains(image, "defaut-cover-photo.svg") {
 			image = ""
 		}
 
+		link = util.ParseURL(src.URL, link)
+		dateTime, _ := util.ParseTime(date)
+
 		if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
-			filmList = append(filmList, &schema.NewsArticlePost{
+			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	}
@@ -93,7 +94,7 @@ func (src *AbidjanNetSource) latestPost(document *util.Element) []*schema.NewsAr
 		func(i int, element *util.Element) {
 			elementCallBack(element)
 		})
-	return filmList
+	return result
 }
 
 /// CategoryPost
@@ -120,7 +121,7 @@ func (src *AbidjanNetSource) CategoryPost(ctx context.Context, category string, 
 
 func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.NewsArticlePost {
 	selector := src.LatestPostSelector
-	filmList := make([]*schema.NewsArticlePost, 0)
+	result := make([]*schema.NewsArticlePost, 0)
 	document.ForEach(selector.List[0],
 		func(i int, element *util.Element) {
 			// category := element.ChildText(selector.Category[0])
@@ -133,25 +134,25 @@ func (src *AbidjanNetSource) categoryPost(document *util.Element) []*schema.News
 			date = strings.TrimSpace(value[len(value)-1])
 
 			image = util.ParseURL(src.URL, image)
-			link = util.ParseURL(src.URL, link)
-			date, _ = util.ParseTime(date)
-
 			if strings.Contains(image, "defaut-cover-photo.svg") {
 				image = ""
 			}
 
+			link = util.ParseURL(src.URL, link)
+			dateTime, _ := util.ParseTime(date)
+
 			if !strings.Contains(strings.Join(value, ""), "Fraternité Matin") && len(image) != 0 {
-				filmList = append(filmList, &schema.NewsArticlePost{
+				result = append(result, &schema.NewsArticlePost{
+					Date: timestamppb.New(dateTime),
 					Source: src.Name,
 					Logo:   src.Logo,
 					Image:  image,
 					Title:  title,
 					Link:   link,
-					Date:   date,
 				})
 			}
 		})
-	return filmList
+	return result
 }
 
 /// NewsArticle

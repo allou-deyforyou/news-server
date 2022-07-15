@@ -13,6 +13,7 @@ import (
 	"news/internal/util"
 
 	"github.com/PuerkitoBio/goquery"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const AfricaNewsName = "Africa News"
@@ -24,7 +25,7 @@ type AfricaNewsSource struct {
 
 func NewAfricaNewsSource(source *store.NewsArticleSource) *AfricaNewsSource {
 	return &AfricaNewsSource{
-		Client:     http.DefaultClient,
+		Client:            http.DefaultClient,
 		NewsArticleSource: source,
 	}
 }
@@ -63,15 +64,15 @@ func (src *AfricaNewsSource) latestPost(document *util.Element) []*schema.NewsAr
 
 			image = util.ParseURL(src.URL, image)
 			link = util.ParseURL(src.URL, link)
-			date, _ = util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	})
@@ -119,15 +120,15 @@ func (src *AfricaNewsSource) categoryPost(document *util.Element) []*schema.News
 
 			image = util.ParseURL(src.URL, image)
 			link = util.ParseURL(src.URL, link)
-			date, _ := util.ParseTime(date)
+			dateTime, _ := util.ParseTime(date)
 
 			result = append(result, &schema.NewsArticlePost{
+				Date:   timestamppb.New(dateTime),
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
 				Title:  title,
 				Link:   link,
-				Date:   date,
 			})
 		}
 	})

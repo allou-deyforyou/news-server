@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.10.1
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/go-rod/rod v0.107.3
+	github.com/golang/protobuf v1.5.2
 	github.com/mattn/go-sqlite3 v1.14.10
 	golang.org/x/text v0.3.7
 	google.golang.org/protobuf v1.28.0
