@@ -14,7 +14,6 @@ RUN go build -o server -a -ldflags '-linkmode external -extldflags "-static"'
 
 FROM alpine:latest
 
-RUN apk --update add ca-certificates
 RUN apk add chromium
 
 WORKDIR /app
