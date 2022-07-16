@@ -1,23 +1,12 @@
-FROM golang:1.18.4-alpine as builder
+FROM golang:1.18.4-alpine
 
-RUN apk add build-base
+RUN apk add build-base chromium
 
+RUN mkdir /build
+ADD ./ /build/
 WORKDIR /build
 
-ENV CGO_ENABLED=1
-ENV GOOS=linux
-ENV GOARCH=amd64
-
-COPY . .
-
-RUN go build -o server -a -ldflags '-linkmode external -extldflags "-static"'
-
-FROM alpine:latest
-
-RUN apk add chromium
-
-WORKDIR /app
-
-COPY --from=builder /build/yola.db /build/server ./
+RUN go mod download
+RUN CGO_ENABLED=1 GOOS=linux go build -o server -a -ldflags '-linkmode external -extldflags "-static"'
 
 CMD ["./server"]
