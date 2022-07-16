@@ -19,6 +19,6 @@ RUN apk add chromium
 
 WORKDIR /app
 
-COPY --from=builder /build/yola.db /build/server .
+COPY --from=builder /build/yola.db /build/server ./
 
 CMD ["./server"]
