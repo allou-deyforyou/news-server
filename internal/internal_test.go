@@ -269,7 +269,7 @@ func TestCreateBBCSource(t *testing.T) {
 		}).
 		SetCategoryPostURL("/afrique/topics/%v?page=%v").
 		SetCategoryPostSelector(&schema.NewsPostSelector{
-			Title: []string{"h3"},
+			Title: []string{"h2"},
 			Image: []string{"picture source:nth-child(1)", "srcset"},
 			Date:  []string{"time", "datetime"},
 			Link:  []string{"a", "href"},
