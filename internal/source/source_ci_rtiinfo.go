@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"news/internal/store"
 	"news/internal/store/schema"
 	"news/internal/util"
 
+	"github.com/PuerkitoBio/goquery"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -126,7 +128,11 @@ func (src *RTIInfoSource) NewsArticle(ctx context.Context, link string) *schema.
 func (src *RTIInfoSource) newsArticle(data map[string]interface{}) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
 	description := data[selector.Description[0]].(map[string]interface{})[selector.Description[1]].(string)
+
+	document, _ := goquery.NewDocumentFromReader(strings.NewReader(description))
+	element := util.NewElement(document.Selection.Find("*").RemoveClass().RemoveAttr("style"))
+
 	return &schema.NewsArticlePost{
-		Description: description,
+		Description: element.OuterHtml(),
 	}
 }
