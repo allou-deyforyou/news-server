@@ -1,4 +1,4 @@
-package trash
+package source
 
 import (
 	"context"
@@ -121,7 +121,7 @@ func (src *FratmatInfoSource) categoryPost(document *util.Element) []*schema.New
 /// PostArticle
 ///////////////
 func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *schema.NewsArticlePost {
-	response, err := util.RodNavigate(link)
+	response, err := util.RodGetRequest(link)
 	if err != nil {
 		log.Println(err)
 		return nil
