@@ -1,5 +1,11 @@
 package internal_test
 
+import (
+	"context"
+	"news/internal/store/schema"
+	"testing"
+)
+
 // import (
 // 	"context"
 // 	"news/internal/store/schema"
@@ -8,40 +14,40 @@ package internal_test
 
 // // Cote d'ivoire
 
-// func TestCreateFratmatInfoSource(t *testing.T) {
-// 	entClient.NewsArticleSource.Create().
-// 		SetStatus(true).
-// 		SetName("Fratmat Info").
-// 		SetURL("https://www.fratmat.info").
-// 		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
-// 		SetCategories(map[string]string{
-// 			schema.PoliticsArticleCategory: "politique",
-// 			schema.EconomyArticleCategory:  "économie",
-// 			schema.SocietyArticleCategory:  "société",
-// 			schema.SportArticleCategory:    "sport",
-// 			schema.CultureArticleCategory:  "culture",
-// 		}).
-// 		SetLatestPostURL("/").
-// 		SetLatestPostSelector(&schema.NewsPostSelector{
-// 			Title: []string{".article-title"},
-// 			Image: []string{"img", "data-src"},
-// 			Date:  []string{".publishTime"},
-// 			Link:  []string{"a", "href"},
-// 			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
-// 		}).
-// 		SetCategoryPostURL("/morearticles/%v?pgno=%v").
-// 		SetCategoryPostSelector(&schema.NewsPostSelector{
-// 			Title: []string{".article-title"},
-// 			Image: []string{"img", "data-src"},
-// 			Date:  []string{".publishTime"},
-// 			Link:  []string{"a", "href"},
-// 			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
-// 		}).
-// 		SetArticleSelector(&schema.NewsArticleSelector{
-// 			Description: []string{".body-desc div:nth-child(3)"},
-// 		}).
-// 		Save(context.Background())
-// }
+func TestCreateFratmatInfoSource(t *testing.T) {
+	entClient.NewsArticleSource.Create().
+		SetStatus(true).
+		SetName("Fratmat Info").
+		SetURL("https://www.fratmat.info").
+		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
+		SetCategories(map[string]string{
+			schema.PoliticsArticleCategory: "politique",
+			schema.EconomyArticleCategory:  "économie",
+			schema.SocietyArticleCategory:  "société",
+			schema.SportArticleCategory:    "sport",
+			schema.CultureArticleCategory:  "culture",
+		}).
+		SetLatestPostURL("/").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
+		}).
+		SetCategoryPostURL("/morearticles/%v?pgno=%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".body-desc div:nth-child(3)"},
+		}).
+		Save(context.Background())
+}
 
 // func TestCreateAbidjanNetSource(t *testing.T) {
 // 	entClient.NewsArticleSource.Create().

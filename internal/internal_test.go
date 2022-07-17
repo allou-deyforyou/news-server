@@ -300,7 +300,7 @@ func TestCreateRti1TV(t *testing.T) {
 		SetStatus(true).
 		SetSource("RTI 1").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti1.smil/playlist.m3u8").
-		SetLogo("https://rti.ci/_nuxt/img/6a12f31.svg").
+		SetLogo("https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Logo_RTI_1.svg/1200px-Logo_RTI_1.png").
 		SetDescription("La première chaîne de télévision publique ivoirienne du Groupe RTI").
 		SaveX(context.Background())
 }
@@ -311,7 +311,7 @@ func TestCreateRti2TV(t *testing.T) {
 		SetStatus(true).
 		SetSource("RTI 2").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti2.smil/playlist.m3u8").
-		SetLogo("https://rti.ci/_nuxt/img/6d85e57.svg").
+		SetLogo("https://upload.wikimedia.org/wikipedia/fr/thumb/4/4a/Logo_RTI2.svg/1200px-Logo_RTI2.png").
 		SetDescription("Une nouvelle chaîne de télévision ivoirienne du Groupe RTI").
 		SaveX(context.Background())
 }
@@ -322,7 +322,7 @@ func TestCreateRti3TV(t *testing.T) {
 		SetStatus(true).
 		SetSource("La 3").
 		SetVideo("https://www.enovativecdn.com/rticdn/smil:rti3.smil/playlist.m3u8").
-		SetLogo("https://rti.ci/_nuxt/img/4da62df.svg").
+		SetLogo("https://pbs.twimg.com/profile_images/1233844111125483522/vnB3tZbu.jpg").
 		SetDescription("Appelée aussi RTI 3, une nouvelle chaîne de télévision ivoirienne du Groupe RTI").
 		SaveX(context.Background())
 
