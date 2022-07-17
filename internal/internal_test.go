@@ -42,15 +42,15 @@ func TestCreateNewsCategories(t *testing.T) {
 	entClient.NewsCategories.Create().
 		SetLanguage("fr").
 		SetArticleCategories(map[string]string{
-			schema.PoliticsArticleCategory: "politique",
-			schema.EconomyArticleCategory: "économie",
-			schema.SocietyArticleCategory: "société",
-			schema.SportArticleCategory: "sport",
-			schema.CultureArticleCategory: "culture",
-			schema.TechnologyArticleCategory: "technologie",
-			schema.HealthArticleCategory: "santé",
+			schema.PoliticsArticleCategory:      "politique",
+			schema.EconomyArticleCategory:       "économie",
+			schema.SocietyArticleCategory:       "société",
+			schema.SportArticleCategory:         "sport",
+			schema.CultureArticleCategory:       "culture",
+			schema.TechnologyArticleCategory:    "technologie",
+			schema.HealthArticleCategory:        "santé",
 			schema.InternationalArticleCategory: "international",
-			schema.MusicArticleCategory: "musique",
+			schema.MusicArticleCategory:         "musique",
 		}).
 		SetTvCategories(map[string]string{}).
 		SaveX(context.Background())
@@ -67,6 +67,41 @@ func TestGetNewsArticleSources(t *testing.T) {
 }
 
 // Cote d'ivoire
+
+func TestCreateFratmatInfoSource(t *testing.T) {
+	entClient.NewsArticleSource.Create().
+		SetStatus(true).
+		SetName("Fratmat Info").
+		SetURL("https://www.fratmat.info").
+		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
+		SetCategories(map[string]string{
+			schema.PoliticsArticleCategory: "politique",
+			schema.EconomyArticleCategory:  "économie",
+			schema.SocietyArticleCategory:  "société",
+			schema.SportArticleCategory:    "sport",
+			schema.CultureArticleCategory:  "culture",
+		}).
+		SetLatestPostURL("/").
+		SetLatestPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
+		}).
+		SetCategoryPostURL("/morearticles/%v?pgno=%v").
+		SetCategoryPostSelector(&schema.NewsPostSelector{
+			Title: []string{".article-title"},
+			Image: []string{"img", "data-src"},
+			Date:  []string{".publishTime"},
+			Link:  []string{"a", "href"},
+			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
+		}).
+		SetArticleSelector(&schema.NewsArticleSelector{
+			Description: []string{".body-desc div:nth-child(3)"},
+		}).
+		Save(context.Background())
+}
 
 func TestCreateYecloSource(t *testing.T) {
 	entClient.NewsArticleSource.Create().
