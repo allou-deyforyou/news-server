@@ -287,7 +287,7 @@ func TestCreateBBCSource(t *testing.T) {
 		SetName("BBC").
 		SetCountry("world").
 		SetURL("https://www.bbc.com").
-		SetLogo("https://ichef.bbci.co.uk/favicon.ico").
+		SetLogo("https://www.bbc.com/favicon.ico").
 		SetCategories(map[string]string{
 			schema.EconomyArticleCategory:    "cnq687nr9v1t",
 			schema.TechnologyArticleCategory: "cnq687nn703t",
