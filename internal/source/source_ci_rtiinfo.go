@@ -131,6 +131,11 @@ func (src *RTIInfoSource) newsArticle(data map[string]interface{}) *schema.NewsA
 
 	document, _ := goquery.NewDocumentFromReader(strings.NewReader(description))
 	element := util.NewElement(document.Selection.Find("*").RemoveClass().RemoveAttr("style"))
+	element.ForEach("p", func(i int, e *util.Element) {
+		if e.InnerHtml() == "<br/>" {
+			e.Selection.Remove()
+		}
+	})
 
 	return &schema.NewsArticlePost{
 		Description: element.OuterHtml(),
