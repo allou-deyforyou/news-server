@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"news/internal/store"
 	"news/internal/store/schema"
@@ -136,9 +135,9 @@ func (src *FratmatInfoSource) NewsArticle(ctx context.Context, link string) *sch
 
 func (src *FratmatInfoSource) newsArticle(document *util.Element) *schema.NewsArticlePost {
 	selector := src.ArticleSelector
-	description := document.ChildOuterHtml(selector.Description[0])
-	description = strings.Join(strings.Fields(description), " ")
+	description := document.Selection.Find(selector.Description[0])
+	description.Find(selector.Description[1]).Remove()
 	return &schema.NewsArticlePost{
-		Description: description,
+		Description: util.NewElement(description).OuterHtml(),
 	}
 }

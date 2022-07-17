@@ -98,7 +98,7 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 			List:  []string{".fratmat-more-articles .ajaxArticles .article-info"},
 		}).
 		SetArticleSelector(&schema.NewsArticleSelector{
-			Description: []string{".body-desc div:nth-child(3)"},
+			Description: []string{".body-desc", ".social-media"},
 		}).
 		Save(context.Background())
 }
