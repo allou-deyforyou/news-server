@@ -125,7 +125,7 @@ func (src *RTIInfoSource) articleContent(data map[string]interface{}) *custom.Ar
 	element := NewElement(document.Selection.Find("*").RemoveClass().RemoveAttr("style"))
 	element.ForEach("p", func(_ int, e *Element) {
 		innerHtml := strings.TrimSpace(e.InnerHtml())
-		if innerHtml == "<br/>" || innerHtml == "<span> </span>" || innerHtml == "<p> </p>"{
+		if innerHtml == "<br/>" || innerHtml == "<span> </span>" || len(innerHtml) == 0{
 			e.Selection.Remove()
 		}
 	})
