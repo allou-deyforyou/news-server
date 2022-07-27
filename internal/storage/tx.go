@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// ArticlePost is the client for interacting with the ArticlePost builders.
 	ArticlePost *ArticlePostClient
+	// Categories is the client for interacting with the Categories builders.
+	Categories *CategoriesClient
 	// MediaPost is the client for interacting with the MediaPost builders.
 	MediaPost *MediaPostClient
 	// Source is the client for interacting with the Source builders.
@@ -154,6 +156,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.ArticlePost = NewArticlePostClient(tx.config)
+	tx.Categories = NewCategoriesClient(tx.config)
 	tx.MediaPost = NewMediaPostClient(tx.config)
 	tx.Source = NewSourceClient(tx.config)
 }

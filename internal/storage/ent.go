@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"news/internal/storage/articlepost"
+	"news/internal/storage/categories"
 	"news/internal/storage/mediapost"
 	"news/internal/storage/source"
 
@@ -32,6 +33,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		articlepost.Table: articlepost.ValidColumn,
+		categories.Table:  categories.ValidColumn,
 		mediapost.Table:   mediapost.ValidColumn,
 		source.Table:      source.ValidColumn,
 	}

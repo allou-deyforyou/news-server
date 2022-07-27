@@ -67,7 +67,7 @@ func TestCreateRfiTV(t *testing.T) {
 		SetLogo("https://www.rfi.fr/favicon.ico").
 		SetType(mediapost.TypeAudio).
 		SetContent("https://rfiafrique64k.ice.infomaniak.ch/rfiafrique-64.mp3").
-		SetDescription("La Radio Française d'actualité Internationale").
+		SetDescription("La radio française d'actualité internationale").
 		SaveX(context.Background())
 }
 
@@ -77,7 +77,7 @@ func TestCreateFrance24TV(t *testing.T) {
 		SetSource("France 24").
 		SetLogo("https://www.france24.com/favicon.ico").
 		SetType(mediapost.TypeYoutube).
-		SetContent("UCCCPCZNChQdGa9EkATeye4g").
-		SetDescription("La Chaîne Française d'Actualité Internationale").
+		SetContent("u9foWyMSATM").
+		SetDescription("La chaîne française d'actualité internationale").
 		SaveX(context.Background())
 }

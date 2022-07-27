@@ -622,6 +622,53 @@ func (x *NewsCategory) GetName() string {
 	return ""
 }
 
+type NewsCategoryListResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data []*NewsCategory `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *NewsCategoryListResponse) Reset() {
+	*x = NewsCategoryListResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_schema_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NewsCategoryListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewsCategoryListResponse) ProtoMessage() {}
+
+func (x *NewsCategoryListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_schema_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewsCategoryListResponse.ProtoReflect.Descriptor instead.
+func (*NewsCategoryListResponse) Descriptor() ([]byte, []int) {
+	return file_schema_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *NewsCategoryListResponse) GetData() []*NewsCategory {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_schema_proto protoreflect.FileDescriptor
 
 var file_schema_proto_rawDesc = []byte{
@@ -691,8 +738,12 @@ var file_schema_proto_rawDesc = []byte{
 	0x22, 0x38, 0x0a, 0x0c, 0x4e, 0x65, 0x77, 0x73, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79,
 	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x63,
-	0x75, 0x73, 0x74, 0x6f, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x3d, 0x0a, 0x18, 0x4e, 0x65,
+	0x77, 0x73, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x4e, 0x65, 0x77, 0x73, 0x43, 0x61, 0x74, 0x65, 0x67,
+	0x6f, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x63, 0x75,
+	0x73, 0x74, 0x6f, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -708,32 +759,34 @@ func file_schema_proto_rawDescGZIP() []byte {
 }
 
 var file_schema_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_schema_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_schema_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_schema_proto_goTypes = []interface{}{
-	(MediaPost_Type)(0),             // 0: MediaPost.Type
-	(*ArticlePost)(nil),             // 1: ArticlePost
-	(*ArticlePostRequest)(nil),      // 2: ArticlePostRequest
-	(*ArticlePostListResponse)(nil), // 3: ArticlePostListResponse
-	(*ArticlePostResponse)(nil),     // 4: ArticlePostResponse
-	(*MediaPost)(nil),               // 5: MediaPost
-	(*MediaPostListResponse)(nil),   // 6: MediaPostListResponse
-	(*MediaPostResponse)(nil),       // 7: MediaPostResponse
-	(*NewsCategory)(nil),            // 8: NewsCategory
-	(*timestamp.Timestamp)(nil),     // 9: google.protobuf.Timestamp
+	(MediaPost_Type)(0),              // 0: MediaPost.Type
+	(*ArticlePost)(nil),              // 1: ArticlePost
+	(*ArticlePostRequest)(nil),       // 2: ArticlePostRequest
+	(*ArticlePostListResponse)(nil),  // 3: ArticlePostListResponse
+	(*ArticlePostResponse)(nil),      // 4: ArticlePostResponse
+	(*MediaPost)(nil),                // 5: MediaPost
+	(*MediaPostListResponse)(nil),    // 6: MediaPostListResponse
+	(*MediaPostResponse)(nil),        // 7: MediaPostResponse
+	(*NewsCategory)(nil),             // 8: NewsCategory
+	(*NewsCategoryListResponse)(nil), // 9: NewsCategoryListResponse
+	(*timestamp.Timestamp)(nil),      // 10: google.protobuf.Timestamp
 }
 var file_schema_proto_depIdxs = []int32{
-	9, // 0: ArticlePost.date:type_name -> google.protobuf.Timestamp
-	1, // 1: ArticlePostListResponse.data:type_name -> ArticlePost
-	1, // 2: ArticlePostResponse.data:type_name -> ArticlePost
-	9, // 3: MediaPost.date:type_name -> google.protobuf.Timestamp
-	0, // 4: MediaPost.type:type_name -> MediaPost.Type
-	5, // 5: MediaPostListResponse.data:type_name -> MediaPost
-	5, // 6: MediaPostResponse.data:type_name -> MediaPost
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	10, // 0: ArticlePost.date:type_name -> google.protobuf.Timestamp
+	1,  // 1: ArticlePostListResponse.data:type_name -> ArticlePost
+	1,  // 2: ArticlePostResponse.data:type_name -> ArticlePost
+	10, // 3: MediaPost.date:type_name -> google.protobuf.Timestamp
+	0,  // 4: MediaPost.type:type_name -> MediaPost.Type
+	5,  // 5: MediaPostListResponse.data:type_name -> MediaPost
+	5,  // 6: MediaPostResponse.data:type_name -> MediaPost
+	8,  // 7: NewsCategoryListResponse.data:type_name -> NewsCategory
+	8,  // [8:8] is the sub-list for method output_type
+	8,  // [8:8] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_schema_proto_init() }
@@ -838,6 +891,18 @@ func file_schema_proto_init() {
 				return nil
 			}
 		}
+		file_schema_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewsCategoryListResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -845,7 +910,7 @@ func file_schema_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_schema_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

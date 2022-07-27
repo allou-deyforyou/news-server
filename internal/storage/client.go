@@ -10,6 +10,7 @@ import (
 	"news/internal/storage/migrate"
 
 	"news/internal/storage/articlepost"
+	"news/internal/storage/categories"
 	"news/internal/storage/mediapost"
 	"news/internal/storage/source"
 
@@ -24,6 +25,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// ArticlePost is the client for interacting with the ArticlePost builders.
 	ArticlePost *ArticlePostClient
+	// Categories is the client for interacting with the Categories builders.
+	Categories *CategoriesClient
 	// MediaPost is the client for interacting with the MediaPost builders.
 	MediaPost *MediaPostClient
 	// Source is the client for interacting with the Source builders.
@@ -42,6 +45,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.ArticlePost = NewArticlePostClient(c.config)
+	c.Categories = NewCategoriesClient(c.config)
 	c.MediaPost = NewMediaPostClient(c.config)
 	c.Source = NewSourceClient(c.config)
 }
@@ -78,6 +82,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:         ctx,
 		config:      cfg,
 		ArticlePost: NewArticlePostClient(cfg),
+		Categories:  NewCategoriesClient(cfg),
 		MediaPost:   NewMediaPostClient(cfg),
 		Source:      NewSourceClient(cfg),
 	}, nil
@@ -100,6 +105,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:         ctx,
 		config:      cfg,
 		ArticlePost: NewArticlePostClient(cfg),
+		Categories:  NewCategoriesClient(cfg),
 		MediaPost:   NewMediaPostClient(cfg),
 		Source:      NewSourceClient(cfg),
 	}, nil
@@ -132,6 +138,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.ArticlePost.Use(hooks...)
+	c.Categories.Use(hooks...)
 	c.MediaPost.Use(hooks...)
 	c.Source.Use(hooks...)
 }
@@ -224,6 +231,96 @@ func (c *ArticlePostClient) GetX(ctx context.Context, id int) *ArticlePost {
 // Hooks returns the client hooks.
 func (c *ArticlePostClient) Hooks() []Hook {
 	return c.hooks.ArticlePost
+}
+
+// CategoriesClient is a client for the Categories schema.
+type CategoriesClient struct {
+	config
+}
+
+// NewCategoriesClient returns a client for the Categories from the given config.
+func NewCategoriesClient(c config) *CategoriesClient {
+	return &CategoriesClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `categories.Hooks(f(g(h())))`.
+func (c *CategoriesClient) Use(hooks ...Hook) {
+	c.hooks.Categories = append(c.hooks.Categories, hooks...)
+}
+
+// Create returns a create builder for Categories.
+func (c *CategoriesClient) Create() *CategoriesCreate {
+	mutation := newCategoriesMutation(c.config, OpCreate)
+	return &CategoriesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Categories entities.
+func (c *CategoriesClient) CreateBulk(builders ...*CategoriesCreate) *CategoriesCreateBulk {
+	return &CategoriesCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Categories.
+func (c *CategoriesClient) Update() *CategoriesUpdate {
+	mutation := newCategoriesMutation(c.config, OpUpdate)
+	return &CategoriesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CategoriesClient) UpdateOne(ca *Categories) *CategoriesUpdateOne {
+	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategories(ca))
+	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CategoriesClient) UpdateOneID(id int) *CategoriesUpdateOne {
+	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategoriesID(id))
+	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Categories.
+func (c *CategoriesClient) Delete() *CategoriesDelete {
+	mutation := newCategoriesMutation(c.config, OpDelete)
+	return &CategoriesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CategoriesClient) DeleteOne(ca *Categories) *CategoriesDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CategoriesClient) DeleteOneID(id int) *CategoriesDeleteOne {
+	builder := c.Delete().Where(categories.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CategoriesDeleteOne{builder}
+}
+
+// Query returns a query builder for Categories.
+func (c *CategoriesClient) Query() *CategoriesQuery {
+	return &CategoriesQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Categories entity by its id.
+func (c *CategoriesClient) Get(ctx context.Context, id int) (*Categories, error) {
+	return c.Query().Where(categories.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CategoriesClient) GetX(ctx context.Context, id int) *Categories {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CategoriesClient) Hooks() []Hook {
+	return c.hooks.Categories
 }
 
 // MediaPostClient is a client for the MediaPost schema.

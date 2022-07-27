@@ -21,6 +21,19 @@ func (f ArticlePostFunc) Mutate(ctx context.Context, m storage.Mutation) (storag
 	return f(ctx, mv)
 }
 
+// The CategoriesFunc type is an adapter to allow the use of ordinary
+// function as Categories mutator.
+type CategoriesFunc func(context.Context, *storage.CategoriesMutation) (storage.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CategoriesFunc) Mutate(ctx context.Context, m storage.Mutation) (storage.Value, error) {
+	mv, ok := m.(*storage.CategoriesMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *storage.CategoriesMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The MediaPostFunc type is an adapter to allow the use of ordinary
 // function as MediaPost mutator.
 type MediaPostFunc func(context.Context, *storage.MediaPostMutation) (storage.Value, error)

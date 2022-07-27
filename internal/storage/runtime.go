@@ -4,6 +4,7 @@ package storage
 
 import (
 	"news/internal/storage/articlepost"
+	"news/internal/storage/categories"
 	"news/internal/storage/mediapost"
 	"news/internal/storage/schema"
 	"news/internal/storage/source"
@@ -19,6 +20,16 @@ func init() {
 	articlepostDescStatus := articlepostFields[0].Descriptor()
 	// articlepost.DefaultStatus holds the default value on creation for the status field.
 	articlepost.DefaultStatus = articlepostDescStatus.Default.(bool)
+	categoriesFields := schema.Categories{}.Fields()
+	_ = categoriesFields
+	// categoriesDescLanguage is the schema descriptor for language field.
+	categoriesDescLanguage := categoriesFields[2].Descriptor()
+	// categories.DefaultLanguage holds the default value on creation for the language field.
+	categories.DefaultLanguage = categoriesDescLanguage.Default.(string)
+	// categoriesDescStatus is the schema descriptor for status field.
+	categoriesDescStatus := categoriesFields[3].Descriptor()
+	// categories.DefaultStatus holds the default value on creation for the status field.
+	categories.DefaultStatus = categoriesDescStatus.Default.(bool)
 	mediapostFields := schema.MediaPost{}.Fields()
 	_ = mediapostFields
 	// mediapostDescStatus is the schema descriptor for status field.

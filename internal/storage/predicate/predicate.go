@@ -9,6 +9,9 @@ import (
 // ArticlePost is the predicate function for articlepost builders.
 type ArticlePost func(*sql.Selector)
 
+// Categories is the predicate function for categories builders.
+type Categories func(*sql.Selector)
+
 // MediaPost is the predicate function for mediapost builders.
 type MediaPost func(*sql.Selector)
 

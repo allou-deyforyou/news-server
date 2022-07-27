@@ -25,6 +25,20 @@ var (
 		Columns:    ArticlePostsColumns,
 		PrimaryKey: []*schema.Column{ArticlePostsColumns[0]},
 	}
+	// CategoriesColumns holds the columns for the "categories" table.
+	CategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "article_categories", Type: field.TypeJSON, Nullable: true},
+		{Name: "media_categories", Type: field.TypeJSON, Nullable: true},
+		{Name: "language", Type: field.TypeString, Default: "fr"},
+		{Name: "status", Type: field.TypeBool, Default: true},
+	}
+	// CategoriesTable holds the schema information for the "categories" table.
+	CategoriesTable = &schema.Table{
+		Name:       "categories",
+		Columns:    CategoriesColumns,
+		PrimaryKey: []*schema.Column{CategoriesColumns[0]},
+	}
 	// MediaPostsColumns holds the columns for the "media_posts" table.
 	MediaPostsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -77,6 +91,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		ArticlePostsTable,
+		CategoriesTable,
 		MediaPostsTable,
 		SourcesTable,
 	}

@@ -23,6 +23,8 @@ func init() {
 
 	server.Handle("/news/media/content", handler.ParseHandler(server.MediaContent))
 	server.Handle("/news/media/post", handler.ParseHandler(server.MediaPostList))
+
+	server.Handle("/news/categories", handler.ParseHandler(server.NewsCategories))
 }
 
 func main() {

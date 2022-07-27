@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"news/internal/storage/articlepost"
+	"news/internal/storage/categories"
 	"news/internal/storage/custom"
 	"news/internal/storage/mediapost"
 	"news/internal/storage/predicate"
@@ -27,6 +28,7 @@ const (
 
 	// Node types.
 	TypeArticlePost = "ArticlePost"
+	TypeCategories  = "Categories"
 	TypeMediaPost   = "MediaPost"
 	TypeSource      = "Source"
 )
@@ -705,6 +707,520 @@ func (m *ArticlePostMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *ArticlePostMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ArticlePost edge %s", name)
+}
+
+// CategoriesMutation represents an operation that mutates the Categories nodes in the graph.
+type CategoriesMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int
+	article_categories *map[string]string
+	media_categories   *map[string]string
+	language           *string
+	status             *bool
+	clearedFields      map[string]struct{}
+	done               bool
+	oldValue           func(context.Context) (*Categories, error)
+	predicates         []predicate.Categories
+}
+
+var _ ent.Mutation = (*CategoriesMutation)(nil)
+
+// categoriesOption allows management of the mutation configuration using functional options.
+type categoriesOption func(*CategoriesMutation)
+
+// newCategoriesMutation creates new mutation for the Categories entity.
+func newCategoriesMutation(c config, op Op, opts ...categoriesOption) *CategoriesMutation {
+	m := &CategoriesMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCategories,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCategoriesID sets the ID field of the mutation.
+func withCategoriesID(id int) categoriesOption {
+	return func(m *CategoriesMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Categories
+		)
+		m.oldValue = func(ctx context.Context) (*Categories, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Categories.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCategories sets the old Categories of the mutation.
+func withCategories(node *Categories) categoriesOption {
+	return func(m *CategoriesMutation) {
+		m.oldValue = func(context.Context) (*Categories, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CategoriesMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CategoriesMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("storage: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CategoriesMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CategoriesMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Categories.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetArticleCategories sets the "article_categories" field.
+func (m *CategoriesMutation) SetArticleCategories(value map[string]string) {
+	m.article_categories = &value
+}
+
+// ArticleCategories returns the value of the "article_categories" field in the mutation.
+func (m *CategoriesMutation) ArticleCategories() (r map[string]string, exists bool) {
+	v := m.article_categories
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldArticleCategories returns the old "article_categories" field's value of the Categories entity.
+// If the Categories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoriesMutation) OldArticleCategories(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldArticleCategories is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldArticleCategories requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldArticleCategories: %w", err)
+	}
+	return oldValue.ArticleCategories, nil
+}
+
+// ClearArticleCategories clears the value of the "article_categories" field.
+func (m *CategoriesMutation) ClearArticleCategories() {
+	m.article_categories = nil
+	m.clearedFields[categories.FieldArticleCategories] = struct{}{}
+}
+
+// ArticleCategoriesCleared returns if the "article_categories" field was cleared in this mutation.
+func (m *CategoriesMutation) ArticleCategoriesCleared() bool {
+	_, ok := m.clearedFields[categories.FieldArticleCategories]
+	return ok
+}
+
+// ResetArticleCategories resets all changes to the "article_categories" field.
+func (m *CategoriesMutation) ResetArticleCategories() {
+	m.article_categories = nil
+	delete(m.clearedFields, categories.FieldArticleCategories)
+}
+
+// SetMediaCategories sets the "media_categories" field.
+func (m *CategoriesMutation) SetMediaCategories(value map[string]string) {
+	m.media_categories = &value
+}
+
+// MediaCategories returns the value of the "media_categories" field in the mutation.
+func (m *CategoriesMutation) MediaCategories() (r map[string]string, exists bool) {
+	v := m.media_categories
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMediaCategories returns the old "media_categories" field's value of the Categories entity.
+// If the Categories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoriesMutation) OldMediaCategories(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMediaCategories is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMediaCategories requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMediaCategories: %w", err)
+	}
+	return oldValue.MediaCategories, nil
+}
+
+// ClearMediaCategories clears the value of the "media_categories" field.
+func (m *CategoriesMutation) ClearMediaCategories() {
+	m.media_categories = nil
+	m.clearedFields[categories.FieldMediaCategories] = struct{}{}
+}
+
+// MediaCategoriesCleared returns if the "media_categories" field was cleared in this mutation.
+func (m *CategoriesMutation) MediaCategoriesCleared() bool {
+	_, ok := m.clearedFields[categories.FieldMediaCategories]
+	return ok
+}
+
+// ResetMediaCategories resets all changes to the "media_categories" field.
+func (m *CategoriesMutation) ResetMediaCategories() {
+	m.media_categories = nil
+	delete(m.clearedFields, categories.FieldMediaCategories)
+}
+
+// SetLanguage sets the "language" field.
+func (m *CategoriesMutation) SetLanguage(s string) {
+	m.language = &s
+}
+
+// Language returns the value of the "language" field in the mutation.
+func (m *CategoriesMutation) Language() (r string, exists bool) {
+	v := m.language
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguage returns the old "language" field's value of the Categories entity.
+// If the Categories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoriesMutation) OldLanguage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguage: %w", err)
+	}
+	return oldValue.Language, nil
+}
+
+// ResetLanguage resets all changes to the "language" field.
+func (m *CategoriesMutation) ResetLanguage() {
+	m.language = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *CategoriesMutation) SetStatus(b bool) {
+	m.status = &b
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *CategoriesMutation) Status() (r bool, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Categories entity.
+// If the Categories object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoriesMutation) OldStatus(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *CategoriesMutation) ResetStatus() {
+	m.status = nil
+}
+
+// Where appends a list predicates to the CategoriesMutation builder.
+func (m *CategoriesMutation) Where(ps ...predicate.Categories) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *CategoriesMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Categories).
+func (m *CategoriesMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CategoriesMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.article_categories != nil {
+		fields = append(fields, categories.FieldArticleCategories)
+	}
+	if m.media_categories != nil {
+		fields = append(fields, categories.FieldMediaCategories)
+	}
+	if m.language != nil {
+		fields = append(fields, categories.FieldLanguage)
+	}
+	if m.status != nil {
+		fields = append(fields, categories.FieldStatus)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CategoriesMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case categories.FieldArticleCategories:
+		return m.ArticleCategories()
+	case categories.FieldMediaCategories:
+		return m.MediaCategories()
+	case categories.FieldLanguage:
+		return m.Language()
+	case categories.FieldStatus:
+		return m.Status()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CategoriesMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case categories.FieldArticleCategories:
+		return m.OldArticleCategories(ctx)
+	case categories.FieldMediaCategories:
+		return m.OldMediaCategories(ctx)
+	case categories.FieldLanguage:
+		return m.OldLanguage(ctx)
+	case categories.FieldStatus:
+		return m.OldStatus(ctx)
+	}
+	return nil, fmt.Errorf("unknown Categories field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CategoriesMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case categories.FieldArticleCategories:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetArticleCategories(v)
+		return nil
+	case categories.FieldMediaCategories:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMediaCategories(v)
+		return nil
+	case categories.FieldLanguage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguage(v)
+		return nil
+	case categories.FieldStatus:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Categories field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CategoriesMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CategoriesMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CategoriesMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Categories numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CategoriesMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(categories.FieldArticleCategories) {
+		fields = append(fields, categories.FieldArticleCategories)
+	}
+	if m.FieldCleared(categories.FieldMediaCategories) {
+		fields = append(fields, categories.FieldMediaCategories)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CategoriesMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CategoriesMutation) ClearField(name string) error {
+	switch name {
+	case categories.FieldArticleCategories:
+		m.ClearArticleCategories()
+		return nil
+	case categories.FieldMediaCategories:
+		m.ClearMediaCategories()
+		return nil
+	}
+	return fmt.Errorf("unknown Categories nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CategoriesMutation) ResetField(name string) error {
+	switch name {
+	case categories.FieldArticleCategories:
+		m.ResetArticleCategories()
+		return nil
+	case categories.FieldMediaCategories:
+		m.ResetMediaCategories()
+		return nil
+	case categories.FieldLanguage:
+		m.ResetLanguage()
+		return nil
+	case categories.FieldStatus:
+		m.ResetStatus()
+		return nil
+	}
+	return fmt.Errorf("unknown Categories field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CategoriesMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CategoriesMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CategoriesMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CategoriesMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CategoriesMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CategoriesMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CategoriesMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Categories unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CategoriesMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Categories edge %s", name)
 }
 
 // MediaPostMutation represents an operation that mutates the MediaPost nodes in the graph.
