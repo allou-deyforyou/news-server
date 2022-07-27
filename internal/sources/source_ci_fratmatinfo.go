@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"news/internal/storage"
 	"news/internal/storage/custom"
@@ -107,7 +108,7 @@ func (src *FratmatInfoSource) articleContent(document *Element) *custom.ArticleP
 	selector := src.ArticleContentSelector
 	selection := document.Selection.Find(selector.Content[0])
 	selection.Find(selector.Content[1]).Remove()
-	content := NewElement(selection).OuterHtml()
+	content := strings.Join(strings.Fields(NewElement(selection).OuterHtml()), " ")
 	return &custom.ArticlePost{Content: content}
 }
 
