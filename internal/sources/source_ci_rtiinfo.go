@@ -124,7 +124,7 @@ func (src *RTIInfoSource) articleContent(data map[string]interface{}) *custom.Ar
 	document, _ := goquery.NewDocumentFromReader(strings.NewReader(value))
 	element := NewElement(document.Selection.Find("*").RemoveClass().RemoveAttr("style"))
 	element.ForEach("p", func(_ int, e *Element) {
-		innerHtml := strings.TrimSpace(e.InnerHtml())
+		innerHtml := strings.TrimSpace(e.Text())
 		if len(innerHtml) == 0 {
 			e.Selection.Remove()
 		}
