@@ -59,7 +59,6 @@ func (src *YecloSource) articleFeaturedPostList(selector *custom.SourcePostSelec
 				rawPath := strings.Split(image, "-")
 				image = strings.ReplaceAll(image, fmt.Sprintf("-%v", rawPath[len(rawPath)-1]), path.Ext(image))
 			}
-
 			image = ParseURL(src.URL, image)
 			link = ParseURL(src.URL, link)
 			dateTime, _ := ParseTime(date)

@@ -47,7 +47,6 @@ func (src *RFISource) ArticleFeaturedPostList(ctx context.Context) []*custom.Art
 func (src *RFISource) articleFeaturedPostList(selector *custom.SourcePostSelector, document *Element) []*custom.ArticlePost {
 	result := make([]*custom.ArticlePost, 0)
 	document.ForEach(selector.List[0], func(_ int, element *Element) {
-		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		title := element.ChildText(selector.Title[0])

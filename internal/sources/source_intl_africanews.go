@@ -47,7 +47,6 @@ func (src *AfricaNewsSource) ArticleFeaturedPostList(ctx context.Context) []*cus
 func (src *AfricaNewsSource) articleFeaturedPostList(selector *custom.SourcePostSelector, document *Element) []*custom.ArticlePost {
 	result := make([]*custom.ArticlePost, 0)
 	document.ForEach(selector.List[0], func(_ int, element *Element) {
-		// category := element.ChildText(selector.Category[0])
 		image := element.ChildAttribute(selector.Image[0], selector.Image[1])
 		link := element.ChildAttribute(selector.Link[0], selector.Link[1])
 		date := element.ChildAttribute(selector.Date[0], selector.Date[1])
