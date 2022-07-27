@@ -33,28 +33,30 @@ func init() {
 	entClient = client
 }
 
-// func TestGetNewsCategories(t *testing.T) {
-// 	entClient.NewsCategories.Delete().Exec(context.Background())
-// 	// log.Println(entClient.Source.Query().AllX(context.Background()))
-// }
+func TestGetNewsCategories(t *testing.T) {
+	entClient.Categories.Delete().Exec(context.Background())
+	// log.Println(entClient.Source.Query().AllX(context.Background()))
+}
 
-// func TestCreateNewsCategories(t *testing.T) {
-// 	entClient.NewsCategories.Create().
-// 		SetLanguage("fr").
-// 		SetArticleCategories(map[string]string{
-// 			custom.PoliticsArticleCategory:      "politique",
-// 			custom.EconomyArticleCategory:       "économie",
-// 			custom.SocietyArticleCategory:       "société",
-// 			custom.SportArticleCategory:         "sport",
-// 			custom.CultureArticleCategory:       "culture",
-// 			custom.TechnologyArticleCategory:    "technologie",
-// 			custom.HealthArticleCategory:        "santé",
-// 			custom.InternationalArticleCategory: "international",
-// 			custom.MusicArticleCategory:         "musique",
-// 		}).
-// 		SetTvCategories(map[string]string{}).
-// 		SaveX(context.Background())
-// }
+func TestCreateNewsCategories(t *testing.T) {
+	entClient.Categories.Create().
+		SetLanguage("fr").
+		SetArticleCategories(map[string]string{
+			custom.PoliticsArticleCategory:      "politique",
+			custom.EconomyArticleCategory:       "économie",
+			custom.SocietyArticleCategory:       "société",
+			custom.SportArticleCategory:         "sport",
+			custom.CultureArticleCategory:       "culture",
+			custom.TechnologyArticleCategory:    "technologie",
+			custom.HealthArticleCategory:        "santé",
+			custom.InternationalArticleCategory: "international",
+			custom.MusicArticleCategory:         "musique",
+		}).
+		SetMediaCategories(map[string]string{
+			custom.BulletinMediaCategory: "journaux",
+		}).
+		SaveX(context.Background())
+}
 
 /// Source
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +100,9 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 		}).
 		SetArticleContentSelector(&custom.SourcePostSelector{
 			Content: []string{".body-desc", ".social-media"},
+		}).
+		SetMediaCategories(map[string]string{
+			custom.BulletinMediaCategory: "videos",
 		}).
 		SetMediaCategoryPostURL("/morearticles/%v?pgno=%v").
 		SetMediaCategoryPostSelector(&custom.SourcePostSelector{
@@ -143,6 +148,9 @@ func TestCreateRTIInfoSource(t *testing.T) {
 				"ArticleInfo",
 				"description",
 			},
+		}).
+		SetMediaCategories(map[string]string{
+			custom.BulletinMediaCategory: "journauxtv",
 		}).
 		SetMediaCategoryPostURL("/articles/%v?page/%v").
 		SetMediaCategoryPostSelector(&custom.SourcePostSelector{

@@ -13,8 +13,7 @@ const (
 )
 
 const (
-	BulletinMediaCategory      = "bulletin"
-	InternationalMediaCategory = "international"
+	BulletinMediaCategory = "bulletin"
 )
 
 type SourcePostSelector struct {
