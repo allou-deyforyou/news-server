@@ -29,5 +29,5 @@ func (h *Handler) ArticleContent(w http.ResponseWriter, r *http.Request) {
 	// Fetch
 	post := sourceParsed.ArticleContent(context, link)
 	// Response
-	JsonEncode(w, &custom.ArticlePostResponse{Data: post})
+	ProtoEncode(w, &custom.ArticlePostResponse{Data: post})
 }

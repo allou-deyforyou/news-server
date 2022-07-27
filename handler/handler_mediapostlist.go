@@ -46,5 +46,5 @@ func (h *Handler) MediaPostList(w http.ResponseWriter, r *http.Request) {
 	}
 	/// Response
 	posts = Remove(posts, func(a, b *custom.MediaPost) bool { return a.Link == b.Link && a.Content == b.Content })
-	JsonEncode(w, &custom.MediaPostListResponse{Data: Shuffle(posts)})
+	ProtoEncode(w, &custom.MediaPostListResponse{Data: Shuffle(posts)})
 }

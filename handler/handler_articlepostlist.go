@@ -46,5 +46,5 @@ func (h *Handler) ArticlePostList(w http.ResponseWriter, r *http.Request) {
 	group.Wait()
 	/// Response
 	posts = Remove(posts, func(a, b *custom.ArticlePost) bool { return a.Link == b.Link })
-	JsonEncode(w, &custom.ArticlePostListResponse{Data: Shuffle(posts)})
+	ProtoEncode(w, &custom.ArticlePostListResponse{Data: Shuffle(posts)})
 }
