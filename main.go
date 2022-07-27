@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"news/handler"
-	"news/internal"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -15,23 +14,17 @@ import (
 var server *handler.Handler
 
 func init() {
-	server = handler.NewHandler(internal.NewEntClient())
+	server = handler.NewHandler(handler.NewEntClient())
 }
 
 func init() {
-	server.Handle("/news/category/article/post", handler.ParseHandler(server.NewsCategoryArticlePost))
-	server.Handle("/news/latest/article/post", handler.ParseHandler(server.NewsLatestArticlePost))
-	server.Handle("/news/article", handler.ParseHandler(server.NewsArticle))
+	server.Handle("/news/article/content", handler.ParseHandler(server.ArticleContent))
+	server.Handle("/news/article/post", handler.ParseHandler(server.ArticlePostList))
 
-	server.Handle("/news/categories", handler.ParseHandler(server.NewsCategories))
-
-	server.Handle("/news/tv/post", handler.ParseHandler(server.NewsTvPost))
+	server.Handle("/news/media/content", handler.ParseHandler(server.MediaContent))
+	server.Handle("/news/media/post", handler.ParseHandler(server.MediaPostList))
 }
 
 func main() {
-	port := os.Getenv("PORT")
-	if len(port) == 0 {
-		port = "3000"
-	}
-	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", port), server))
+	log.Fatalln(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), server))
 }
