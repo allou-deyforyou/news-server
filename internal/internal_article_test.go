@@ -79,8 +79,10 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 			custom.PoliticsArticleCategory: "politique",
 			custom.EconomyArticleCategory:  "économie",
 			custom.SocietyArticleCategory:  "société",
-			custom.SportArticleCategory:    "sport",
 			custom.CultureArticleCategory:  "culture",
+			custom.SportArticleCategory:    "sport",
+
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetArticleFeaturedPostURL("/").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -102,7 +104,8 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 			Content: []string{".body-desc", ".social-media"},
 		}).
 		SetMediaCategories(map[string]string{
-			custom.BulletinMediaCategory: "videos",
+			custom.BulletinMediaCategory: "video",
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetMediaCategoryPostURL("/morearticles/%v?pgno=%v").
 		SetMediaCategoryPostSelector(&custom.SourcePostSelector{
@@ -124,8 +127,9 @@ func TestCreateRTIInfoSource(t *testing.T) {
 		SetURL("https://vodadmin.rtireplays.com/api/v1/news/get").
 		SetLogo("https://rti.info/icon.ico").
 		SetArticleCategories(map[string]string{
-			custom.EconomyArticleCategory: "economie",
-			custom.CultureArticleCategory: "culture",
+			custom.EconomyArticleCategory:  "economie",
+			custom.CultureArticleCategory:  "culture",
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetArticleFeaturedPostURL("/home?page=1").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -150,6 +154,7 @@ func TestCreateRTIInfoSource(t *testing.T) {
 			},
 		}).
 		SetMediaCategories(map[string]string{
+			custom.FeaturedArticleCategory: "alaune",
 			custom.BulletinMediaCategory: "journauxtv",
 		}).
 		SetMediaCategoryPostURL("/articles/%v?page/%v").
@@ -176,8 +181,9 @@ func TestCreateYecloSource(t *testing.T) {
 		SetURL("https://www.ivoiresoir.net").
 		SetLogo("https://www.ivoiresoir.net/favicon.ico").
 		SetArticleCategories(map[string]string{
-			custom.EconomyArticleCategory: "economie",
-			custom.CultureArticleCategory: "culture",
+			custom.EconomyArticleCategory:  "economie",
+			custom.CultureArticleCategory:  "culture",
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetArticleFeaturedPostURL("/").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -212,9 +218,10 @@ func TestCreateFrance24Source(t *testing.T) {
 		SetURL("https://www.france24.com").
 		SetLogo("https://www.france24.com/favicon.ico").
 		SetArticleCategories(map[string]string{
-			custom.EconomyArticleCategory: "éco-tech",
-			custom.SportArticleCategory:   "sports",
-			custom.CultureArticleCategory: "culture",
+			custom.EconomyArticleCategory:  "éco-tech",
+			custom.SportArticleCategory:    "sports",
+			custom.CultureArticleCategory:  "culture",
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetArticleFeaturedPostURL("/fr/afrique").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -243,9 +250,10 @@ func TestCreateRFISource(t *testing.T) {
 		SetURL("https://www.rfi.fr").
 		SetLogo("https://www.rfi.fr/favicon.ico").
 		SetArticleCategories(map[string]string{
-			custom.SportArticleCategory:   "afrique-foot",
-			custom.CultureArticleCategory: "culture-médias",
-			custom.EconomyArticleCategory: "économie",
+			custom.SportArticleCategory:    "afrique-foot",
+			custom.CultureArticleCategory:  "culture-médias",
+			custom.EconomyArticleCategory:  "économie",
+			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetArticleFeaturedPostURL("/fr/afrique").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -280,6 +288,7 @@ func TestCreateAfricaSource(t *testing.T) {
 			custom.TechnologyArticleCategory: "science-technologie",
 			custom.SportArticleCategory:      "sport",
 			custom.CultureArticleCategory:    "culture",
+			custom.FeaturedArticleCategory:   "alaune",
 		}).
 		SetArticleFeaturedPostURL("/infos").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{
@@ -314,6 +323,7 @@ func TestCreateBBCSource(t *testing.T) {
 			custom.TechnologyArticleCategory: "cnq687nn703t",
 			custom.HealthArticleCategory:     "c06gq9jxz3rt",
 			custom.CultureArticleCategory:    "cnq687nrrw8t",
+			custom.FeaturedArticleCategory:   "alaune",
 		}).
 		SetArticleFeaturedPostURL("/afrique").
 		SetArticleFeaturedPostSelector(&custom.SourcePostSelector{

@@ -10,10 +10,13 @@ const (
 	HealthArticleCategory        = "health"
 	InternationalArticleCategory = "international"
 	MusicArticleCategory         = "music"
+
+	FeaturedArticleCategory = "featured"
 )
 
 const (
 	BulletinMediaCategory = "bulletin"
+	InternationalMediaCategory = "international"
 )
 
 type SourcePostSelector struct {
