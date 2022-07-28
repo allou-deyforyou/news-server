@@ -17,7 +17,7 @@ func (h *Handler) MediaPostList(w http.ResponseWriter, r *http.Request) {
 	params := Params(r.Form)
 	language, country, category, page := params.StringX("language", "fr"), params.StringX("country", "ci"), params.StringX("category", "live"), params.IntX("page", 1)
 	sourceQuery := h.Source.Query().Where(source.And(source.Language(language), source.Status(true), source.Or(source.Country(custom.InternationalMediaCategory), source.Country(country))))
-	values := Filter(sourceQuery.AllX(context), func(source *storage.Source) bool { _, ok := source.ArticleCategories[category]; return ok })
+	values := Filter(sourceQuery.AllX(context), func(source *storage.Source) bool { _, ok := source.MediaCategories[category]; return ok })
 	sourceList := sources.ParseSourceList(values)
 	/// Fetch
 	posts := make([]*custom.MediaPost, 0)
