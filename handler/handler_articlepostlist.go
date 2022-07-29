@@ -28,7 +28,9 @@ func (h *Handler) ArticlePostList(w http.ResponseWriter, r *http.Request) {
 			defer RecoverFunc(group)
 			switch category {
 			case custom.FeaturedArticleCategory:
-				posts = append(posts, source.ArticleFeaturedPostList(context)...)
+				if page == 1 {
+					posts = append(posts, source.ArticleFeaturedPostList(context)...)
+				}
 			default:
 				posts = append(posts, source.ArticleCategoryPostList(context, category, page)...)
 			}

@@ -21,6 +21,52 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type NewsType int32
+
+const (
+	NewsType_article NewsType = 0
+	NewsType_media   NewsType = 1
+)
+
+// Enum value maps for NewsType.
+var (
+	NewsType_name = map[int32]string{
+		0: "article",
+		1: "media",
+	}
+	NewsType_value = map[string]int32{
+		"article": 0,
+		"media":   1,
+	}
+)
+
+func (x NewsType) Enum() *NewsType {
+	p := new(NewsType)
+	*p = x
+	return p
+}
+
+func (x NewsType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (NewsType) Descriptor() protoreflect.EnumDescriptor {
+	return file_schema_proto_enumTypes[0].Descriptor()
+}
+
+func (NewsType) Type() protoreflect.EnumType {
+	return &file_schema_proto_enumTypes[0]
+}
+
+func (x NewsType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use NewsType.Descriptor instead.
+func (NewsType) EnumDescriptor() ([]byte, []int) {
+	return file_schema_proto_rawDescGZIP(), []int{0}
+}
+
 type MediaPost_Type int32
 
 const (
@@ -54,11 +100,11 @@ func (x MediaPost_Type) String() string {
 }
 
 func (MediaPost_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_schema_proto_enumTypes[0].Descriptor()
+	return file_schema_proto_enumTypes[1].Descriptor()
 }
 
 func (MediaPost_Type) Type() protoreflect.EnumType {
-	return &file_schema_proto_enumTypes[0]
+	return &file_schema_proto_enumTypes[1]
 }
 
 func (x MediaPost_Type) Number() protoreflect.EnumNumber {
@@ -742,8 +788,10 @@ var file_schema_proto_rawDesc = []byte{
 	0x77, 0x73, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x21, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01,
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x4e, 0x65, 0x77, 0x73, 0x43, 0x61, 0x74, 0x65, 0x67,
-	0x6f, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x09, 0x5a, 0x07, 0x2f, 0x63, 0x75,
-	0x73, 0x74, 0x6f, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x72, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x2a, 0x22, 0x0a, 0x08, 0x4e, 0x65, 0x77,
+	0x73, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0b, 0x0a, 0x07, 0x61, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65,
+	0x10, 0x00, 0x12, 0x09, 0x0a, 0x05, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x10, 0x01, 0x42, 0x09, 0x5a,
+	0x07, 0x2f, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -758,30 +806,31 @@ func file_schema_proto_rawDescGZIP() []byte {
 	return file_schema_proto_rawDescData
 }
 
-var file_schema_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_schema_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_schema_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_schema_proto_goTypes = []interface{}{
-	(MediaPost_Type)(0),              // 0: MediaPost.Type
-	(*ArticlePost)(nil),              // 1: ArticlePost
-	(*ArticlePostRequest)(nil),       // 2: ArticlePostRequest
-	(*ArticlePostListResponse)(nil),  // 3: ArticlePostListResponse
-	(*ArticlePostResponse)(nil),      // 4: ArticlePostResponse
-	(*MediaPost)(nil),                // 5: MediaPost
-	(*MediaPostListResponse)(nil),    // 6: MediaPostListResponse
-	(*MediaPostResponse)(nil),        // 7: MediaPostResponse
-	(*NewsCategory)(nil),             // 8: NewsCategory
-	(*NewsCategoryListResponse)(nil), // 9: NewsCategoryListResponse
-	(*timestamp.Timestamp)(nil),      // 10: google.protobuf.Timestamp
+	(NewsType)(0),                    // 0: NewsType
+	(MediaPost_Type)(0),              // 1: MediaPost.Type
+	(*ArticlePost)(nil),              // 2: ArticlePost
+	(*ArticlePostRequest)(nil),       // 3: ArticlePostRequest
+	(*ArticlePostListResponse)(nil),  // 4: ArticlePostListResponse
+	(*ArticlePostResponse)(nil),      // 5: ArticlePostResponse
+	(*MediaPost)(nil),                // 6: MediaPost
+	(*MediaPostListResponse)(nil),    // 7: MediaPostListResponse
+	(*MediaPostResponse)(nil),        // 8: MediaPostResponse
+	(*NewsCategory)(nil),             // 9: NewsCategory
+	(*NewsCategoryListResponse)(nil), // 10: NewsCategoryListResponse
+	(*timestamp.Timestamp)(nil),      // 11: google.protobuf.Timestamp
 }
 var file_schema_proto_depIdxs = []int32{
-	10, // 0: ArticlePost.date:type_name -> google.protobuf.Timestamp
-	1,  // 1: ArticlePostListResponse.data:type_name -> ArticlePost
-	1,  // 2: ArticlePostResponse.data:type_name -> ArticlePost
-	10, // 3: MediaPost.date:type_name -> google.protobuf.Timestamp
-	0,  // 4: MediaPost.type:type_name -> MediaPost.Type
-	5,  // 5: MediaPostListResponse.data:type_name -> MediaPost
-	5,  // 6: MediaPostResponse.data:type_name -> MediaPost
-	8,  // 7: NewsCategoryListResponse.data:type_name -> NewsCategory
+	11, // 0: ArticlePost.date:type_name -> google.protobuf.Timestamp
+	2,  // 1: ArticlePostListResponse.data:type_name -> ArticlePost
+	2,  // 2: ArticlePostResponse.data:type_name -> ArticlePost
+	11, // 3: MediaPost.date:type_name -> google.protobuf.Timestamp
+	1,  // 4: MediaPost.type:type_name -> MediaPost.Type
+	6,  // 5: MediaPostListResponse.data:type_name -> MediaPost
+	6,  // 6: MediaPostResponse.data:type_name -> MediaPost
+	9,  // 7: NewsCategoryListResponse.data:type_name -> NewsCategory
 	8,  // [8:8] is the sub-list for method output_type
 	8,  // [8:8] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name
@@ -909,7 +958,7 @@ func file_schema_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_schema_proto_rawDesc,
-			NumEnums:      1,
+			NumEnums:      2,
 			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,

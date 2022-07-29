@@ -23,7 +23,9 @@ func (h *Handler) MediaPostList(w http.ResponseWriter, r *http.Request) {
 	posts := make([]*custom.MediaPost, 0)
 	switch category {
 	case "live":
-		posts = append(posts, sources.GetMediaPostList(h.Client, context)...)
+		if page == 1 {
+			posts = append(posts, sources.GetMediaPostList(h.Client, context)...)
+		}
 	default:
 		group := new(sync.WaitGroup)
 		for _, s := range sourceList {

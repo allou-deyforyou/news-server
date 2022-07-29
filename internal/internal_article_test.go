@@ -170,6 +170,7 @@ func TestCreateRTIInfoSource(t *testing.T) {
 				"ListVideos",
 				"playlist",
 				"sources",
+				"file",
 			},
 		}).
 		SaveX(context.Background())
