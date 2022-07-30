@@ -64,7 +64,8 @@ func (src *RFISource) articleFeaturedPostList(selector *custom.SourcePostSelecto
 				dateTime, _ := ParseTime(date)
 
 				result = append(result, &custom.ArticlePost{
-					Date:   timestamppb.New(dateTime),
+					Date:        timestamppb.New(dateTime),
+					Description: src.Description,
 					Source: src.Name,
 					Logo:   src.Logo,
 					Image:  image,
@@ -119,7 +120,6 @@ func (src *RFISource) articleContent(document *Element) *custom.ArticlePost {
 	content := strings.Join(document.ChildrenOuterHtmls(selector.Content[0]), "")
 	return &custom.ArticlePost{Content: content}
 }
-
 
 /// MediaLivePostList
 //////////////

@@ -58,6 +58,7 @@ func (src *FratmatInfoSource) articleFeaturedPostList(selector *custom.SourcePos
 
 			result = append(result, &custom.ArticlePost{
 				Date:   timestamppb.New(dateTime),
+				Description: src.Description,
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,
@@ -149,6 +150,7 @@ func (src *FratmatInfoSource) mediaCategoryPostList(document *Element) []*custom
 
 			result = append(result, &custom.MediaPost{
 				Date:   timestamppb.New(dateTime),
+				Description: src.Description,
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,

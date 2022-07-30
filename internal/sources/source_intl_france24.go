@@ -63,6 +63,7 @@ func (src *France24Source) articleFeaturedPostList(selector *custom.SourcePostSe
 
 			result = append(result, &custom.ArticlePost{
 				Date:   timestamppb.New(dateTime),
+				Description: src.Description,
 				Source: src.Name,
 				Logo:   src.Logo,
 				Image:  image,

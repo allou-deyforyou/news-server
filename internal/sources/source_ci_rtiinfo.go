@@ -56,12 +56,13 @@ func (src *RTIInfoSource) articleFeaturedPostList(data map[string]interface{}) [
 		dateTime, _ := ParseTime(date)
 
 		result = append(result, &custom.ArticlePost{
-			Date:   timestamppb.New(dateTime),
-			Source: src.Name,
-			Logo:   src.Logo,
-			Title:  title,
-			Image:  image,
-			Link:   link,
+			Date:        timestamppb.New(dateTime),
+			Description: src.Description,
+			Source:      src.Name,
+			Logo:        src.Logo,
+			Title:       title,
+			Image:       image,
+			Link:        link,
 		})
 	}
 	return result
@@ -94,12 +95,13 @@ func (src *RTIInfoSource) articleCategoryPostList(data map[string]interface{}) [
 		dateTime, _ := ParseTime(date)
 
 		result = append(result, &custom.ArticlePost{
-			Date:   timestamppb.New(dateTime),
-			Source: src.Name,
-			Logo:   src.Logo,
-			Title:  title,
-			Image:  image,
-			Link:   link,
+			Date:        timestamppb.New(dateTime),
+			Description: src.Description,
+			Source:      src.Name,
+			Logo:        src.Logo,
+			Title:       title,
+			Image:       image,
+			Link:        link,
 		})
 	}
 	return result
@@ -166,12 +168,13 @@ func (src *RTIInfoSource) mediaCategoryPostList(data map[string]interface{}) []*
 		dateTime, _ := ParseTime(date)
 
 		result = append(result, &custom.MediaPost{
-			Date:   timestamppb.New(dateTime),
-			Source: src.Name,
-			Logo:   src.Logo,
-			Title:  title,
-			Image:  image,
-			Link:   link,
+			Date:        timestamppb.New(dateTime),
+			Description: src.Description,
+			Source:      src.Name,
+			Logo:        src.Logo,
+			Title:       title,
+			Image:       image,
+			Link:        link,
 		})
 	}
 	return result
@@ -201,8 +204,9 @@ func (src *RTIInfoSource) mediaContent(data map[string]interface{}) *custom.Medi
 			content := data[selector.Content[3]].(string)
 
 			return &custom.MediaPost{
-				Type:    custom.MediaPost_YOUTUBE,
-				Content: ExtractVideoID(content),
+				Type:        custom.MediaPost_YOUTUBE,
+				Description: src.Description,
+				Content:     content,
 			}
 		}
 	}
