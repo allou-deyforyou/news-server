@@ -16,6 +16,7 @@ func (ArticlePost) Fields() []ent.Field {
 		field.Bool("status").Default(true),
 		field.String("title"),
 		field.String("image"),
+		field.String("description"),
 		field.Time("date").Optional(),
 		field.String("link"),
 		field.String("content").Optional(),

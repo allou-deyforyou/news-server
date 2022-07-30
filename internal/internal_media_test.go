@@ -77,7 +77,7 @@ func TestCreateFrance24TV(t *testing.T) {
 		SetSource("France 24").
 		SetLogo("https://www.france24.com/favicon.ico").
 		SetType(mediapost.TypeYoutube).
-		SetContent("u9foWyMSATM").
+		SetContent("https://www.youtube.com/embed/u9foWyMSATM").
 		SetDescription("La chaîne française d'actualité internationale").
 		SaveX(context.Background())
 }

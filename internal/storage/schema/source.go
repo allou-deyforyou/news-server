@@ -29,6 +29,7 @@ func (Source) Fields() []ent.Field {
 
 		field.JSON("article_categories", map[string]string{}).Optional(),
 		field.JSON("media_categories", map[string]string{}).Optional(),
+		field.String("description").NotEmpty(),
 		field.String("language").Default("fr"),
 		field.String("country").Default("ci"),
 		field.Bool("status").Default(true),

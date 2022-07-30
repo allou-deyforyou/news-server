@@ -31,6 +31,8 @@ const (
 	FieldArticleCategories = "article_categories"
 	// FieldMediaCategories holds the string denoting the media_categories field in the database.
 	FieldMediaCategories = "media_categories"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
 	// FieldLanguage holds the string denoting the language field in the database.
 	FieldLanguage = "language"
 	// FieldCountry holds the string denoting the country field in the database.
@@ -62,6 +64,7 @@ var Columns = []string{
 	FieldMediaContentSelector,
 	FieldArticleCategories,
 	FieldMediaCategories,
+	FieldDescription,
 	FieldLanguage,
 	FieldCountry,
 	FieldStatus,
@@ -81,6 +84,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	DescriptionValidator func(string) error
 	// DefaultLanguage holds the default value on creation for the "language" field.
 	DefaultLanguage string
 	// DefaultCountry holds the default value on creation for the "country" field.

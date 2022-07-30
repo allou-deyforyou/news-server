@@ -204,6 +204,12 @@ func (su *SourceUpdate) ClearMediaCategories() *SourceUpdate {
 	return su
 }
 
+// SetDescription sets the "description" field.
+func (su *SourceUpdate) SetDescription(s string) *SourceUpdate {
+	su.mutation.SetDescription(s)
+	return su
+}
+
 // SetLanguage sets the "language" field.
 func (su *SourceUpdate) SetLanguage(s string) *SourceUpdate {
 	su.mutation.SetLanguage(s)
@@ -331,6 +337,11 @@ func (su *SourceUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (su *SourceUpdate) check() error {
+	if v, ok := su.mutation.Description(); ok {
+		if err := source.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`storage: validator failed for field "Source.description": %w`, err)}
+		}
+	}
 	if v, ok := su.mutation.Logo(); ok {
 		if err := source.LogoValidator(v); err != nil {
 			return &ValidationError{Name: "logo", err: fmt.Errorf(`storage: validator failed for field "Source.logo": %w`, err)}
@@ -511,6 +522,13 @@ func (su *SourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Column: source.FieldMediaCategories,
+		})
+	}
+	if value, ok := su.mutation.Description(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: source.FieldDescription,
 		})
 	}
 	if value, ok := su.mutation.Language(); ok {
@@ -750,6 +768,12 @@ func (suo *SourceUpdateOne) ClearMediaCategories() *SourceUpdateOne {
 	return suo
 }
 
+// SetDescription sets the "description" field.
+func (suo *SourceUpdateOne) SetDescription(s string) *SourceUpdateOne {
+	suo.mutation.SetDescription(s)
+	return suo
+}
+
 // SetLanguage sets the "language" field.
 func (suo *SourceUpdateOne) SetLanguage(s string) *SourceUpdateOne {
 	suo.mutation.SetLanguage(s)
@@ -884,6 +908,11 @@ func (suo *SourceUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (suo *SourceUpdateOne) check() error {
+	if v, ok := suo.mutation.Description(); ok {
+		if err := source.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`storage: validator failed for field "Source.description": %w`, err)}
+		}
+	}
 	if v, ok := suo.mutation.Logo(); ok {
 		if err := source.LogoValidator(v); err != nil {
 			return &ValidationError{Name: "logo", err: fmt.Errorf(`storage: validator failed for field "Source.logo": %w`, err)}
@@ -1081,6 +1110,13 @@ func (suo *SourceUpdateOne) sqlSave(ctx context.Context) (_node *Source, err err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Column: source.FieldMediaCategories,
+		})
+	}
+	if value, ok := suo.mutation.Description(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: source.FieldDescription,
 		})
 	}
 	if value, ok := suo.mutation.Language(); ok {

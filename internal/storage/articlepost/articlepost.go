@@ -13,6 +13,8 @@ const (
 	FieldTitle = "title"
 	// FieldImage holds the string denoting the image field in the database.
 	FieldImage = "image"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
 	// FieldDate holds the string denoting the date field in the database.
 	FieldDate = "date"
 	// FieldLink holds the string denoting the link field in the database.
@@ -31,6 +33,7 @@ var Columns = []string{
 	FieldStatus,
 	FieldTitle,
 	FieldImage,
+	FieldDescription,
 	FieldDate,
 	FieldLink,
 	FieldContent,

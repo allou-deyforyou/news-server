@@ -54,6 +54,12 @@ func (apu *ArticlePostUpdate) SetImage(s string) *ArticlePostUpdate {
 	return apu
 }
 
+// SetDescription sets the "description" field.
+func (apu *ArticlePostUpdate) SetDescription(s string) *ArticlePostUpdate {
+	apu.mutation.SetDescription(s)
+	return apu
+}
+
 // SetDate sets the "date" field.
 func (apu *ArticlePostUpdate) SetDate(t time.Time) *ArticlePostUpdate {
 	apu.mutation.SetDate(t)
@@ -204,6 +210,13 @@ func (apu *ArticlePostUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: articlepost.FieldImage,
 		})
 	}
+	if value, ok := apu.mutation.Description(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: articlepost.FieldDescription,
+		})
+	}
 	if value, ok := apu.mutation.Date(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -286,6 +299,12 @@ func (apuo *ArticlePostUpdateOne) SetTitle(s string) *ArticlePostUpdateOne {
 // SetImage sets the "image" field.
 func (apuo *ArticlePostUpdateOne) SetImage(s string) *ArticlePostUpdateOne {
 	apuo.mutation.SetImage(s)
+	return apuo
+}
+
+// SetDescription sets the "description" field.
+func (apuo *ArticlePostUpdateOne) SetDescription(s string) *ArticlePostUpdateOne {
+	apuo.mutation.SetDescription(s)
 	return apuo
 }
 
@@ -461,6 +480,13 @@ func (apuo *ArticlePostUpdateOne) sqlSave(ctx context.Context) (_node *ArticlePo
 			Type:   field.TypeString,
 			Value:  value,
 			Column: articlepost.FieldImage,
+		})
+	}
+	if value, ok := apuo.mutation.Description(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: articlepost.FieldDescription,
 		})
 	}
 	if value, ok := apuo.mutation.Date(); ok {

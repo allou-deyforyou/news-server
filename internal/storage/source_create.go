@@ -124,6 +124,12 @@ func (sc *SourceCreate) SetMediaCategories(m map[string]string) *SourceCreate {
 	return sc
 }
 
+// SetDescription sets the "description" field.
+func (sc *SourceCreate) SetDescription(s string) *SourceCreate {
+	sc.mutation.SetDescription(s)
+	return sc
+}
+
 // SetLanguage sets the "language" field.
 func (sc *SourceCreate) SetLanguage(s string) *SourceCreate {
 	sc.mutation.SetLanguage(s)
@@ -271,6 +277,14 @@ func (sc *SourceCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sc *SourceCreate) check() error {
+	if _, ok := sc.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`storage: missing required field "Source.description"`)}
+	}
+	if v, ok := sc.mutation.Description(); ok {
+		if err := source.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`storage: validator failed for field "Source.description": %w`, err)}
+		}
+	}
 	if _, ok := sc.mutation.Language(); !ok {
 		return &ValidationError{Name: "language", err: errors.New(`storage: missing required field "Source.language"`)}
 	}
@@ -416,6 +430,14 @@ func (sc *SourceCreate) createSpec() (*Source, *sqlgraph.CreateSpec) {
 			Column: source.FieldMediaCategories,
 		})
 		_node.MediaCategories = value
+	}
+	if value, ok := sc.mutation.Description(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: source.FieldDescription,
+		})
+		_node.Description = value
 	}
 	if value, ok := sc.mutation.Language(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

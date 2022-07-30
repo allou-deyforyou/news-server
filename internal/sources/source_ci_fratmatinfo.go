@@ -179,8 +179,6 @@ func (src *FratmatInfoSource) mediaContent(document *Element) *custom.MediaPost 
 	selector := src.MediaContentSelector
 
 	content := document.ChildAttribute(selector.Content[0], selector.Content[1])
-	content = ExtractVideoID(content)
-
 	return &custom.MediaPost{
 		Type:    custom.MediaPost_YOUTUBE,
 		Content: content,

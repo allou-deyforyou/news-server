@@ -41,6 +41,8 @@ type Source struct {
 	ArticleCategories map[string]string `json:"article_categories,omitempty"`
 	// MediaCategories holds the value of the "media_categories" field.
 	MediaCategories map[string]string `json:"media_categories,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
 	// Language holds the value of the "language" field.
 	Language string `json:"language,omitempty"`
 	// Country holds the value of the "country" field.
@@ -66,7 +68,7 @@ func (*Source) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case source.FieldID:
 			values[i] = new(sql.NullInt64)
-		case source.FieldArticleFeaturedPostURL, source.FieldArticleCategoryPostURL, source.FieldMediaFeaturedPostURL, source.FieldMediaCategoryPostURL, source.FieldLanguage, source.FieldCountry, source.FieldLogo, source.FieldName, source.FieldURL:
+		case source.FieldArticleFeaturedPostURL, source.FieldArticleCategoryPostURL, source.FieldMediaFeaturedPostURL, source.FieldMediaCategoryPostURL, source.FieldDescription, source.FieldLanguage, source.FieldCountry, source.FieldLogo, source.FieldName, source.FieldURL:
 			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Source", columns[i])
@@ -177,6 +179,12 @@ func (s *Source) assignValues(columns []string, values []interface{}) error {
 					return fmt.Errorf("unmarshal field media_categories: %w", err)
 				}
 			}
+		case source.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				s.Description = value.String
+			}
 		case source.FieldLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field language", values[i])
@@ -265,6 +273,8 @@ func (s *Source) String() string {
 	builder.WriteString(fmt.Sprintf("%v", s.ArticleCategories))
 	builder.WriteString(", media_categories=")
 	builder.WriteString(fmt.Sprintf("%v", s.MediaCategories))
+	builder.WriteString(", description=")
+	builder.WriteString(s.Description)
 	builder.WriteString(", language=")
 	builder.WriteString(s.Language)
 	builder.WriteString(", country=")

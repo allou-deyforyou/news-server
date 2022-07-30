@@ -46,6 +46,12 @@ func (apc *ArticlePostCreate) SetImage(s string) *ArticlePostCreate {
 	return apc
 }
 
+// SetDescription sets the "description" field.
+func (apc *ArticlePostCreate) SetDescription(s string) *ArticlePostCreate {
+	apc.mutation.SetDescription(s)
+	return apc
+}
+
 // SetDate sets the "date" field.
 func (apc *ArticlePostCreate) SetDate(t time.Time) *ArticlePostCreate {
 	apc.mutation.SetDate(t)
@@ -174,6 +180,9 @@ func (apc *ArticlePostCreate) check() error {
 	if _, ok := apc.mutation.Image(); !ok {
 		return &ValidationError{Name: "image", err: errors.New(`storage: missing required field "ArticlePost.image"`)}
 	}
+	if _, ok := apc.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`storage: missing required field "ArticlePost.description"`)}
+	}
 	if _, ok := apc.mutation.Link(); !ok {
 		return &ValidationError{Name: "link", err: errors.New(`storage: missing required field "ArticlePost.link"`)}
 	}
@@ -230,6 +239,14 @@ func (apc *ArticlePostCreate) createSpec() (*ArticlePost, *sqlgraph.CreateSpec) 
 			Column: articlepost.FieldImage,
 		})
 		_node.Image = value
+	}
+	if value, ok := apc.mutation.Description(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: articlepost.FieldDescription,
+		})
+		_node.Description = value
 	}
 	if value, ok := apc.mutation.Date(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

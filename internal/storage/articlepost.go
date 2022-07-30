@@ -22,6 +22,8 @@ type ArticlePost struct {
 	Title string `json:"title,omitempty"`
 	// Image holds the value of the "image" field.
 	Image string `json:"image,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
 	// Date holds the value of the "date" field.
 	Date time.Time `json:"date,omitempty"`
 	// Link holds the value of the "link" field.
@@ -41,7 +43,7 @@ func (*ArticlePost) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case articlepost.FieldID:
 			values[i] = new(sql.NullInt64)
-		case articlepost.FieldTitle, articlepost.FieldImage, articlepost.FieldLink, articlepost.FieldContent, articlepost.FieldSource:
+		case articlepost.FieldTitle, articlepost.FieldImage, articlepost.FieldDescription, articlepost.FieldLink, articlepost.FieldContent, articlepost.FieldSource:
 			values[i] = new(sql.NullString)
 		case articlepost.FieldDate:
 			values[i] = new(sql.NullTime)
@@ -83,6 +85,12 @@ func (ap *ArticlePost) assignValues(columns []string, values []interface{}) erro
 				return fmt.Errorf("unexpected type %T for field image", values[i])
 			} else if value.Valid {
 				ap.Image = value.String
+			}
+		case articlepost.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				ap.Description = value.String
 			}
 		case articlepost.FieldDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -142,6 +150,8 @@ func (ap *ArticlePost) String() string {
 	builder.WriteString(ap.Title)
 	builder.WriteString(", image=")
 	builder.WriteString(ap.Image)
+	builder.WriteString(", description=")
+	builder.WriteString(ap.Description)
 	builder.WriteString(", date=")
 	builder.WriteString(ap.Date.Format(time.ANSIC))
 	builder.WriteString(", link=")

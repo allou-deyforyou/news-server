@@ -42,6 +42,7 @@ type ArticlePostMutation struct {
 	status        *bool
 	title         *string
 	image         *string
+	description   *string
 	date          *time.Time
 	link          *string
 	content       *string
@@ -258,6 +259,42 @@ func (m *ArticlePostMutation) ResetImage() {
 	m.image = nil
 }
 
+// SetDescription sets the "description" field.
+func (m *ArticlePostMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *ArticlePostMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the ArticlePost entity.
+// If the ArticlePost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArticlePostMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *ArticlePostMutation) ResetDescription() {
+	m.description = nil
+}
+
 // SetDate sets the "date" field.
 func (m *ArticlePostMutation) SetDate(t time.Time) {
 	m.date = &t
@@ -447,7 +484,7 @@ func (m *ArticlePostMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArticlePostMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.status != nil {
 		fields = append(fields, articlepost.FieldStatus)
 	}
@@ -456,6 +493,9 @@ func (m *ArticlePostMutation) Fields() []string {
 	}
 	if m.image != nil {
 		fields = append(fields, articlepost.FieldImage)
+	}
+	if m.description != nil {
+		fields = append(fields, articlepost.FieldDescription)
 	}
 	if m.date != nil {
 		fields = append(fields, articlepost.FieldDate)
@@ -483,6 +523,8 @@ func (m *ArticlePostMutation) Field(name string) (ent.Value, bool) {
 		return m.Title()
 	case articlepost.FieldImage:
 		return m.Image()
+	case articlepost.FieldDescription:
+		return m.Description()
 	case articlepost.FieldDate:
 		return m.Date()
 	case articlepost.FieldLink:
@@ -506,6 +548,8 @@ func (m *ArticlePostMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldTitle(ctx)
 	case articlepost.FieldImage:
 		return m.OldImage(ctx)
+	case articlepost.FieldDescription:
+		return m.OldDescription(ctx)
 	case articlepost.FieldDate:
 		return m.OldDate(ctx)
 	case articlepost.FieldLink:
@@ -543,6 +587,13 @@ func (m *ArticlePostMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetImage(v)
+		return nil
+	case articlepost.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
 		return nil
 	case articlepost.FieldDate:
 		v, ok := value.(time.Time)
@@ -644,6 +695,9 @@ func (m *ArticlePostMutation) ResetField(name string) error {
 		return nil
 	case articlepost.FieldImage:
 		m.ResetImage()
+		return nil
+	case articlepost.FieldDescription:
+		m.ResetDescription()
 		return nil
 	case articlepost.FieldDate:
 		m.ResetDate()
@@ -2190,6 +2244,7 @@ type SourceMutation struct {
 	media_content_selector         **custom.SourcePostSelector
 	article_categories             *map[string]string
 	media_categories               *map[string]string
+	description                    *string
 	language                       *string
 	country                        *string
 	status                         *bool
@@ -2888,6 +2943,42 @@ func (m *SourceMutation) ResetMediaCategories() {
 	delete(m.clearedFields, source.FieldMediaCategories)
 }
 
+// SetDescription sets the "description" field.
+func (m *SourceMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *SourceMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the Source entity.
+// If the Source object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *SourceMutation) ResetDescription() {
+	m.description = nil
+}
+
 // SetLanguage sets the "language" field.
 func (m *SourceMutation) SetLanguage(s string) {
 	m.language = &s
@@ -3123,7 +3214,7 @@ func (m *SourceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SourceMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.article_featured_post_selector != nil {
 		fields = append(fields, source.FieldArticleFeaturedPostSelector)
 	}
@@ -3159,6 +3250,9 @@ func (m *SourceMutation) Fields() []string {
 	}
 	if m.media_categories != nil {
 		fields = append(fields, source.FieldMediaCategories)
+	}
+	if m.description != nil {
+		fields = append(fields, source.FieldDescription)
 	}
 	if m.language != nil {
 		fields = append(fields, source.FieldLanguage)
@@ -3210,6 +3304,8 @@ func (m *SourceMutation) Field(name string) (ent.Value, bool) {
 		return m.ArticleCategories()
 	case source.FieldMediaCategories:
 		return m.MediaCategories()
+	case source.FieldDescription:
+		return m.Description()
 	case source.FieldLanguage:
 		return m.Language()
 	case source.FieldCountry:
@@ -3255,6 +3351,8 @@ func (m *SourceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldArticleCategories(ctx)
 	case source.FieldMediaCategories:
 		return m.OldMediaCategories(ctx)
+	case source.FieldDescription:
+		return m.OldDescription(ctx)
 	case source.FieldLanguage:
 		return m.OldLanguage(ctx)
 	case source.FieldCountry:
@@ -3359,6 +3457,13 @@ func (m *SourceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMediaCategories(v)
+		return nil
+	case source.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
 		return nil
 	case source.FieldLanguage:
 		v, ok := value.(string)
@@ -3561,6 +3666,9 @@ func (m *SourceMutation) ResetField(name string) error {
 		return nil
 	case source.FieldMediaCategories:
 		m.ResetMediaCategories()
+		return nil
+	case source.FieldDescription:
+		m.ResetDescription()
 		return nil
 	case source.FieldLanguage:
 		m.ResetLanguage()

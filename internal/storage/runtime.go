@@ -42,20 +42,24 @@ func init() {
 	mediapost.DefaultLive = mediapostDescLive.Default.(bool)
 	sourceFields := schema.Source{}.Fields()
 	_ = sourceFields
+	// sourceDescDescription is the schema descriptor for description field.
+	sourceDescDescription := sourceFields[12].Descriptor()
+	// source.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	source.DescriptionValidator = sourceDescDescription.Validators[0].(func(string) error)
 	// sourceDescLanguage is the schema descriptor for language field.
-	sourceDescLanguage := sourceFields[12].Descriptor()
+	sourceDescLanguage := sourceFields[13].Descriptor()
 	// source.DefaultLanguage holds the default value on creation for the language field.
 	source.DefaultLanguage = sourceDescLanguage.Default.(string)
 	// sourceDescCountry is the schema descriptor for country field.
-	sourceDescCountry := sourceFields[13].Descriptor()
+	sourceDescCountry := sourceFields[14].Descriptor()
 	// source.DefaultCountry holds the default value on creation for the country field.
 	source.DefaultCountry = sourceDescCountry.Default.(string)
 	// sourceDescStatus is the schema descriptor for status field.
-	sourceDescStatus := sourceFields[14].Descriptor()
+	sourceDescStatus := sourceFields[15].Descriptor()
 	// source.DefaultStatus holds the default value on creation for the status field.
 	source.DefaultStatus = sourceDescStatus.Default.(bool)
 	// sourceDescLogo is the schema descriptor for logo field.
-	sourceDescLogo := sourceFields[15].Descriptor()
+	sourceDescLogo := sourceFields[16].Descriptor()
 	// source.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
 	source.LogoValidator = sourceDescLogo.Validators[0].(func(string) error)
 }

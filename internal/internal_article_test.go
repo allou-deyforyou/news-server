@@ -75,6 +75,7 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 		SetName("Fratmat Info").
 		SetURL("https://www.fratmat.info").
 		SetLogo("https://www.fratmat.info/theme_fratmat/images/favicon.ico").
+		SetDescription("L'actualité en continu...").
 		SetArticleCategories(map[string]string{
 			custom.PoliticsArticleCategory: "politique",
 			custom.EconomyArticleCategory:  "économie",
@@ -104,7 +105,7 @@ func TestCreateFratmatInfoSource(t *testing.T) {
 			Content: []string{".body-desc", ".social-media"},
 		}).
 		SetMediaCategories(map[string]string{
-			custom.BulletinMediaCategory: "video",
+			custom.BulletinMediaCategory:   "video",
 			custom.FeaturedArticleCategory: "alaune",
 		}).
 		SetMediaCategoryPostURL("/morearticles/%v?pgno=%v").
@@ -126,6 +127,7 @@ func TestCreateRTIInfoSource(t *testing.T) {
 		SetName("RTI Info").
 		SetURL("https://vodadmin.rtireplays.com/api/v1/news/get").
 		SetLogo("https://rti.info/icon.ico").
+		SetDescription("Toute l'actualité de la Côte d'Ivoire chaque jour sur RTI Info.").
 		SetArticleCategories(map[string]string{
 			custom.EconomyArticleCategory:  "economie",
 			custom.CultureArticleCategory:  "culture",
@@ -155,7 +157,7 @@ func TestCreateRTIInfoSource(t *testing.T) {
 		}).
 		SetMediaCategories(map[string]string{
 			custom.FeaturedArticleCategory: "alaune",
-			custom.BulletinMediaCategory: "journauxtv",
+			custom.BulletinMediaCategory:   "journauxtv",
 		}).
 		SetMediaCategoryPostURL("/articles/%v?page/%v").
 		SetMediaCategoryPostSelector(&custom.SourcePostSelector{
@@ -181,6 +183,7 @@ func TestCreateYecloSource(t *testing.T) {
 		SetName("Yeclo").
 		SetURL("https://www.ivoiresoir.net").
 		SetLogo("https://www.ivoiresoir.net/favicon.ico").
+		SetDescription("L'actualité Africaine made in Côte d'Ivoire").
 		SetArticleCategories(map[string]string{
 			custom.EconomyArticleCategory:  "economie",
 			custom.CultureArticleCategory:  "culture",
@@ -218,6 +221,7 @@ func TestCreateFrance24Source(t *testing.T) {
 		SetCountry("international").
 		SetURL("https://www.france24.com").
 		SetLogo("https://www.france24.com/favicon.ico").
+		SetDescription("La chaîne française d'actualité internationale").
 		SetArticleCategories(map[string]string{
 			custom.EconomyArticleCategory:  "éco-tech",
 			custom.SportArticleCategory:    "sports",
@@ -250,6 +254,7 @@ func TestCreateRFISource(t *testing.T) {
 		SetCountry("international").
 		SetURL("https://www.rfi.fr").
 		SetLogo("https://www.rfi.fr/favicon.ico").
+		SetDescription("La radio française d'actualité internationale").
 		SetArticleCategories(map[string]string{
 			custom.SportArticleCategory:    "afrique-foot",
 			custom.CultureArticleCategory:  "culture-médias",
@@ -284,6 +289,7 @@ func TestCreateAfricaSource(t *testing.T) {
 		SetCountry("international").
 		SetURL("https://fr.africanews.com").
 		SetLogo("https://fr.africanews.com/favicon.ico").
+		SetDescription("La chaîne d’information panafricaine").
 		SetArticleCategories(map[string]string{
 			custom.EconomyArticleCategory:    "economie",
 			custom.TechnologyArticleCategory: "science-technologie",
@@ -319,6 +325,7 @@ func TestCreateBBCSource(t *testing.T) {
 		SetCountry("international").
 		SetURL("https://www.bbc.com").
 		SetLogo("https://www.bbc.com/favicon.ico").
+		SetDescription("La Société de radiodiffusion britannique").
 		SetArticleCategories(map[string]string{
 			custom.EconomyArticleCategory:    "cnq687nr9v1t",
 			custom.TechnologyArticleCategory: "cnq687nn703t",

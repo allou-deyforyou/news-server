@@ -198,11 +198,11 @@ func (src *RTIInfoSource) mediaContent(data map[string]interface{}) *custom.Medi
 		for _, value := range data[selector.Content[2]].([]interface{}) {
 
 			data := value.(map[string]interface{})
-			file := data[selector.Content[3]].(string)
+			content := data[selector.Content[3]].(string)
 
 			return &custom.MediaPost{
 				Type:    custom.MediaPost_YOUTUBE,
-				Content: ExtractVideoID(file),
+				Content: ExtractVideoID(content),
 			}
 		}
 	}
