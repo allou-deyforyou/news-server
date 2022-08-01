@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+option go_package = "/custom";
+
+import "google/protobuf/timestamp.proto";
+
+enum NewsType {
+    article = 0;
+    media = 1;
+}
+
+message ArticlePost {
+    string title = 1;
+    string image = 2;
+    google.protobuf.Timestamp date = 3;
+    string link = 4;
+    string content = 5;
+    string source = 6;
+    string logo = 7;
+    string description = 8;
+}
+
+message ArticlePostRequest {
+    string language = 1;
+    string category = 2;
+    string country = 3;
+    string source = 4;
+    string query = 5;
+    int64 page = 6;
+}
+
+message ArticlePostListResponse {
+    repeated ArticlePost data = 1;
+}
+
+message ArticlePostResponse {
+    ArticlePost data = 1;
+}
+
+///
+///
+///
+
+message MediaPost {
+    string title = 1;
+    string image = 2;
+    google.protobuf.Timestamp date = 3;
+    string link = 4;
+    string content = 5;
+    string source = 6;
+    string logo = 7;
+    string description = 8;
+    bool live = 9;
+    Type type = 10;
+
+    enum Type {
+        YOUTUBE = 0;
+
+        AUDIO = 1;
+
+        VIDEO = 2;
+    }
+}
+
+message MediaPostListResponse {
+    repeated MediaPost data = 1;
+}
+
+message MediaPostResponse {
+    MediaPost data = 1;
+}
+
+
+///
+///
+///
+
+message NewsCategory {
+    string value = 1;
+    string name = 2;
+}
+
+
+message NewsCategoryListResponse {
+    repeated NewsCategory data = 1;
+}
